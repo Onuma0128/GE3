@@ -3,6 +3,8 @@
 #include <string>
 #include <format>
 #include <cassert>
+#include <d3d12.h>
+#pragma comment(lib,"d3d12.lib")
 #include <dxcapi.h>
 #pragma comment(lib,"dxcompiler.lib")
 #include "wrl.h"

@@ -66,10 +66,15 @@
     <ClCompile Include="LoadObjFile.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="PipelineState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.VS.hlsl" />
     <FxCompile Include="Object3d.PS.hlsl" />
+    <FxCompile Include="Particle.PS.hlsl" />
+    <FxCompile Include="Particle.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CompileShader.h">
@@ -120,6 +125,9 @@
     <ClInclude Include="LoadObjFile.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="PipelineState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -128,5 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />
+    <None Include="Particle.hlsli" />
   </ItemGroup>
 </Project>
