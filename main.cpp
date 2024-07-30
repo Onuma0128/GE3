@@ -7,6 +7,8 @@
 #include "VertexResource.h"
 #include "PipelineState.h"
 #include "wrl.h"
+#include "LoadSound.h"
+#include "Input.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -335,6 +337,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ComPtr<ID3D12RootSignature> ParticleRootSignature = pipelineState_->CreateParticleRootSignature();
 	ComPtr<ID3D12PipelineState> ParticlePipelineState = pipelineState_->CreateParticlePipelineState();
 
+	Input* input_ = nullptr;
+	input_ = new Input();
+	input_->Initialize(wc.hInstance, hwnd);
+
+	//// オーディオ
+	//ComPtr<IXAudio2> xAudio2;
+	//IXAudio2MasteringVoice* masterVoice;
+	//// XAudio2エンジンを生成
+	//hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	//hr = xAudio2->CreateMasteringVoice(&masterVoice);
+	//// 音声読み込み
+	//SoundData soundData1 = SoundLoadWave("resources/fanfare.wav");
+	//SoundPlayWave(xAudio2.Get(), soundData1);
+
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
 	while (msg.message != WM_QUIT) {
@@ -348,6 +364,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui_ImplDX12_NewFrame();
 			ImGui_ImplWin32_NewFrame();
 			ImGui::NewFrame();
+			// 入力の更新
+			input_->Update();
 			//これから書き込むバックバッファのインデックスを取得
 			UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 			//TransitionBarrierの設定
@@ -463,8 +481,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			assert(SUCCEEDED(hr));
 
 			vertexResource_->Update();
+
+			if (input_->TriggerKey(DIK_S)) {
+				OutputDebugStringA("Hit S\n");
+			}
 		}
 	}
+	/*xAudio2.Reset();
+	SoundUnload(&soundData1);*/
+	delete input_;
 	delete vertexResource_;
 	delete textureResource_;
 	delete pipelineState_;
