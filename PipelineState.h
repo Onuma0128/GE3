@@ -47,6 +47,6 @@ private:
 
 	ComPtr<ID3D12RootSignature> newRootSignature_;
 	ComPtr<ID3D12PipelineState> newPipelineState_;
-	HRESULT hr_;
+	HRESULT hr_{};
 };
 

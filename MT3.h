@@ -94,9 +94,6 @@ struct CameraForGPU {
 };
 
 const float pi = 3.141592653589793238462643383279f;
-//クライアント領域のサイズ
-const int32_t kClientWidth = 1280;
-const int32_t kClientHeight = 720;
 
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2);

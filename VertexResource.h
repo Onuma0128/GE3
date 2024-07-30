@@ -11,6 +11,7 @@
 #include <random>
 #include <numbers>
 #include <list>
+#include "WinApp.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -107,8 +108,8 @@ private:
 	///=================================================================
 
 	//Transform変数を作る
-	std::list<Particle> particles_;
-	AccelerationField accelerationField_;
+	std::list<Particle> particles_{};
+	AccelerationField accelerationField_{};
 	Emitter emitter_{};
 	const float kDeltaTime = 1.0f / 60.0f;
 	uint32_t numInstance = 0;
