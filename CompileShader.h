@@ -11,11 +11,6 @@
 
 using Microsoft::WRL::ComPtr;
 
-std::string ConvertString(const std::wstring& str);
-
-//Log関数
-void Log(const std::string& message);
-
 //CompileShader関数
 ComPtr<IDxcBlob> CompileShader(
 	//CompilerするShaderファイルへのパス
