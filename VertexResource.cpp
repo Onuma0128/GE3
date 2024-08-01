@@ -1,5 +1,6 @@
 #include "VertexResource.h"
 #include <cassert>
+#include "WinApp.h"
 
 void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 {
@@ -7,16 +8,16 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	//modelData_ = LoadObjFile("resources", "teapot.obj");
 	//modelData_ = LoadObjFile("resources", "bunny.obj");
 	//実際に頂点リソースを作る
-	vertexResource_ = CreateBufferResource(device, sizeof(VertexData) * modelData_.vertices.size());
+	vertexResource_ = CreateBufferResource(device, sizeof(VertexData) * modelData_.vertices.size()).Get();
 	//Sphere用の頂点リソース
-	vertexResourceSphere_ = CreateBufferResource(device, sizeof(VertexData) * 1536);
+	vertexResourceSphere_ = CreateBufferResource(device, sizeof(VertexData) * 1536).Get();
 	//Sprite用の頂点リソースを作る
-	vertexResourceSprite_ = CreateBufferResource(device, sizeof(VertexData) * 4);
-	indexResourceSprite_ = CreateBufferResource(device, sizeof(uint32_t) * 6);
+	vertexResourceSprite_ = CreateBufferResource(device, sizeof(VertexData) * 4).Get();
+	indexResourceSprite_ = CreateBufferResource(device, sizeof(uint32_t) * 6).Get();
 	//平行光源用のリソースを作る
-	directionalLightResource_ = CreateBufferResource(device, sizeof(DirectionalLight));
+	directionalLightResource_ = CreateBufferResource(device, sizeof(DirectionalLight)).Get();
 	//Instancing用
-	instancingResource_ = CreateBufferResource(device, sizeof(ParticleForGPU) * kNumMaxInstance);
+	instancingResource_ = CreateBufferResource(device, sizeof(ParticleForGPU) * kNumMaxInstance).Get();
 
 	///=============================================================================================================
 
@@ -86,7 +87,7 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	///=============================================================================================================
 
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-	materialResource_ = CreateBufferResource(device, sizeof(Material));
+	materialResource_ = CreateBufferResource(device, sizeof(Material)).Get();
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	//今回は白を書き込んでいく
@@ -94,7 +95,7 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	materialData_->enableLighting = true;
 	materialData_->uvTransform = MakeIdentity4x4();
 	//Sphere用のマテリアルリソースを作る
-	materialResourceSphere_ = CreateBufferResource(device, sizeof(Material));
+	materialResourceSphere_ = CreateBufferResource(device, sizeof(Material)).Get();
 	//書き込むためのアドレスを取得
 	materialResourceSphere_->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSphere_));
 	//今回は白を書き込んでいく
@@ -103,7 +104,7 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	materialDataSphere_->uvTransform = MakeIdentity4x4();
 	materialDataSphere_->shininess = 16.0f;
 	//Sprite用のマテリアルリソースを作る
-	materialResourceSprite_ = CreateBufferResource(device, sizeof(Material));
+	materialResourceSprite_ = CreateBufferResource(device, sizeof(Material)).Get();
 	//書き込むためのアドレスを取得
 	materialResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite_));
 	//今回は白を書き込んでいく
@@ -114,10 +115,10 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	///=============================================================================================================
 
 	//WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
-	wvpResource_ = CreateBufferResource(device, sizeof(Matrix4x4));
-	wvpResourceSphere_ = CreateBufferResource(device, sizeof(Matrix4x4));
-	transformationMatrixResourceSprite_ = CreateBufferResource(device, sizeof(Matrix4x4));
-	cameraResource_ = CreateBufferResource(device, sizeof(Vector3));
+	wvpResource_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
+	wvpResourceSphere_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
+	transformationMatrixResourceSprite_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
+	cameraResource_ = CreateBufferResource(device, sizeof(Vector3)).Get();
 	//書き込むためのアドレスを取得
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
 	wvpResourceSphere_->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataSphere_));
@@ -270,7 +271,7 @@ void VertexResource::ImGui(bool& useMonsterBall)
 	ImGui::End();
 }
 
-ComPtr<ID3D12Resource> CreateBufferResource(ComPtr<ID3D12Device> device, size_t sizeInBytes)
+ResourceObject CreateBufferResource(ComPtr<ID3D12Device> device, size_t sizeInBytes)
 {
 	// 頂点リソースのヒープの設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties = {};

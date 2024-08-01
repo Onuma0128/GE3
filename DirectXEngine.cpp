@@ -10,6 +10,12 @@
 
 using Microsoft::WRL::ComPtr;
 
+DirectXEngine::~DirectXEngine()
+{
+	//解放の処理
+	CloseHandle(fenceEvent_);
+}
+
 void DirectXEngine::Initialize(WinApp* winApp)
 {
 	assert(winApp);
@@ -167,7 +173,7 @@ void DirectXEngine::SwapChainInitialize()
 void DirectXEngine::DepthStencilInitialize()
 {
 	//DepthStencilTextureをウィンドウのサイズで作成
-	ComPtr<ID3D12Resource> depthStencilResource = CreateDepthStencilTextureResource(device_.Get(), winApp_->kClientWidth, winApp_->kClientHeight);
+	depthStencilResource_ = CreateDepthStencilTextureResource(device_.Get(), winApp_->kClientWidth, winApp_->kClientHeight).Get();
 	//DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはflase
 	dsvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 	//DSVの設定
@@ -175,7 +181,7 @@ void DirectXEngine::DepthStencilInitialize()
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;//2dTexture
 	//DSVHeapの先頭にDSVを作る
-	device_->CreateDepthStencilView(depthStencilResource.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
+	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
 }
 
 void DirectXEngine::DescriptorHeapInitialize()

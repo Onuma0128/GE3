@@ -7,6 +7,7 @@
 class TextureResource
 {
 public:
+
 	void Initialize(ComPtr<ID3D12Device>& device, ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap, const uint32_t& descriptorSizeSRV);
 
 	bool& GetuseMonsterBall() { return useMonsterBall; }

@@ -6,8 +6,6 @@
 #include <windows.h>
 #include "WinApp.h"
 
-using Microsoft::WRL::ComPtr;
-
 class Input
 {
 public:

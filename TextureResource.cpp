@@ -11,7 +11,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureResource::GetTextureSrvHandleGPU(const std::s
 {
 	DirectX::ScratchImage mipImages = LoadTexture(filePath);
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	textureResource_ = CreateTextureResource(device_, metadata);
+	textureResource_ = CreateTextureResource(device_, metadata).Get();
 	UploadTextureData(textureResource_, mipImages);
 
 	///=============================================================================================================

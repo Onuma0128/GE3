@@ -1,28 +1,13 @@
 #include <dxgidebug.h>
 #pragma comment(lib,"dxguid.lib")
-#include "TextureResource.h"
-#include "VertexResource.h"
-#include "PipelineState.h"
 #include "wrl.h"
-#include "LoadSound.h"
 #include "Input.h"
-#include "WinApp.h"
 #include "DirectXEngine.h"
-
-struct D3DResourceLeakChecker {
-	~D3DResourceLeakChecker() {
-		//リソースリークチェック
-		ComPtr<IDXGIDebug1> debug;
-		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
-			debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-			debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
-			debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-			debug->Release();
-		}
-	}
-};
+#include "D3DResourceLeakChecker.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	D3DResourceLeakChecker leakChecker;
+
 	WinApp* winApp_ = nullptr;
 	winApp_ = new WinApp();
 	winApp_->Initialize();
@@ -96,12 +81,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 		else {
+			// 入力の更新
+			input_->Update();
 			////ImGuiの開始処理
 			//ImGui_ImplDX12_NewFrame();
 			//ImGui_ImplWin32_NewFrame();
 			//ImGui::NewFrame();
-			// 入力の更新
-			input_->Update();
 			//これから書き込むバックバッファのインデックスを取得
 			//UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 			////TransitionBarrierの設定
@@ -226,17 +211,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/*xAudio2.Reset();
 	SoundUnload(&soundData1);*/
 	delete input_;
+	delete directXEngine_;
+
 	winApp_->Finalize();
 	delete winApp_;
-	/*delete vertexResource_;
-	delete textureResource_;
-	delete pipelineState_;*/
 	//ImGuiの終了処理
 	/*ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();*/
-	//解放の処理
-	//CloseHandle(fenceEvent);
 
 	return 0;
 }

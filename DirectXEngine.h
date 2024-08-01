@@ -6,12 +6,15 @@
 #include "StringUtility.h"
 #include "WinApp.h"
 #include <dxcapi.h>
+#include <array>
 
 using Microsoft::WRL::ComPtr;
 
 class DirectXEngine
 {
 public:
+	~DirectXEngine();
+
 	// 初期化
 	void Initialize(WinApp* winApp);
 	// デバイスの初期化
@@ -36,7 +39,7 @@ public:
 	void DxcCompilerInitialize();
 	// ImGuiの初期化
 	void ImGuiInitialize();
-	
+
 private:
 	// Logger
 	Logger* logger_ = nullptr;
@@ -60,8 +63,9 @@ private:
 	//スワップチェーンを生成する
 	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
-	ComPtr<ID3D12Resource> swapChainResources_[2] = {nullptr};
+	std::array<ComPtr<ID3D12Resource>, 2> swapChainResources_ = { nullptr };
 	// 深度バッファの生成
+	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 	ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
 	// 各種でスクリプタヒープの生成
 	ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
@@ -83,7 +87,4 @@ private:
 	// DxcCompilerの生成
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
 	ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
-
-
 };
-
