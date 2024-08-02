@@ -23,6 +23,7 @@ public:
 	void Initialize(ComPtr<ID3D12Device> device);
 	uint32_t GetNumInstance() { return numInstance; }
 
+
 	void Update();
 	ModelData& GetModelData() { return modelData_; }
 	D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() { return vertexBufferView_; }
@@ -117,6 +118,7 @@ private:
 	bool isFieldStart_ = false;
 
 	Transform transformSphere_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	bool sphereLight_ = true;
 	Transform transformSprite_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	//Camera変数を作る
 	Transform cameraTransform_{ {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };

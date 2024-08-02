@@ -1,6 +1,10 @@
 #include "TextureResource.h"
 
-void TextureResource::Initialize(ComPtr<ID3D12Device>& device, ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap, const uint32_t& descriptorSizeSRV)
+TextureResource::~TextureResource()
+{
+}
+
+void TextureResource::Initialize(ComPtr<ID3D12Device> device, ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap, const uint32_t& descriptorSizeSRV)
 {
 	device_ = device;
 	srvDescriptorHeap_ = srvDescriptorHeap;
@@ -11,8 +15,8 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureResource::GetTextureSrvHandleGPU(const std::s
 {
 	DirectX::ScratchImage mipImages = LoadTexture(filePath);
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	textureResource_ = CreateTextureResource(device_, metadata).Get();
-	UploadTextureData(textureResource_, mipImages);
+	textureResource_[index] = CreateTextureResource(device_, metadata);
+	UploadTextureData(textureResource_[index], mipImages);
 
 	///=============================================================================================================
 
@@ -28,7 +32,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureResource::GetTextureSrvHandleGPU(const std::s
 	textureSrvHandleCPU_ = GetCPUDescriptorHandle(srvDescriptorHeap_, descriptorSizeSRV_, index);
 	textureSrvHandleGPU_ = GetGPUDescriptorHandle(srvDescriptorHeap_, descriptorSizeSRV_, index);
 	//SRVの生成
-	device_->CreateShaderResourceView(textureResource_.Get(), &srvDesc_, textureSrvHandleCPU_);
+	device_->CreateShaderResourceView(textureResource_[index].Get(), &srvDesc_, textureSrvHandleCPU_);
 
 	return textureSrvHandleGPU_;
 }

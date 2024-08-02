@@ -13,9 +13,11 @@ class PipelineState
 {
 public:
 
+	~PipelineState();
+
 	void Initialize(
 		ComPtr<ID3D12Device>& device, ComPtr<IDxcUtils> dxcUtils, 
-		ComPtr<IDxcCompiler3> dxcCompiler, ComPtr<IDxcIncludeHandler> includeHandler);
+		ComPtr<IDxcCompiler3>& dxcCompiler, ComPtr<IDxcIncludeHandler> includeHandler);
 
 	// ルートシグネチャ
 	ComPtr<ID3D12RootSignature> CreateObject3dRootSignature();

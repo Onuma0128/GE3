@@ -33,7 +33,7 @@ DirectX::ScratchImage LoadTexture(const std::string& filePath)
 	return mipImages;
 }
 
-ResourceObject CreateTextureResource(ComPtr<ID3D12Device> device, const DirectX::TexMetadata& metadata)
+ComPtr<ID3D12Resource> CreateTextureResource(ComPtr<ID3D12Device> device, const DirectX::TexMetadata& metadata)
 {
 	// 1.metadeを基にResourceの設定
 	D3D12_RESOURCE_DESC resourceDesc{};
@@ -50,7 +50,7 @@ ResourceObject CreateTextureResource(ComPtr<ID3D12Device> device, const DirectX:
 	heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK; //writeBackポリシーでCPUアクセス可能
 	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; //プロセッサの近くに配置
 	// 3.Resourceを生成する
-	ID3D12Resource* resource = nullptr;
+	ComPtr<ID3D12Resource> resource = nullptr;
 	HRESULT hr = device->CreateCommittedResource(
 		&heapProperties, //Heapの設定
 		D3D12_HEAP_FLAG_NONE,

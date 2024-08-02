@@ -1,8 +1,13 @@
 #include "PipelineState.h"
 
+PipelineState::~PipelineState()
+{
+
+}
+
 void PipelineState::Initialize(
 	ComPtr<ID3D12Device>& device, ComPtr<IDxcUtils> dxcUtils, 
-	ComPtr<IDxcCompiler3> dxcCompiler, ComPtr<IDxcIncludeHandler> includeHandler)
+	ComPtr<IDxcCompiler3>& dxcCompiler, ComPtr<IDxcIncludeHandler> includeHandler)
 {
 	device_ = device;
 	dxcUtils_ = dxcUtils;

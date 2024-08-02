@@ -5,8 +5,10 @@
 void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 {
 	modelData_ = LoadObjFile("resources", "plane.obj");
+	//modelData_ = LoadObjFile("resources", "multiMesh.obj");
 	//modelData_ = LoadObjFile("resources", "teapot.obj");
 	//modelData_ = LoadObjFile("resources", "bunny.obj");
+	//modelData_ = LoadObjFile("resources", "suzanne.obj");
 	//実際に頂点リソースを作る
 	vertexResource_ = CreateBufferResource(device, sizeof(VertexData) * modelData_.vertices.size()).Get();
 	//Sphere用の頂点リソース
@@ -92,7 +94,7 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	//今回は白を書き込んでいく
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = true;
+	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
 	//Sphere用のマテリアルリソースを作る
 	materialResourceSphere_ = CreateBufferResource(device, sizeof(Material)).Get();
@@ -236,6 +238,8 @@ void VertexResource::ImGui(bool& useMonsterBall)
 	ImGui::DragFloat3("SphereRotate", &transformSphere_.rotate.x, 0.01f);
 	ImGui::DragFloat3("SphereTranslate", &transformSphere_.translate.x, 0.01f);
 	ImGui::Checkbox("MonsterBall", &useMonsterBall);
+	ImGui::Checkbox("SphereLignt", &sphereLight_);
+	materialDataSphere_->enableLighting = sphereLight_;
 	ImGui::End();
 
 	ImGui::Begin("Sprite");

@@ -3,12 +3,14 @@
 #include "DescriptorHeap.h"
 #include "DepthStencilTexture.h"
 #include "MT3.h"
+#include <array>
 
 class TextureResource
 {
 public:
+	~TextureResource();
 
-	void Initialize(ComPtr<ID3D12Device>& device, ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap, const uint32_t& descriptorSizeSRV);
+	void Initialize(ComPtr<ID3D12Device> device, ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap, const uint32_t& descriptorSizeSRV);
 
 	bool& GetuseMonsterBall() { return useMonsterBall; }
 
@@ -19,7 +21,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_{};
 	uint32_t descriptorSizeSRV_{};
 
-	ComPtr<ID3D12Resource> textureResource_ = nullptr;
+	std::array<ComPtr<ID3D12Resource>, 10> textureResource_ = {};
 
 	///=============================================================================================================
 

@@ -5,6 +5,9 @@
 #include "Logger.h"
 #include "StringUtility.h"
 #include "WinApp.h"
+#include "VertexResource.h"
+#include "TextureResource.h"
+#include "PipelineState.h"
 #include <dxcapi.h>
 #include <array>
 
@@ -39,6 +42,24 @@ public:
 	void DxcCompilerInitialize();
 	// ImGuiの初期化
 	void ImGuiInitialize();
+	// VertexResourceの初期化
+	void VertexResourceInitialize();
+	// TextureResourceの初期化
+	void TextureResourceInitialize();
+	// InstancingSRVの初期化
+	void InstancingSrvInitialize();
+	// IncludeHandlerの初期化
+	void IncludeHandlerInitialize();
+	// PipelineStateの初期化
+	void PipelineStateInitialize();
+
+
+	// 描画前の処理
+	void PreDraw();
+	// 描画処理
+	void Draw();
+	// 描画後の処理
+	void PostDraw();
 
 private:
 	// Logger
@@ -47,6 +68,12 @@ private:
 	StringUtility* stringUtility_ = nullptr;
 	// WindowsAPI
 	WinApp* winApp_ = nullptr;
+	// VertexResource
+	VertexResource* vertexResource_ = nullptr;
+	// TextureResource
+	TextureResource* textureResource_ = nullptr;
+	// PipelineState
+	PipelineState* pipelineState_ = nullptr;
 
 	///==============================================================
 
@@ -75,7 +102,7 @@ private:
 	uint32_t descriptorSizeDSV_ = NULL;
 	//RTVを2つ作るのでディスクリプタを2つ用意
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc_{};
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2];
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
 	// フェンスを生成
 	ComPtr<ID3D12Fence> fence_ = nullptr;
 	uint64_t fenceValue_ = 0;
@@ -87,4 +114,20 @@ private:
 	// DxcCompilerの生成
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
 	ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
+	// TextureSrvHandleGPUの生成
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_[5] = {};
+	// PipelineStateの生成
+	// Object3d
+	ComPtr<ID3D12RootSignature> object3dRootSignature_ = nullptr;
+	ComPtr<ID3D12PipelineState> object3dPipelineState_ = nullptr;
+		// Particle
+	ComPtr<ID3D12RootSignature> ParticleRootSignature_ = nullptr;
+	ComPtr<ID3D12PipelineState> ParticlePipelineState_ = nullptr;
+	// InstancingSRVの生成
+	D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU_ = {};
+	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU_ = {};
+	// IncludeHandlerの生成
+	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
+	// TransitionBarrierの生成
+	D3D12_RESOURCE_BARRIER barrier_{};
 };
