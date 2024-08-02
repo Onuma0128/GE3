@@ -12,8 +12,6 @@ public:
 
 	void Initialize(ComPtr<ID3D12Device> device, ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap, const uint32_t& descriptorSizeSRV);
 
-	bool& GetuseMonsterBall() { return useMonsterBall; }
-
 	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureSrvHandleGPU(const std::string& filePath,const uint32_t& index);
 
 private:
@@ -35,8 +33,5 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_{};
 
 	///=============================================================================================================
-
-	//texture切り替え用のフラグ
-	bool useMonsterBall = true;
 };
 

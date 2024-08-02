@@ -117,18 +117,14 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	///=============================================================================================================
 
 	//WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
-	wvpResource_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
 	wvpResourceSphere_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
 	transformationMatrixResourceSprite_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
 	cameraResource_ = CreateBufferResource(device, sizeof(Vector3)).Get();
 	//書き込むためのアドレスを取得
-	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
 	wvpResourceSphere_->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataSphere_));
 	transformationMatrixResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixDataSprite_));
 	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
 	//単位行列を書き込んでおく
-	wvpData_->WVP = MakeIdentity4x4();
-	wvpData_->World = MakeIdentity4x4();
 	wvpDataSphere_->WVP = MakeIdentity4x4();
 	wvpDataSphere_->World = MakeIdentity4x4();
 	transformationMatrixDataSprite_->WVP = MakeIdentity4x4();
@@ -213,6 +209,11 @@ void VertexResource::Update()
 	wvpDataSphere_->WVP = worldViewProjectionMatrixSphere; // 球体のワールドビュープロジェクション行列を更新
 	wvpDataSphere_->World = worldViewMatrixSphere; // 球体のワールド座標行列を更新
 
+	uvTransformMatrix_ = MakeScaleMatrix(uvTransformSphere_.scale);
+	uvTransformMatrix_ = Multiply(uvTransformMatrix_, MakeRotateZMatrix(uvTransformSphere_.rotate.z));
+	uvTransformMatrix_ = Multiply(uvTransformMatrix_, MakeTranslateMatrix(uvTransformSphere_.translate));
+	materialDataSphere_->uvTransform = uvTransformMatrix_;
+
 	//Sprite用
 	Matrix4x4 worldMatrixSprite = MakeAfineMatrix(transformSprite_.scale, transformSprite_.rotate, transformSprite_.translate);
 	Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
@@ -231,13 +232,16 @@ void VertexResource::Update()
 	directionalLightData_->direction = Normalize(directionalLightData_->direction);
 }
 
-void VertexResource::ImGui(bool& useMonsterBall)
+void VertexResource::ImGui()
 {
 	ImGui::Begin("Sphere");
 	ImGui::DragFloat3("SphereScale", &transformSphere_.scale.x, 0.01f);
 	ImGui::DragFloat3("SphereRotate", &transformSphere_.rotate.x, 0.01f);
 	ImGui::DragFloat3("SphereTranslate", &transformSphere_.translate.x, 0.01f);
-	ImGui::Checkbox("MonsterBall", &useMonsterBall);
+	ImGui::DragFloat2("UVScale", &uvTransformSphere_.scale.x, 0.01f, -10.0f, 10.0f);
+	ImGui::SliderAngle("UVRotate", &uvTransformSphere_.rotate.z);
+	ImGui::DragFloat2("UVTranslate", &uvTransformSphere_.translate.x, 0.01f, -10.0f, 10.0f);
+	ImGui::Checkbox("MonsterBall", &useMonsterBall_);
 	ImGui::Checkbox("SphereLignt", &sphereLight_);
 	materialDataSphere_->enableLighting = sphereLight_;
 	ImGui::End();
@@ -267,6 +271,7 @@ void VertexResource::ImGui(bool& useMonsterBall)
 	ImGui::ColorEdit4("Color", (float*)&materialData_->color.x);
 	ImGui::Checkbox("move", &moveStart_);
 	ImGui::Checkbox("field", &isFieldStart_);
+	ImGui::Checkbox("Circle", &useCircle_);
 	ImGui::Text("%d", numInstance);
 	if (ImGui::Button("Add Particle")) {
 		std::mt19937 randomEngine_(seedGenerator_());

@@ -16,10 +16,6 @@ DirectXEngine::~DirectXEngine()
 	delete textureResource_;
 	delete pipelineState_;
 
-	/*if (device_) {
-		device_->Release();
-	}*/
-
 	//解放の処理
 	CloseHandle(fenceEvent_);
 }
@@ -76,11 +72,7 @@ void DirectXEngine::DeviceInitialize()
 	}
 #endif // DEBUG
 
-	//HRESULTはWindows系のエラーコードであり、
-	//関数が成功したかどうかをSUCCEEDEDマクロで判定できる
 	HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
-	//初期化の根本な部分でエラーが出た場合はプログラムが間違っているか、
-	//どうにも出来ない場合が多いのでassertにしておく
 	assert(SUCCEEDED(hr));
 
 	//使用するアダプタ用の変数。最初にnullptrを入れておく
@@ -378,43 +370,35 @@ void DirectXEngine::PreDraw()
 	//指定した色で画面全体をクリアする
 	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f }; //青っぽい色。RGBAの順
 	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
-	//開発用UIの処理.
-	ImGui::ShowDemoWindow();
-	vertexResource_->ImGui(textureResource_->GetuseMonsterBall());
-
-	//ImGuiの内部コマンドを生成
-	ImGui::Render();
 	//描画用のDescriptorHeapの設定
 	ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
 	commandList_->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
 	//コマンドを積む
 	commandList_->RSSetViewports(1, &viewport_);
 	commandList_->RSSetScissorRects(1, &scissorRect_);
-
-	vertexResource_->Update();
+	//開発用UIの処理.
+	ImGui::ShowDemoWindow();
 }
 
 void DirectXEngine::Draw()
 {
+	vertexResource_->ImGui();
+	vertexResource_->Update();
+	//形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えて置けばいい
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	///==============================================================================================
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要(Particle.hlsl)
 	commandList_->SetGraphicsRootSignature(ParticleRootSignature_.Get());
 	commandList_->SetPipelineState(ParticlePipelineState_.Get());
 	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
 	///==============================================================================================
-	//形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えて置けばいい
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//マテリアルCBufferの場所を設定
+	// Particle
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResource()->GetGPUVirtualAddress());
-	//wvp用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetwvpResource()->GetGPUVirtualAddress());
-	//SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である
-	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[3]);
-	//Lightの描画
+	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetInstancingResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseCircle() ? textureSrvHandleGPU_[3] : textureSrvHandleGPU_[0]);
 	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	//instancing用のDataを読むためにStructuredBufferのSRVを設定
 	commandList_->SetGraphicsRootDescriptorTable(4, instancingSrvHandleGPU_);
-	//描画
+	// 描画
 	commandList_->DrawInstanced(UINT(vertexResource_->GetModelData().vertices.size()), vertexResource_->GetNumInstance(), 0, 0);
 	///==============================================================================================
 	// 新しいパイプラインステートを設定(Object3d.hlsl)
@@ -422,31 +406,32 @@ void DirectXEngine::Draw()
 	commandList_->SetPipelineState(object3dPipelineState_.Get());
 	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
 	///==============================================================================================
-	//Sphere
+	// Sphere
 	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewSphere());
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceSphere()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetwvpResourceSphere()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, textureResource_->GetuseMonsterBall() ? textureSrvHandleGPU_[4] : textureSrvHandleGPU_[1]);
+	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseMonsterBall() ? textureSrvHandleGPU_[4] : textureSrvHandleGPU_[1]);
 	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
-	//描画
+	// 描画
 	commandList_->DrawInstanced(1536, 1, 0, 0);
-
-	//Spriteの描画
+	///==============================================================================================
+	// Sprite
 	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewSprite());
 	commandList_->IASetIndexBuffer(&vertexResource_->GetIndexBufferViewSprite());
-	//TransformtionMatrixCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceSprite()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetTransformationMatrixResourceSprite()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[1]);
-	//スプライトの描画
+	// 描画
 	commandList_->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
 void DirectXEngine::PostDraw()
 {
-	HRESULT hr{};
+	//ImGuiの内部コマンドを生成
+	ImGui::Render();
 
+	HRESULT hr{};
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 	//実際のnommandListのImGuiの描画コマンドを積む
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList_.Get());

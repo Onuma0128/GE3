@@ -22,7 +22,8 @@ class VertexResource
 public:
 	void Initialize(ComPtr<ID3D12Device> device);
 	uint32_t GetNumInstance() { return numInstance; }
-
+	bool& GetuseMonsterBall() { return useMonsterBall_; }
+	bool& GetuseCircle() { return useCircle_; }
 
 	void Update();
 	ModelData& GetModelData() { return modelData_; }
@@ -31,17 +32,16 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferViewSprite() { return vertexBufferViewSprite_; }
 	D3D12_INDEX_BUFFER_VIEW& GetIndexBufferViewSprite() { return indexBufferViewSprite_; }
 	ComPtr<ID3D12Resource> GetDirectionalLightResource() { return directionalLightResource_; }
-	ComPtr<ID3D12Resource> GetInstancingResource() { return instancingResource_; }
 
 	ComPtr<ID3D12Resource> GetMaterialResource() { return materialResource_; }
 	ComPtr<ID3D12Resource> GetMaterialResourceSphere() { return materialResourceSphere_; }
 	ComPtr<ID3D12Resource> GetMaterialResourceSprite() { return materialResourceSprite_; }
-	ComPtr<ID3D12Resource> GetwvpResource() { return wvpResource_; }
+	ComPtr<ID3D12Resource> GetInstancingResource() { return instancingResource_; }
 	ComPtr<ID3D12Resource> GetwvpResourceSphere() { return wvpResourceSphere_; }
 	ComPtr<ID3D12Resource> GetTransformationMatrixResourceSprite() { return transformationMatrixResourceSprite_; }
 	ComPtr<ID3D12Resource> GetCameraResource() { return cameraResource_; }
 
-	void ImGui(bool& useMonsterBall);
+	void ImGui();
 
 private:
 	//モデル読み込み
@@ -55,8 +55,6 @@ private:
 	ComPtr<ID3D12Resource> indexResourceSprite_ = nullptr;
 	//平行光源用のリソースを作る
 	ComPtr<ID3D12Resource> directionalLightResource_ = nullptr;
-	//Instancing用のTransformationMatrixリソースを作る
-	ComPtr<ID3D12Resource> instancingResource_ = nullptr;
 
 	///=================================================================
 
@@ -90,7 +88,8 @@ private:
 	Material* materialDataSphere_ = nullptr;
 	Material* materialDataSprite_ = nullptr;
 	//WVP用のリソースを作る
-	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
+	//Instancing用のTransformationMatrixリソースを作る
+	ComPtr<ID3D12Resource> instancingResource_ = nullptr;
 	//Sphere用
 	ComPtr<ID3D12Resource> wvpResourceSphere_ = nullptr;
 	//Sprite用
@@ -98,7 +97,6 @@ private:
 	//
 	ComPtr<ID3D12Resource> cameraResource_ = nullptr;
 	//データを書き込む
-	TransformationMatrix* wvpData_ = nullptr;
 	TransformationMatrix* wvpDataSphere_ = nullptr;
 	TransformationMatrix* transformationMatrixDataSprite_ = nullptr;
 	ParticleForGPU* instancingData_ = nullptr;
@@ -118,8 +116,11 @@ private:
 	bool isFieldStart_ = false;
 
 	Transform transformSphere_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	Transform uvTransformSphere_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	bool useMonsterBall_ = true;
 	bool sphereLight_ = true;
 	Transform transformSprite_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	bool useCircle_ = true;
 	//Camera変数を作る
 	Transform cameraTransform_{ {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };
 	//UVTransform変数
