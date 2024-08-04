@@ -9,6 +9,7 @@
 #include <random>
 #include <numbers>
 #include <list>
+#include <array>
 #include "ResourceObject.h"
 
 using Microsoft::WRL::ComPtr;
@@ -26,17 +27,22 @@ public:
 	bool& GetuseCircle() { return useCircle_; }
 
 	void Update();
+
 	ModelData& GetModelData() { return modelData_; }
+	ModelData& GetModelDataObject() { return modelDataObject_[objIndex_]; }
 	D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() { return vertexBufferView_; }
+	D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferViewObject() { return vertexBufferViewObject_[objIndex_]; }
 	D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferViewSphere() { return vertexBufferViewSphere_; }
 	D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferViewSprite() { return vertexBufferViewSprite_; }
 	D3D12_INDEX_BUFFER_VIEW& GetIndexBufferViewSprite() { return indexBufferViewSprite_; }
 	ComPtr<ID3D12Resource> GetDirectionalLightResource() { return directionalLightResource_; }
 
 	ComPtr<ID3D12Resource> GetMaterialResource() { return materialResource_; }
+	ComPtr<ID3D12Resource> GetMaterialResourceObject() { return materialResourceObject_; }
 	ComPtr<ID3D12Resource> GetMaterialResourceSphere() { return materialResourceSphere_; }
 	ComPtr<ID3D12Resource> GetMaterialResourceSprite() { return materialResourceSprite_; }
 	ComPtr<ID3D12Resource> GetInstancingResource() { return instancingResource_; }
+	ComPtr<ID3D12Resource> GetwvpResourceObject() { return wvpResourceObject_; }
 	ComPtr<ID3D12Resource> GetwvpResourceSphere() { return wvpResourceSphere_; }
 	ComPtr<ID3D12Resource> GetTransformationMatrixResourceSprite() { return transformationMatrixResourceSprite_; }
 	ComPtr<ID3D12Resource> GetCameraResource() { return cameraResource_; }
@@ -44,23 +50,28 @@ public:
 	void ImGui();
 
 private:
-	//モデル読み込み
+	// モデル読み込み
 	ModelData modelData_;
-	//実際に頂点リソースを作る
+	ModelData modelDataObject_[4];
+	// Particleの頂点リソースを作る
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-	//Sphere用の頂点リソースを作る
+	// Object3Dの頂点リソースを作る
+	uint32_t objIndex_ = 0;
+	std::array<ComPtr<ID3D12Resource>, 4> vertexResourceObject_ = {};
+	// Sphere用の頂点リソースを作る
 	ComPtr<ID3D12Resource> vertexResourceSphere_ = nullptr;
-	//Sprite用の頂点リソースを作る
+	// Sprite用の頂点リソースを作る
 	ComPtr<ID3D12Resource> vertexResourceSprite_ = nullptr;
 	ComPtr<ID3D12Resource> indexResourceSprite_ = nullptr;
-	//平行光源用のリソースを作る
+	// 平行光源用のリソースを作る
 	ComPtr<ID3D12Resource> directionalLightResource_ = nullptr;
 
 	///=================================================================
 
-	//VertexBufferViewを作成する
-	//頂点バッファビューを作成する
+	// VertexBufferViewを作成する
+	// 頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+	std::array<D3D12_VERTEX_BUFFER_VIEW, 4> vertexBufferViewObject_{};
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSphere_{};
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSprite_{};
 	D3D12_INDEX_BUFFER_VIEW indexBufferViewSprite_{};
@@ -70,6 +81,7 @@ private:
 
 	//頂点リソースにデータを書き込む
 	VertexData* vertexData_ = nullptr;
+	VertexData* vertexDataObject_ = nullptr;
 	VertexData* vertexDataSphere_ = nullptr;
 	VertexData* vertexDataSprite_ = nullptr;
 	uint32_t* indexDataSprite_ = nullptr;
@@ -81,22 +93,27 @@ private:
 
 	//マテリアル用のリソースを作る
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
+	ComPtr<ID3D12Resource> materialResourceObject_ = nullptr;
 	ComPtr<ID3D12Resource> materialResourceSphere_ = nullptr;
 	ComPtr<ID3D12Resource> materialResourceSprite_ = nullptr;
 	//マテリアルにデータを書き込む
 	Material* materialData_ = nullptr;
+	Material* materialDataObject_ = nullptr;
 	Material* materialDataSphere_ = nullptr;
 	Material* materialDataSprite_ = nullptr;
-	//WVP用のリソースを作る
-	//Instancing用のTransformationMatrixリソースを作る
+	// WVP用のリソースを作る
+	// Instancing用のTransformationMatrixリソースを作る
 	ComPtr<ID3D12Resource> instancingResource_ = nullptr;
-	//Sphere用
+	// Object用
+	ComPtr<ID3D12Resource> wvpResourceObject_ = nullptr;
+	// Sphere用
 	ComPtr<ID3D12Resource> wvpResourceSphere_ = nullptr;
-	//Sprite用
+	// Sprite用
 	ComPtr<ID3D12Resource> transformationMatrixResourceSprite_ = nullptr;
 	//
 	ComPtr<ID3D12Resource> cameraResource_ = nullptr;
-	//データを書き込む
+	// データを書き込む
+	TransformationMatrix* wvpDataObject_ = nullptr;
 	TransformationMatrix* wvpDataSphere_ = nullptr;
 	TransformationMatrix* transformationMatrixDataSprite_ = nullptr;
 	ParticleForGPU* instancingData_ = nullptr;
@@ -115,6 +132,8 @@ private:
 	bool moveStart_ = false;
 	bool isFieldStart_ = false;
 
+
+	Transform transformObject_{ {1.0f,1.0f,1.0f},{0.0f,3.14f,0.0f},{0.0f,0.0f,0.0f} };
 	Transform transformSphere_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	Transform uvTransformSphere_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	bool useMonsterBall_ = true;

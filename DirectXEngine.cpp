@@ -183,7 +183,7 @@ void DirectXEngine::SwapChainInitialize()
 void DirectXEngine::DepthStencilInitialize()
 {
 	//DepthStencilTextureをウィンドウのサイズで作成
-	depthStencilResource_ = CreateDepthStencilTextureResource(device_.Get(), winApp_->kClientWidth, winApp_->kClientHeight).Get();
+	depthStencilResource_ = CreateDepthStencilTextureResource(device_, winApp_->kClientWidth, winApp_->kClientHeight);
 	//DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはflase
 	dsvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 	//DSVの設定
@@ -298,10 +298,11 @@ void DirectXEngine::TextureResourceInitialize()
 	textureResource_ = new TextureResource();
 	textureResource_->Initialize(device_, srvDescriptorHeap_, descriptorSizeSRV_);
 	textureSrvHandleGPU_[0] = textureResource_->GetTextureSrvHandleGPU(vertexResource_->GetModelData().material.textureFilePath, 1);
-	textureSrvHandleGPU_[1] = textureResource_->GetTextureSrvHandleGPU("resources/uvChecker.png", 2);
-	textureSrvHandleGPU_[2] = textureResource_->GetTextureSrvHandleGPU("resources/checkerBoard.png", 3);
-	textureSrvHandleGPU_[3] = textureResource_->GetTextureSrvHandleGPU("resources/circle.png", 4);
-	textureSrvHandleGPU_[4] = textureResource_->GetTextureSrvHandleGPU("resources/monsterBall.png", 5);
+	textureSrvHandleGPU_[1] = textureResource_->GetTextureSrvHandleGPU(vertexResource_->GetModelDataObject().material.textureFilePath, 2);
+	textureSrvHandleGPU_[2] = textureResource_->GetTextureSrvHandleGPU("resources/uvChecker.png", 3);
+	textureSrvHandleGPU_[3] = textureResource_->GetTextureSrvHandleGPU("resources/checkerBoard.png", 4);
+	textureSrvHandleGPU_[4] = textureResource_->GetTextureSrvHandleGPU("resources/circle.png", 5);
+	textureSrvHandleGPU_[5] = textureResource_->GetTextureSrvHandleGPU("resources/monsterBall.png", 6);
 }
 
 void DirectXEngine::InstancingSrvInitialize()
@@ -314,8 +315,8 @@ void DirectXEngine::InstancingSrvInitialize()
 	instancingSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	instancingSrvDesc.Buffer.NumElements = kNumMaxInstance;
 	instancingSrvDesc.Buffer.StructureByteStride = sizeof(ParticleForGPU);
-	instancingSrvHandleCPU_ = GetCPUDescriptorHandle(srvDescriptorHeap_, descriptorSizeSRV_, 6);
-	instancingSrvHandleGPU_ = GetGPUDescriptorHandle(srvDescriptorHeap_, descriptorSizeSRV_, 6);
+	instancingSrvHandleCPU_ = GetCPUDescriptorHandle(srvDescriptorHeap_, descriptorSizeSRV_, 7);
+	instancingSrvHandleGPU_ = GetGPUDescriptorHandle(srvDescriptorHeap_, descriptorSizeSRV_, 7);
 	device_->CreateShaderResourceView(vertexResource_->GetInstancingResource().Get(), &instancingSrvDesc, instancingSrvHandleCPU_);
 }
 
@@ -382,20 +383,18 @@ void DirectXEngine::PreDraw()
 
 void DirectXEngine::Draw()
 {
-	vertexResource_->ImGui();
-	vertexResource_->Update();
 	//形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えて置けばいい
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	///==============================================================================================
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要(Particle.hlsl)
 	commandList_->SetGraphicsRootSignature(ParticleRootSignature_.Get());
 	commandList_->SetPipelineState(ParticlePipelineState_.Get());
-	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
 	///==============================================================================================
 	// Particle
+	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetInstancingResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseCircle() ? textureSrvHandleGPU_[3] : textureSrvHandleGPU_[0]);
+	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseCircle() ? textureSrvHandleGPU_[4] : textureSrvHandleGPU_[0]);
 	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootDescriptorTable(4, instancingSrvHandleGPU_);
 	// 描画
@@ -404,13 +403,22 @@ void DirectXEngine::Draw()
 	// 新しいパイプラインステートを設定(Object3d.hlsl)
 	commandList_->SetGraphicsRootSignature(object3dRootSignature_.Get());
 	commandList_->SetPipelineState(object3dPipelineState_.Get());
-	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
+	///==============================================================================================
+	// Object
+	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewObject());
+	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceObject()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetwvpResourceObject()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
+	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
+	// 描画
+	commandList_->DrawInstanced(UINT(vertexResource_->GetModelDataObject().vertices.size()), 1, 0, 0);
 	///==============================================================================================
 	// Sphere
 	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewSphere());
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceSphere()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetwvpResourceSphere()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseMonsterBall() ? textureSrvHandleGPU_[4] : textureSrvHandleGPU_[1]);
+	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseMonsterBall() ? textureSrvHandleGPU_[5] : textureSrvHandleGPU_[2]);
 	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
 	// 描画
@@ -421,9 +429,12 @@ void DirectXEngine::Draw()
 	commandList_->IASetIndexBuffer(&vertexResource_->GetIndexBufferViewSprite());
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceSprite()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetTransformationMatrixResourceSprite()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[1]);
+	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
 	// 描画
 	commandList_->DrawIndexedInstanced(6, 1, 0, 0, 0);
+
+	vertexResource_->ImGui();
+	vertexResource_->Update();
 }
 
 void DirectXEngine::PostDraw()

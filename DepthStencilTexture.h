@@ -4,4 +4,4 @@
 
 using Microsoft::WRL::ComPtr;
 
-ResourceObject CreateDepthStencilTextureResource(ComPtr<ID3D12Device> device, int width, int height);
+ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ComPtr<ID3D12Device> device, int width, int height);

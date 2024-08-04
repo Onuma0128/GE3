@@ -1,7 +1,7 @@
 #include "DepthStencilTexture.h"
 #include <assert.h>
 
-ResourceObject CreateDepthStencilTextureResource(ComPtr<ID3D12Device> device, int width, int height)
+ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ComPtr<ID3D12Device> device, int width, int height)
 {
 	//生成するResourceの設定
 	D3D12_RESOURCE_DESC resourceDesc{};
@@ -24,7 +24,7 @@ ResourceObject CreateDepthStencilTextureResource(ComPtr<ID3D12Device> device, in
 	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//フォーマット。Resourceと合わせる
 
 	//Resourceの生成
-	ID3D12Resource* resource = nullptr;
+	ComPtr<ID3D12Resource> resource = nullptr;
 	HRESULT hr = device->CreateCommittedResource(
 		&heapProperties, //Heapの設定
 		D3D12_HEAP_FLAG_NONE,

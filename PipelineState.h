@@ -33,7 +33,8 @@ public:
 	void Object3dShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& pixelShader);
 	void ParticleShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& pixelShader);
 	// デスクリプターステンシル
-	void DepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
+	void ParticleDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
+	void Object3dDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
 
 	///==============================================================================================================
 

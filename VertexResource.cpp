@@ -5,61 +5,63 @@
 void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 {
 	modelData_ = LoadObjFile("resources", "plane.obj");
-	//modelData_ = LoadObjFile("resources", "multiMesh.obj");
-	//modelData_ = LoadObjFile("resources", "teapot.obj");
-	//modelData_ = LoadObjFile("resources", "bunny.obj");
-	//modelData_ = LoadObjFile("resources", "suzanne.obj");
-	//実際に頂点リソースを作る
+
+	// 実際に頂点リソースを作る
 	vertexResource_ = CreateBufferResource(device, sizeof(VertexData) * modelData_.vertices.size()).Get();
-	//Sphere用の頂点リソース
-	vertexResourceSphere_ = CreateBufferResource(device, sizeof(VertexData) * 1536).Get();
-	//Sprite用の頂点リソースを作る
-	vertexResourceSprite_ = CreateBufferResource(device, sizeof(VertexData) * 4).Get();
-	indexResourceSprite_ = CreateBufferResource(device, sizeof(uint32_t) * 6).Get();
-	//平行光源用のリソースを作る
-	directionalLightResource_ = CreateBufferResource(device, sizeof(DirectionalLight)).Get();
-	//Instancing用
-	instancingResource_ = CreateBufferResource(device, sizeof(ParticleForGPU) * kNumMaxInstance).Get();
-
-	///=============================================================================================================
-
-	//リソースの先頭のアドレスから使う
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexBufferViewSphere_.BufferLocation = vertexResourceSphere_->GetGPUVirtualAddress();
-	vertexBufferViewSprite_.BufferLocation = vertexResourceSprite_->GetGPUVirtualAddress();
-	indexBufferViewSprite_.BufferLocation = indexResourceSprite_->GetGPUVirtualAddress();
-	directionalLightBufferView_.BufferLocation = directionalLightResource_->GetGPUVirtualAddress();
-	//使用するリソースのサイズは頂点3つ分のサイズ
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());
-	vertexBufferViewSphere_.SizeInBytes = sizeof(VertexData) * 1536;
-	vertexBufferViewSprite_.SizeInBytes = sizeof(VertexData) * 4;
-	indexBufferViewSprite_.SizeInBytes = sizeof(uint32_t) * 6;
-	directionalLightBufferView_.SizeInBytes = sizeof(DirectionalLight);
-	//頂点当たりのサイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
-	vertexBufferViewSphere_.StrideInBytes = sizeof(VertexData);
-	vertexBufferViewSprite_.StrideInBytes = sizeof(VertexData);
-	indexBufferViewSprite_.Format = DXGI_FORMAT_R32_UINT;
-	directionalLightBufferView_.StrideInBytes = sizeof(DirectionalLight);
+
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
+
+	///=============================================================================================================
+	modelDataObject_[0] = LoadObjFile("resources", "plane.obj");
+	modelDataObject_[1] = LoadObjFile("resources", "multiMesh.obj");
+	modelDataObject_[2] = LoadObjFile("resources", "teapot.obj");
+	modelDataObject_[3] = LoadObjFile("resources", "bunny.obj");
+
+	// 実際に頂点リソースを作る
+	for (uint32_t i = 0; i < 4; i++) {
+		vertexResourceObject_[i] = CreateBufferResource(device, sizeof(VertexData) * modelDataObject_[i].vertices.size()).Get();
+		vertexBufferViewObject_[i].BufferLocation = vertexResourceObject_[i]->GetGPUVirtualAddress();
+		vertexBufferViewObject_[i].SizeInBytes = UINT(sizeof(VertexData) * modelDataObject_[i].vertices.size());
+		vertexBufferViewObject_[i].StrideInBytes = sizeof(VertexData);
+
+		vertexResourceObject_[i]->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataObject_));
+		std::memcpy(vertexDataObject_, modelDataObject_[i].vertices.data(), sizeof(VertexData) * modelDataObject_[i].vertices.size());
+	}
 
 	///=============================================================================================================
 
-	//Resourceにデータを書き込む
-	//書き込むためのアドレスを取得
-	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
-	//Objの頂点
-	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
-	//Sphere
+	// Sphere用の頂点リソース
+	vertexResourceSphere_ = CreateBufferResource(device, sizeof(VertexData) * 1536).Get();
+	vertexBufferViewSphere_.BufferLocation = vertexResourceSphere_->GetGPUVirtualAddress();
+	vertexBufferViewSphere_.SizeInBytes = sizeof(VertexData) * 1536;
+	vertexBufferViewSphere_.StrideInBytes = sizeof(VertexData);
+
+	// Sphere
 	vertexResourceSphere_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSphere_));
 	vertexDataSphere_ = DrawSphere(vertexDataSphere_, vertexCount_);
-	//法線情報の追加
+	// 法線情報の追加
 	for (uint32_t index = 0; index < 1536; ++index) {
 		vertexDataSphere_[index].normal = Normalize(vertexDataSphere_[index].position);
 	}
 
-	//書き込むためのアドレスを取得
+	///=============================================================================================================
+
+	// Sprite用の頂点リソースを作る
+	vertexResourceSprite_ = CreateBufferResource(device, sizeof(VertexData) * 4).Get();
+	indexResourceSprite_ = CreateBufferResource(device, sizeof(uint32_t) * 6).Get();
+	vertexBufferViewSprite_.BufferLocation = vertexResourceSprite_->GetGPUVirtualAddress();
+	indexBufferViewSprite_.BufferLocation = indexResourceSprite_->GetGPUVirtualAddress();
+	vertexBufferViewSprite_.SizeInBytes = sizeof(VertexData) * 4;
+	indexBufferViewSprite_.SizeInBytes = sizeof(uint32_t) * 6;
+	vertexBufferViewSprite_.StrideInBytes = sizeof(VertexData);
+	indexBufferViewSprite_.Format = DXGI_FORMAT_R32_UINT;
+	// 書き込むためのアドレスを取得
 	vertexResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite_));
-	//四角形の4つの頂点
+	// 四角形の4つの頂点
 	vertexDataSprite_[0].position = { 0.0f,360.0f,0.0f,1.0f };//左下
 	vertexDataSprite_[0].texcoord = { 0.0f,1.0f };
 	vertexDataSprite_[1].position = { 0.0f,0.0f,0.0f,1.0f };//左上
@@ -68,68 +70,100 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	vertexDataSprite_[2].texcoord = { 1.0f,1.0f };
 	vertexDataSprite_[3].position = { 640.0f,0.0f,0.0f,1.0f };//右上
 	vertexDataSprite_[3].texcoord = { 1.0f,0.0f };
-	//法線情報の追加
+	// 法線情報の追加
 	vertexDataSprite_[0].normal = { 0.0f,0.0f,-1.0f };
-	//IndexData
+	// IndexData
 	indexResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSprite_));
 	indexDataSprite_[0] = 0; indexDataSprite_[1] = 1; indexDataSprite_[2] = 2;
 	indexDataSprite_[3] = 1; indexDataSprite_[4] = 3; indexDataSprite_[5] = 2;
 
+	///=============================================================================================================
+
+	// 平行光源用のリソースを作る
+	directionalLightResource_ = CreateBufferResource(device, sizeof(DirectionalLight)).Get();
+	directionalLightBufferView_.BufferLocation = directionalLightResource_->GetGPUVirtualAddress();
+	directionalLightBufferView_.SizeInBytes = sizeof(DirectionalLight);
+	directionalLightBufferView_.StrideInBytes = sizeof(DirectionalLight);
 	directionalLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData_));
-	//デフォルト値はとりあえず以下のようにする
+	// デフォルト値はとりあえず以下のようにする
 	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData_->direction = { 0.0f,1.0f,0.0f };
 	directionalLightData_->intensity = 1.0f;
 
+	///=============================================================================================================
+
+	// Instancing用
+	instancingResource_ = CreateBufferResource(device, sizeof(ParticleForGPU) * kNumMaxInstance).Get();
 	instancingResource_->Map(0, nullptr, reinterpret_cast<void**>(&instancingData_));
 	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
 		instancingData_[index].color = Vector4{ 1.0f,1.0f,1.0f,1.0f };
 	}
 
+
 	///=============================================================================================================
 
-	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
+	// マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
 	materialResource_ = CreateBufferResource(device, sizeof(Material)).Get();
-	//書き込むためのアドレスを取得
+	// 書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	//今回は白を書き込んでいく
+	// 今回は白を書き込んでいく
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
-	//Sphere用のマテリアルリソースを作る
+
+	// Object用のマテリアルリソースを作る
+	materialResourceObject_ = CreateBufferResource(device, sizeof(Material)).Get();
+	// 書き込むためのアドレスを取得
+	materialResourceObject_->Map(0, nullptr, reinterpret_cast<void**>(&materialDataObject_));
+	// 今回は白を書き込んでいく
+	materialDataObject_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialDataObject_->enableLighting = true;
+	materialDataObject_->uvTransform = MakeIdentity4x4();
+	materialDataObject_->shininess = 8.0f;
+
+	// Sphere用のマテリアルリソースを作る
 	materialResourceSphere_ = CreateBufferResource(device, sizeof(Material)).Get();
-	//書き込むためのアドレスを取得
+	// 書き込むためのアドレスを取得
 	materialResourceSphere_->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSphere_));
-	//今回は白を書き込んでいく
+	// 今回は白を書き込んでいく
 	materialDataSphere_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialDataSphere_->enableLighting = true;
 	materialDataSphere_->uvTransform = MakeIdentity4x4();
 	materialDataSphere_->shininess = 16.0f;
-	//Sprite用のマテリアルリソースを作る
+
+	// Sprite用のマテリアルリソースを作る
 	materialResourceSprite_ = CreateBufferResource(device, sizeof(Material)).Get();
-	//書き込むためのアドレスを取得
+	// 書き込むためのアドレスを取得
 	materialResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite_));
-	//今回は白を書き込んでいく
+	// 今回は白を書き込んでいく
 	materialDataSprite_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialDataSprite_->enableLighting = false;
 	materialDataSprite_->uvTransform = MakeIdentity4x4();
 
 	///=============================================================================================================
 
-	//WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
+	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
+	wvpResourceObject_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
 	wvpResourceSphere_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
 	transformationMatrixResourceSprite_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
 	cameraResource_ = CreateBufferResource(device, sizeof(Vector3)).Get();
-	//書き込むためのアドレスを取得
+
+	// 書き込むためのアドレスを取得
+	wvpResourceObject_->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataObject_));
 	wvpResourceSphere_->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataSphere_));
 	transformationMatrixResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixDataSprite_));
 	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
-	//単位行列を書き込んでおく
+
+	// 単位行列を書き込んでおく
+	wvpDataObject_->WVP = MakeIdentity4x4();
+	wvpDataObject_->World = MakeIdentity4x4();
 	wvpDataSphere_->WVP = MakeIdentity4x4();
 	wvpDataSphere_->World = MakeIdentity4x4();
 	transformationMatrixDataSprite_->WVP = MakeIdentity4x4();
 	transformationMatrixDataSprite_->World = MakeIdentity4x4();
 	cameraData_->worldPosition = cameraTransform_.translate;
+
+	///=============================================================================================================
 
 	std::mt19937 randomEngine_(seedGenerator_());
 
@@ -202,6 +236,13 @@ void VertexResource::Update()
 		++particleIterator;
 	}
 
+	// Object用
+	Matrix4x4 worldMatrixObject = MakeAfineMatrix(transformObject_.scale, transformObject_.rotate, transformObject_.translate);
+	Matrix4x4 worldViewMatrixObject = Multiply(worldMatrixObject, viewMatrix); // カメラから見たワールド座標に変換
+	Matrix4x4 worldViewProjectionMatrixObject = Multiply(worldViewMatrixObject, projectionMatrix); // 射影行列を適用してワールドビュープロジェクション行列を計算
+	wvpDataObject_->WVP = worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
+	wvpDataObject_->World = worldViewMatrixObject; // ワールド座標行列を更新
+
 	//Sphere用
 	Matrix4x4 worldMatrixSphere = MakeAfineMatrix(transformSphere_.scale, transformSphere_.rotate, transformSphere_.translate);
 	Matrix4x4 worldViewMatrixSphere = Multiply(worldMatrixSphere, viewMatrix); // カメラから見たワールド座標に変換
@@ -234,50 +275,83 @@ void VertexResource::Update()
 
 void VertexResource::ImGui()
 {
-	ImGui::Begin("Sphere");
-	ImGui::DragFloat3("SphereScale", &transformSphere_.scale.x, 0.01f);
-	ImGui::DragFloat3("SphereRotate", &transformSphere_.rotate.x, 0.01f);
-	ImGui::DragFloat3("SphereTranslate", &transformSphere_.translate.x, 0.01f);
-	ImGui::DragFloat2("UVScale", &uvTransformSphere_.scale.x, 0.01f, -10.0f, 10.0f);
-	ImGui::SliderAngle("UVRotate", &uvTransformSphere_.rotate.z);
-	ImGui::DragFloat2("UVTranslate", &uvTransformSphere_.translate.x, 0.01f, -10.0f, 10.0f);
-	ImGui::Checkbox("MonsterBall", &useMonsterBall_);
-	ImGui::Checkbox("SphereLignt", &sphereLight_);
-	materialDataSphere_->enableLighting = sphereLight_;
-	ImGui::End();
+	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
 
-	ImGui::Begin("Sprite");
-	ImGui::DragFloat3("Scale", &transformSprite_.scale.x, 0.01f);
-	ImGui::DragFloat3("Rotate", &transformSprite_.rotate.x, 0.01f);
-	ImGui::DragFloat3("Translate", &transformSprite_.translate.x, 5.0f);
-	ImGui::DragFloat2("UVTranslate", &uvTransformSprite_.translate.x, 0.01f, -10.0f, 10.0f);
-	ImGui::DragFloat2("UVScale", &uvTransformSprite_.scale.x, 0.01f, -10.0f, 10.0f);
-	ImGui::SliderAngle("UVRotate", &uvTransformSprite_.rotate.z);
-	ImGui::End();
+	if (ImGui::TreeNodeEx("Settings", flag)) {
 
-	ImGui::Begin("Camera");
-	ImGui::DragFloat3("cameraRotate", &cameraTransform_.rotate.x, 0.01f);
-	ImGui::DragFloat3("cameraTranslate", &cameraTransform_.translate.x, 0.01f);
-	ImGui::Text("cameraWorldPosition %f,%f,%f", cameraData_->worldPosition.x, cameraData_->worldPosition.y, cameraData_->worldPosition.z);
-	ImGui::ColorEdit4("LightColor", (float*)&directionalLightData_->color.x);
-	ImGui::DragFloat3("DirectionalLightData.Direction", &directionalLightData_->direction.x, 0.01f);
-	ImGui::DragFloat("Intensity", &directionalLightData_->intensity, 0.01f);
-	ImGui::End();
 
-	uint32_t min = 0;uint32_t max = 20;
-	ImGui::Begin("Settings");
-	ImGui::SliderScalar("Emitter_count", ImGuiDataType_U32, &emitter_.count, &min, &max);
-	ImGui::DragFloat3("EmitterTranslate", &emitter_.transform.translate.x, 0.01f, -100.0f, 100.0f);
-	ImGui::ColorEdit4("Color", (float*)&materialData_->color.x);
-	ImGui::Checkbox("move", &moveStart_);
-	ImGui::Checkbox("field", &isFieldStart_);
-	ImGui::Checkbox("Circle", &useCircle_);
-	ImGui::Text("%d", numInstance);
-	if (ImGui::Button("Add Particle")) {
-		std::mt19937 randomEngine_(seedGenerator_());
-		particles_.splice(particles_.end(), Emit(emitter_, randomEngine_));
+		if (ImGui::TreeNodeEx("Particle", flag)) {
+			uint32_t min = 0;
+			uint32_t max = 20;
+			ImGui::SliderScalar("Emitter_count", ImGuiDataType_U32, &emitter_.count, &min, &max);
+			ImGui::DragFloat3("EmitterTranslate", &emitter_.transform.translate.x, 0.01f, -100.0f, 100.0f);
+			ImGui::ColorEdit4("Color", (float*)&materialData_->color.x);
+			ImGui::Checkbox("move", &moveStart_);
+			ImGui::Checkbox("field", &isFieldStart_);
+			ImGui::Checkbox("Circle", &useCircle_);
+			ImGui::Text("%d", numInstance);
+			if (ImGui::Button("Add Particle")) {
+				std::mt19937 randomEngine_(seedGenerator_());
+				particles_.splice(particles_.end(), Emit(emitter_, randomEngine_));
+			}
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNodeEx("Object", flag)) {
+			ImGui::DragFloat3("ObjectScale", &transformObject_.scale.x, 0.01f);
+			ImGui::DragFloat3("ObjectRotate", &transformObject_.rotate.x, 0.01f);
+			ImGui::DragFloat3("ObjectTranslate", &transformObject_.translate.x, 0.01f);
+			ImGui::Text("objIndex %d", objIndex_);
+			if (ImGui::Button("plane")) {
+				objIndex_ = 0;
+			}
+			if (ImGui::Button("multiMesh")) {
+				objIndex_ = 1;
+			}
+			if (ImGui::Button("teapot")) {
+				objIndex_ = 2;
+			}
+			if (ImGui::Button("bunny")) {
+				objIndex_ = 3;
+			}
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNodeEx("Sphere", flag)) {
+			ImGui::DragFloat3("SphereScale", &transformSphere_.scale.x, 0.01f);
+			ImGui::DragFloat3("SphereRotate", &transformSphere_.rotate.x, 0.01f);
+			ImGui::DragFloat3("SphereTranslate", &transformSphere_.translate.x, 0.01f);
+			ImGui::DragFloat2("UVScale", &uvTransformSphere_.scale.x, 0.01f, -10.0f, 10.0f);
+			ImGui::SliderAngle("UVRotate", &uvTransformSphere_.rotate.z);
+			ImGui::DragFloat2("UVTranslate", &uvTransformSphere_.translate.x, 0.01f, -10.0f, 10.0f);
+			ImGui::Checkbox("MonsterBall", &useMonsterBall_);
+			ImGui::Checkbox("SphereLight", &sphereLight_);
+			materialDataSphere_->enableLighting = sphereLight_;
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNodeEx("Sprite", flag)) {
+			ImGui::DragFloat3("Scale", &transformSprite_.scale.x, 0.01f);
+			ImGui::DragFloat3("Rotate", &transformSprite_.rotate.x, 0.01f);
+			ImGui::DragFloat3("Translate", &transformSprite_.translate.x, 5.0f);
+			ImGui::DragFloat2("UVTranslate", &uvTransformSprite_.translate.x, 0.01f, -10.0f, 10.0f);
+			ImGui::DragFloat2("UVScale", &uvTransformSprite_.scale.x, 0.01f, -10.0f, 10.0f);
+			ImGui::SliderAngle("UVRotate", &uvTransformSprite_.rotate.z);
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNodeEx("Camera", flag)) {
+			ImGui::DragFloat3("cameraRotate", &cameraTransform_.rotate.x, 0.01f);
+			ImGui::DragFloat3("cameraTranslate", &cameraTransform_.translate.x, 0.01f);
+			ImGui::Text("cameraWorldPosition %f,%f,%f", cameraData_->worldPosition.x, cameraData_->worldPosition.y, cameraData_->worldPosition.z);
+			ImGui::ColorEdit4("LightColor", (float*)&directionalLightData_->color.x);
+			ImGui::DragFloat3("DirectionalLightData.Direction", &directionalLightData_->direction.x, 0.01f);
+			ImGui::DragFloat("Intensity", &directionalLightData_->intensity, 0.01f);
+			ImGui::TreePop();
+		}
+
+		ImGui::TreePop();
 	}
-	ImGui::End();
 }
 
 ResourceObject CreateBufferResource(ComPtr<ID3D12Device> device, size_t sizeInBytes)
