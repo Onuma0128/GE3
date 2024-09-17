@@ -12,6 +12,8 @@ using Microsoft::WRL::ComPtr;
 
 DirectXEngine::~DirectXEngine()
 {
+	delete logger_;
+	delete stringUtility_;
 	delete vertexResource_;
 	delete textureResource_;
 	delete pipelineState_;
@@ -383,10 +385,13 @@ void DirectXEngine::PreDraw()
 
 void DirectXEngine::Draw()
 {
-	//形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えて置けばいい
+	vertexResource_->ImGui();
+	vertexResource_->Update();
+
+	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えて置けばいい
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	///==============================================================================================
-	//RootSignatureを設定。PSOに設定しているけど別途設定が必要(Particle.hlsl)
+	// RootSignatureを設定。PSOに設定しているけど別途設定が必要(Particle.hlsl)
 	commandList_->SetGraphicsRootSignature(ParticleRootSignature_.Get());
 	commandList_->SetPipelineState(ParticlePipelineState_.Get());
 	///==============================================================================================
@@ -411,6 +416,7 @@ void DirectXEngine::Draw()
 	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
 	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(5, vertexResource_->GetPointLightResource()->GetGPUVirtualAddress());
 	// 描画
 	commandList_->DrawInstanced(UINT(vertexResource_->GetModelDataObject().vertices.size()), 1, 0, 0);
 	///==============================================================================================
@@ -421,6 +427,7 @@ void DirectXEngine::Draw()
 	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseMonsterBall() ? textureSrvHandleGPU_[5] : textureSrvHandleGPU_[2]);
 	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(5, vertexResource_->GetPointLightResource()->GetGPUVirtualAddress());
 	// 描画
 	commandList_->DrawInstanced(1536, 1, 0, 0);
 	///==============================================================================================
@@ -432,9 +439,6 @@ void DirectXEngine::Draw()
 	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
 	// 描画
 	commandList_->DrawIndexedInstanced(6, 1, 0, 0, 0);
-
-	vertexResource_->ImGui();
-	vertexResource_->Update();
 }
 
 void DirectXEngine::PostDraw()

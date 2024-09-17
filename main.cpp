@@ -1,31 +1,32 @@
 #include <dxgidebug.h>
 #pragma comment(lib,"dxguid.lib")
+#include <memory>
 #include "wrl.h"
 #include "Input.h"
+#include "LoadSound.h"
 #include "DirectXEngine.h"
-#include "D3DResourceLeakChecker.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	D3DResourceLeakChecker leakChecker;
 
-	WinApp* winApp_ = new WinApp();
+	std::unique_ptr<WinApp>winApp_ = std::make_unique<WinApp>();
 	winApp_->Initialize();
 
-	DirectXEngine* directXEngine_ = new DirectXEngine();
-	directXEngine_->Initialize(winApp_);
+	std::unique_ptr<DirectXEngine> directXEngine_ = std::make_unique<DirectXEngine>();
+	directXEngine_->Initialize(winApp_.get());
 
-	Input* input_ = new Input();
-	input_->Initialize(winApp_);
+	std::unique_ptr<Input> input_ = std::make_unique<Input>();
+	input_->Initialize(winApp_.get());
 
-	//// オーディオ
-	//ComPtr<IXAudio2> xAudio2;
-	//IXAudio2MasteringVoice* masterVoice;
-	//// XAudio2エンジンを生成
-	//hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-	//hr = xAudio2->CreateMasteringVoice(&masterVoice);
-	//// 音声読み込み
-	//SoundData soundData1 = SoundLoadWave("resources/fanfare.wav");
-	//SoundPlayWave(xAudio2.Get(), soundData1);
+	// オーディオ
+	ComPtr<IXAudio2> xAudio2;
+	IXAudio2MasteringVoice* masterVoice;
+	// XAudio2エンジンを生成
+	HRESULT hr{};
+	hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	hr = xAudio2->CreateMasteringVoice(&masterVoice);
+	// 音声読み込み
+	SoundData soundData1 = SoundLoadWave("resources/Alarm01.wav");
+	SoundPlayWave(xAudio2.Get(), soundData1);
 
 	//ウィンドウの×ボタンが押されるまでループ
 	while (true) {
@@ -47,7 +48,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			directXEngine_->PostDraw();
 
 			if (input_->TriggerKey(DIK_S)) {
-				OutputDebugStringA("Hit S\n");
+				SoundPlayWave(xAudio2.Get(), soundData1);
 			}
 		}
 	}
@@ -55,13 +56,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-	/*xAudio2.Reset();
-	SoundUnload(&soundData1);*/
-	delete input_;
 
-	delete directXEngine_;
+	xAudio2.Reset();
+	SoundUnload(&soundData1);
 	winApp_->Finalize();
-	delete winApp_;
 
 	return 0;
 }

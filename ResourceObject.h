@@ -10,7 +10,7 @@ public:
 	{}
 
 	~ResourceObject() {
-		if (resource_) {
+		if (resource_ != nullptr) {
 			resource_->Release();
 		}
 	}

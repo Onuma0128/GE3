@@ -19,7 +19,7 @@ SoundData SoundLoadWave(const char* filename)
 	}
 	FormatChunk format{};
 	file.read((char*)&format, sizeof(ChunkHeader));
-	if (strncmp(format.chunk.id, "fmt", 4) != 0) {
+	if (strncmp(format.chunk.id, "fmt ", 4) != 0) {
 		assert(0);
 	}
 	assert(format.chunk.size <= sizeof(format.fmt));

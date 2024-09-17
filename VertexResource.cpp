@@ -16,13 +16,14 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
 
 	///=============================================================================================================
-	modelDataObject_[0] = LoadObjFile("resources", "plane.obj");
+	modelDataObject_[0] = LoadObjFile("resources", "terrain.obj");
 	modelDataObject_[1] = LoadObjFile("resources", "multiMesh.obj");
 	modelDataObject_[2] = LoadObjFile("resources", "teapot.obj");
 	modelDataObject_[3] = LoadObjFile("resources", "bunny.obj");
+	modelDataObject_[4] = LoadObjFile("resources", "suzanne.obj");
 
 	// 実際に頂点リソースを作る
-	for (uint32_t i = 0; i < 4; i++) {
+	for (uint32_t i = 0; i < 5; i++) {
 		vertexResourceObject_[i] = CreateBufferResource(device, sizeof(VertexData) * modelDataObject_[i].vertices.size()).Get();
 		vertexBufferViewObject_[i].BufferLocation = vertexResourceObject_[i]->GetGPUVirtualAddress();
 		vertexBufferViewObject_[i].SizeInBytes = UINT(sizeof(VertexData) * modelDataObject_[i].vertices.size());
@@ -88,7 +89,20 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	// デフォルト値はとりあえず以下のようにする
 	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData_->direction = { 0.0f,1.0f,0.0f };
-	directionalLightData_->intensity = 1.0f;
+	directionalLightData_->intensity = 0.0f;
+
+	// ポイントライト用
+	pointLightResource_ = CreateBufferResource(device, sizeof(PointLight)).Get();
+	pointLightBufferView_.BufferLocation = pointLightResource_->GetGPUVirtualAddress();
+	pointLightBufferView_.SizeInBytes = sizeof(PointLight);
+	pointLightBufferView_.StrideInBytes = sizeof(PointLight);
+	pointLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
+	// デフォルト値はとりあえず以下のようにする
+	pointLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
+	pointLightData_->position = { 0.0f,2.0f,0.0f };
+	pointLightData_->intensity = 1.0f;
+	pointLightData_->radius = 6.0f;
+	pointLightData_->decay = 2.0f;
 
 	///=============================================================================================================
 
@@ -242,6 +256,7 @@ void VertexResource::Update()
 	Matrix4x4 worldViewProjectionMatrixObject = Multiply(worldViewMatrixObject, projectionMatrix); // 射影行列を適用してワールドビュープロジェクション行列を計算
 	wvpDataObject_->WVP = worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
 	wvpDataObject_->World = worldViewMatrixObject; // ワールド座標行列を更新
+	wvpDataObject_->WorldInverseTranspose = Inverse(worldViewMatrixObject);
 
 	//Sphere用
 	Matrix4x4 worldMatrixSphere = MakeAfineMatrix(transformSphere_.scale, transformSphere_.rotate, transformSphere_.translate);
@@ -249,6 +264,7 @@ void VertexResource::Update()
 	Matrix4x4 worldViewProjectionMatrixSphere = Multiply(worldViewMatrixSphere, projectionMatrix); // 射影行列を適用してワールドビュープロジェクション行列を計算
 	wvpDataSphere_->WVP = worldViewProjectionMatrixSphere; // 球体のワールドビュープロジェクション行列を更新
 	wvpDataSphere_->World = worldViewMatrixSphere; // 球体のワールド座標行列を更新
+	wvpDataSphere_->WorldInverseTranspose = Inverse(worldViewMatrixSphere);
 
 	uvTransformMatrix_ = MakeScaleMatrix(uvTransformSphere_.scale);
 	uvTransformMatrix_ = Multiply(uvTransformMatrix_, MakeRotateZMatrix(uvTransformSphere_.rotate.z));
@@ -262,6 +278,7 @@ void VertexResource::Update()
 	Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectionMatrixSprite));
 	transformationMatrixDataSprite_->WVP = worldViewProjectionMatrixSprite;
 	transformationMatrixDataSprite_->World = worldViewProjectionMatrixSprite;
+	transformationMatrixDataSprite_->WorldInverseTranspose = Inverse(worldViewProjectionMatrixSprite);
 
 	//UVの行列を生成
 	uvTransformMatrix_ = MakeScaleMatrix(uvTransformSprite_.scale);
@@ -278,7 +295,6 @@ void VertexResource::ImGui()
 	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (ImGui::TreeNodeEx("Settings", flag)) {
-
 
 		if (ImGui::TreeNodeEx("Particle", flag)) {
 			uint32_t min = 0;
@@ -298,9 +314,12 @@ void VertexResource::ImGui()
 		}
 
 		if (ImGui::TreeNodeEx("Object", flag)) {
-			ImGui::DragFloat3("ObjectScale", &transformObject_.scale.x, 0.01f);
-			ImGui::DragFloat3("ObjectRotate", &transformObject_.rotate.x, 0.01f);
-			ImGui::DragFloat3("ObjectTranslate", &transformObject_.translate.x, 0.01f);
+			ImGui::DragFloat3("Scale", &transformObject_.scale.x, 0.01f);
+			ImGui::DragFloat3("Rotate", &transformObject_.rotate.x, 0.01f);
+			ImGui::DragFloat3("Translate", &transformObject_.translate.x, 0.01f);
+			ImGui::ColorEdit4("Color", (float*)&materialDataObject_->color.x);
+			ImGui::Checkbox("Light", &objectLight_);
+			materialDataObject_->enableLighting = objectLight_;
 			ImGui::Text("objIndex %d", objIndex_);
 			if (ImGui::Button("plane")) {
 				objIndex_ = 0;
@@ -314,18 +333,22 @@ void VertexResource::ImGui()
 			if (ImGui::Button("bunny")) {
 				objIndex_ = 3;
 			}
+			if (ImGui::Button("suzannu")) {
+				objIndex_ = 4;
+			}
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNodeEx("Sphere", flag)) {
-			ImGui::DragFloat3("SphereScale", &transformSphere_.scale.x, 0.01f);
-			ImGui::DragFloat3("SphereRotate", &transformSphere_.rotate.x, 0.01f);
-			ImGui::DragFloat3("SphereTranslate", &transformSphere_.translate.x, 0.01f);
+			ImGui::DragFloat3("Scale", &transformSphere_.scale.x, 0.01f);
+			ImGui::DragFloat3("Rotate", &transformSphere_.rotate.x, 0.01f);
+			ImGui::DragFloat3("Translate", &transformSphere_.translate.x, 0.01f);
 			ImGui::DragFloat2("UVScale", &uvTransformSphere_.scale.x, 0.01f, -10.0f, 10.0f);
 			ImGui::SliderAngle("UVRotate", &uvTransformSphere_.rotate.z);
 			ImGui::DragFloat2("UVTranslate", &uvTransformSphere_.translate.x, 0.01f, -10.0f, 10.0f);
+			ImGui::ColorEdit4("Color", (float*)&materialDataSphere_->color.x);
 			ImGui::Checkbox("MonsterBall", &useMonsterBall_);
-			ImGui::Checkbox("SphereLight", &sphereLight_);
+			ImGui::Checkbox("Light", &sphereLight_);
 			materialDataSphere_->enableLighting = sphereLight_;
 			ImGui::TreePop();
 		}
@@ -340,13 +363,16 @@ void VertexResource::ImGui()
 			ImGui::TreePop();
 		}
 
-		if (ImGui::TreeNodeEx("Camera", flag)) {
-			ImGui::DragFloat3("cameraRotate", &cameraTransform_.rotate.x, 0.01f);
-			ImGui::DragFloat3("cameraTranslate", &cameraTransform_.translate.x, 0.01f);
-			ImGui::Text("cameraWorldPosition %f,%f,%f", cameraData_->worldPosition.x, cameraData_->worldPosition.y, cameraData_->worldPosition.z);
+		if (ImGui::TreeNodeEx("Camera & Light", flag)) {
+			ImGui::DragFloat3("Rotate", &cameraTransform_.rotate.x, 0.01f);
+			ImGui::DragFloat3("Translate", &cameraTransform_.translate.x, 0.01f);
 			ImGui::ColorEdit4("LightColor", (float*)&directionalLightData_->color.x);
 			ImGui::DragFloat3("DirectionalLightData.Direction", &directionalLightData_->direction.x, 0.01f);
 			ImGui::DragFloat("Intensity", &directionalLightData_->intensity, 0.01f);
+			ImGui::DragFloat3("PointLightData.Direction", &pointLightData_->position.x, 0.01f);
+			ImGui::DragFloat("PointLightRadius", &pointLightData_->radius, 0.01f);
+			ImGui::DragFloat("PointLightDecay", &pointLightData_->decay, 0.01f);
+			ImGui::DragFloat("PointLightIntensity", &pointLightData_->intensity, 0.01f);
 			ImGui::TreePop();
 		}
 

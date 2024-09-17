@@ -2,6 +2,11 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+Input::~Input()
+{
+	//delete winApp_;
+}
+
 void Input::Initialize(WinApp* winApp)
 {
 	winApp_ = winApp;

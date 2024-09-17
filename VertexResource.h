@@ -36,6 +36,7 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferViewSprite() { return vertexBufferViewSprite_; }
 	D3D12_INDEX_BUFFER_VIEW& GetIndexBufferViewSprite() { return indexBufferViewSprite_; }
 	ComPtr<ID3D12Resource> GetDirectionalLightResource() { return directionalLightResource_; }
+	ComPtr<ID3D12Resource> GetPointLightResource() { return pointLightResource_; }
 
 	ComPtr<ID3D12Resource> GetMaterialResource() { return materialResource_; }
 	ComPtr<ID3D12Resource> GetMaterialResourceObject() { return materialResourceObject_; }
@@ -52,12 +53,12 @@ public:
 private:
 	// モデル読み込み
 	ModelData modelData_;
-	ModelData modelDataObject_[4];
+	ModelData modelDataObject_[5];
 	// Particleの頂点リソースを作る
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 	// Object3Dの頂点リソースを作る
 	uint32_t objIndex_ = 0;
-	std::array<ComPtr<ID3D12Resource>, 4> vertexResourceObject_ = {};
+	std::array<ComPtr<ID3D12Resource>, 5> vertexResourceObject_ = {};
 	// Sphere用の頂点リソースを作る
 	ComPtr<ID3D12Resource> vertexResourceSphere_ = nullptr;
 	// Sprite用の頂点リソースを作る
@@ -65,17 +66,20 @@ private:
 	ComPtr<ID3D12Resource> indexResourceSprite_ = nullptr;
 	// 平行光源用のリソースを作る
 	ComPtr<ID3D12Resource> directionalLightResource_ = nullptr;
+	// ポイントライト用
+	ComPtr<ID3D12Resource> pointLightResource_ = nullptr;
 
 	///=================================================================
 
 	// VertexBufferViewを作成する
 	// 頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
-	std::array<D3D12_VERTEX_BUFFER_VIEW, 4> vertexBufferViewObject_{};
+	std::array<D3D12_VERTEX_BUFFER_VIEW, 5> vertexBufferViewObject_{};
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSphere_{};
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSprite_{};
 	D3D12_INDEX_BUFFER_VIEW indexBufferViewSprite_{};
 	D3D12_VERTEX_BUFFER_VIEW directionalLightBufferView_{};
+	D3D12_VERTEX_BUFFER_VIEW pointLightBufferView_{};
 
 	///=================================================================
 
@@ -86,6 +90,7 @@ private:
 	VertexData* vertexDataSprite_ = nullptr;
 	uint32_t* indexDataSprite_ = nullptr;
 	DirectionalLight* directionalLightData_ = nullptr;
+	PointLight* pointLightData_ = nullptr;
 	//分割数(球体)
 	uint32_t vertexCount_ = 16;
 
@@ -131,13 +136,15 @@ private:
 	std::random_device seedGenerator_;
 	bool moveStart_ = false;
 	bool isFieldStart_ = false;
-
-
-	Transform transformObject_{ {1.0f,1.0f,1.0f},{0.0f,3.14f,0.0f},{0.0f,0.0f,0.0f} };
-	Transform transformSphere_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	// Object
+	Transform transformObject_{ {1.0f,1.0f,1.0f},{0.0f,3.14f,0.0f},{1.0f,0.0f,0.0f} };
+	bool objectLight_ = true;
+	// Sphere
+	Transform transformSphere_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f} };
 	Transform uvTransformSphere_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	bool useMonsterBall_ = true;
 	bool sphereLight_ = true;
+	// Sprite
 	Transform transformSprite_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	bool useCircle_ = true;
 	//Camera変数を作る

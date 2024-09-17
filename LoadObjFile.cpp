@@ -69,14 +69,22 @@ ModelData LoadObjFile(const std::string& directoryPath, const std::string& filen
                 std::string vertexDefinition;
                 s >> vertexDefinition;
                 std::istringstream v(vertexDefinition);
-                uint32_t elementIndices[3]{};
-                for (int32_t element = 0; element < 3; ++element) {
-                    std::string index;
-                    std::getline(v, index, '/');
+                uint32_t elementIndices[3] = { 0,0,0 };
+                std::string index;
+                int32_t element = 0;
+                 while (std::getline(v, index, '/'))
+{
+                if (!index.empty())
+                {
                     elementIndices[element] = std::stoi(index);
                 }
+                element++;
+}
                 Vector4 position = positions[elementIndices[0] - 1];
-                Vector2 texcoord = texcoords[elementIndices[1] - 1];
+                Vector2 texcoord = { 0,0 };
+                if (elementIndices[1] > 0) {
+                    texcoord = texcoords[elementIndices[1] - 1];
+                }
                 Vector3 normal = normals[elementIndices[2] - 1];
                 triangle[faceVertex] = { position, texcoord, normal };
             }
@@ -112,5 +120,9 @@ MaterialData LoadmaterialTemplateFile(const std::string& directoryPath, const st
 			materialData.textureFilePath = directoryPath + "/" + textureFilename;
 		}
 	}
+    if (materialData.textureFilePath.empty()) {
+        std::string textureFilename = "white1x1.png";
+        materialData.textureFilePath = directoryPath + "/" + textureFilename;
+    }
 	return materialData;
 }

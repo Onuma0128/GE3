@@ -61,11 +61,20 @@ struct Material {
 struct TransformationMatrix {
 	Matrix4x4 WVP;
 	Matrix4x4 World;
+	Matrix4x4 WorldInverseTranspose;
 };
 struct DirectionalLight {
 	Vector4 color;
 	Vector3 direction;
 	float intensity;
+};
+struct PointLight {
+	Vector4 color;
+	Vector3 position;
+	float intensity;
+	float radius;
+	float decay;
+	float padding[2];
 };
 struct Particle {
 	Transform transform;
