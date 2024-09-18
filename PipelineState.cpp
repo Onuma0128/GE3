@@ -74,10 +74,13 @@ void PipelineState::RasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 }
 
-void PipelineState::Object3dShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& pixelShader)
+void PipelineState::Object3dShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& geometryShader, ComPtr<IDxcBlob>& pixelShader)
 {
 	vertexShader = CompileShader(L"resources/shaders/Object3d.VS.hlsl", L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_.Get());
 	assert(vertexShader != nullptr);
+
+	geometryShader = CompileShader(L"resources/shaders/BasicGeometryShader.hlsl", L"gs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_.Get());
+	assert(geometryShader != nullptr);
 
 	pixelShader = CompileShader(L"resources/shaders/Object3d.PS.hlsl", L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_.Get());
 	assert(pixelShader != nullptr);
@@ -252,8 +255,9 @@ ComPtr<ID3D12PipelineState> PipelineState::CreateObject3dPipelineState()
 
 	// シェーダーのコンパイル
 	ComPtr<IDxcBlob> vertexShaderBlob;
+	ComPtr<IDxcBlob> geometryShaderBlob;
 	ComPtr<IDxcBlob> pixelShaderBlob;
-	Object3dShader(vertexShaderBlob, pixelShaderBlob);
+	Object3dShader(vertexShaderBlob, geometryShaderBlob, pixelShaderBlob);
 
 	// デスクリプターステンシル
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
@@ -263,6 +267,7 @@ ComPtr<ID3D12PipelineState> PipelineState::CreateObject3dPipelineState()
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
 	psoDesc.pRootSignature = newRootSignature_.Get();
 	psoDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };
+	psoDesc.GS = { geometryShaderBlob->GetBufferPointer(),geometryShaderBlob->GetBufferSize() };
 	psoDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };
 	psoDesc.InputLayout = inputLayoutDesc;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
