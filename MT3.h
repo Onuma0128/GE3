@@ -76,6 +76,17 @@ struct PointLight {
 	float decay;
 	float padding[2];
 };
+struct SpotLight {
+	Vector4 color;
+	Vector3 position;
+	float intensity;
+	Vector3 direction;
+	float distance;
+	float decay;
+	float cosAngle;
+	float cosFalloffStart;
+	float padding;
+};
 struct Particle {
 	Transform transform;
 	Vector3 velocity;

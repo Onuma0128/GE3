@@ -37,6 +37,7 @@ public:
 	D3D12_INDEX_BUFFER_VIEW& GetIndexBufferViewSprite() { return indexBufferViewSprite_; }
 	ComPtr<ID3D12Resource> GetDirectionalLightResource() { return directionalLightResource_; }
 	ComPtr<ID3D12Resource> GetPointLightResource() { return pointLightResource_; }
+	ComPtr<ID3D12Resource> GetSpotLightResource() { return spotLightResource_; }
 
 	ComPtr<ID3D12Resource> GetMaterialResource() { return materialResource_; }
 	ComPtr<ID3D12Resource> GetMaterialResourceObject() { return materialResourceObject_; }
@@ -68,6 +69,8 @@ private:
 	ComPtr<ID3D12Resource> directionalLightResource_ = nullptr;
 	// ポイントライト用
 	ComPtr<ID3D12Resource> pointLightResource_ = nullptr;
+	// スポットライト用
+	ComPtr<ID3D12Resource> spotLightResource_ = nullptr;
 
 	///=================================================================
 
@@ -80,6 +83,7 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferViewSprite_{};
 	D3D12_VERTEX_BUFFER_VIEW directionalLightBufferView_{};
 	D3D12_VERTEX_BUFFER_VIEW pointLightBufferView_{};
+	D3D12_VERTEX_BUFFER_VIEW spotLightBufferView_{};
 
 	///=================================================================
 
@@ -91,6 +95,7 @@ private:
 	uint32_t* indexDataSprite_ = nullptr;
 	DirectionalLight* directionalLightData_ = nullptr;
 	PointLight* pointLightData_ = nullptr;
+	SpotLight* spotLightData_ = nullptr;
 	//分割数(球体)
 	uint32_t vertexCount_ = 16;
 

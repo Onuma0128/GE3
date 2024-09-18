@@ -78,7 +78,7 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	indexDataSprite_[0] = 0; indexDataSprite_[1] = 1; indexDataSprite_[2] = 2;
 	indexDataSprite_[3] = 1; indexDataSprite_[4] = 3; indexDataSprite_[5] = 2;
 
-	///=============================================================================================================
+	/*===================================== Light =====================================*/
 
 	// 平行光源用のリソースを作る
 	directionalLightResource_ = CreateBufferResource(device, sizeof(DirectionalLight)).Get();
@@ -100,9 +100,25 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	// デフォルト値はとりあえず以下のようにする
 	pointLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	pointLightData_->position = { 0.0f,2.0f,0.0f };
-	pointLightData_->intensity = 1.0f;
+	pointLightData_->intensity = 0.0f;
 	pointLightData_->radius = 6.0f;
 	pointLightData_->decay = 2.0f;
+
+	// スポットライト用
+	spotLightResource_ = CreateBufferResource(device, sizeof(SpotLight)).Get();
+	spotLightBufferView_.BufferLocation = spotLightResource_->GetGPUVirtualAddress();
+	spotLightBufferView_.SizeInBytes = sizeof(SpotLight);
+	spotLightBufferView_.StrideInBytes = sizeof(SpotLight);
+	spotLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData_));
+	// デフォルト値はとりあえず以下のようにする
+	spotLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
+	spotLightData_->position = { 2.0f,1.25f,0.0f };
+	spotLightData_->distance = 7.0f;
+	spotLightData_->direction = Normalize(Vector3{ -1.0f,-1.0f,0.0f });
+	spotLightData_->intensity = 4.0f;
+	spotLightData_->decay = 2.0f;
+	spotLightData_->cosAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
+	spotLightData_->cosFalloffStart = std::cos(std::numbers::pi_v<float> / 5.0f);
 
 	///=============================================================================================================
 
@@ -288,6 +304,8 @@ void VertexResource::Update()
 
 	//LightのNormalize
 	directionalLightData_->direction = Normalize(directionalLightData_->direction);
+
+	spotLightData_->direction = Normalize(spotLightData_->direction);
 }
 
 void VertexResource::ImGui()
@@ -366,13 +384,27 @@ void VertexResource::ImGui()
 		if (ImGui::TreeNodeEx("Camera & Light", flag)) {
 			ImGui::DragFloat3("Rotate", &cameraTransform_.rotate.x, 0.01f);
 			ImGui::DragFloat3("Translate", &cameraTransform_.translate.x, 0.01f);
-			ImGui::ColorEdit4("LightColor", (float*)&directionalLightData_->color.x);
-			ImGui::DragFloat3("DirectionalLightData.Direction", &directionalLightData_->direction.x, 0.01f);
-			ImGui::DragFloat("Intensity", &directionalLightData_->intensity, 0.01f);
-			ImGui::DragFloat3("PointLightData.Direction", &pointLightData_->position.x, 0.01f);
-			ImGui::DragFloat("PointLightRadius", &pointLightData_->radius, 0.01f);
-			ImGui::DragFloat("PointLightDecay", &pointLightData_->decay, 0.01f);
-			ImGui::DragFloat("PointLightIntensity", &pointLightData_->intensity, 0.01f);
+			if (ImGui::TreeNodeEx("Directional Light", flag)) {
+				ImGui::ColorEdit4("LightColor", (float*)&directionalLightData_->color.x);
+				ImGui::DragFloat3("DirectionalLightData.Direction", &directionalLightData_->direction.x, 0.01f);
+				ImGui::DragFloat("DirectionalLightData.Intensity", &directionalLightData_->intensity, 0.01f);
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNodeEx("Point Light", flag)) {
+				ImGui::DragFloat3("PointLightData.pos", &pointLightData_->position.x, 0.01f);
+				ImGui::DragFloat("PointLightRadius", &pointLightData_->radius, 0.01f);
+				ImGui::DragFloat("PointLightDecay", &pointLightData_->decay, 0.01f);
+				ImGui::DragFloat("PointLightIntensity", &pointLightData_->intensity, 0.01f);
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNodeEx("Spot Light", flag)) {
+				ImGui::DragFloat3("SpotLightData.pos", &spotLightData_->position.x, 0.01f);
+				ImGui::DragFloat3("SpotLightData.direction", &spotLightData_->direction.x, 0.01f);
+				ImGui::DragFloat("SpotLightData.intensity", &spotLightData_->intensity, 0.01f);
+				ImGui::DragFloat("SpotLightData.cosAngle", &spotLightData_->cosAngle, 0.01f);
+				ImGui::DragFloat("SpotLightData.cosFalloffStart", &spotLightData_->cosFalloffStart, 0.01f);
+				ImGui::TreePop();
+			}
 			ImGui::TreePop();
 		}
 

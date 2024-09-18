@@ -415,8 +415,9 @@ void DirectXEngine::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetwvpResourceObject()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
 	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(5, vertexResource_->GetPointLightResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetPointLightResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(5, vertexResource_->GetSpotLightResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(6, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
 	// 描画
 	commandList_->DrawInstanced(UINT(vertexResource_->GetModelDataObject().vertices.size()), 1, 0, 0);
 	///==============================================================================================
@@ -426,8 +427,9 @@ void DirectXEngine::Draw()
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetwvpResourceSphere()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseMonsterBall() ? textureSrvHandleGPU_[5] : textureSrvHandleGPU_[2]);
 	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(5, vertexResource_->GetPointLightResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetPointLightResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(5, vertexResource_->GetSpotLightResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(6, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
 	// 描画
 	commandList_->DrawInstanced(1536, 1, 0, 0);
 	///==============================================================================================
