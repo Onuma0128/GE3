@@ -50,7 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// 描画前の処理
 			directXEngine_->PreDraw();
-
+			
 			// 描画処理
 			directXEngine_->Draw();
 

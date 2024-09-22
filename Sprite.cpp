@@ -15,13 +15,12 @@ void Sprite::Initialize(SpriteBase* spriteBase)
 
 void Sprite::Update()
 {
-	Matrix4x4 worldMatrix = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	Matrix4x4 viewMatrix = MakeIdentity4x4();
-	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
-	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
-	transformationMatrixData_->WVP = worldViewProjectionMatrix;
-	transformationMatrixData_->World = worldViewProjectionMatrix;
-	transformationMatrixData_->WorldInverseTranspose = Inverse(worldViewProjectionMatrix);
+	// セッターで貰った値を格納
+	transform_.scale = { size_.x,size_.y,1.0f };
+	transform_.rotate = { 0.0f,0.0f,rotation_ };
+	transform_.translate = { position_.x,position_.y,0.0f };
+
+	UpdateMatrix();
 }
 
 void Sprite::Draw()
@@ -47,13 +46,13 @@ void Sprite::VertexDataInitialize()
 	// 書き込むためのアドレスを取得
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 	// 四角形の4つの頂点
-	vertexData_[0].position = { 0.0f,360.0f,0.0f,1.0f };//左下
+	vertexData_[0].position = { 0.0f,1.0f,0.0f,1.0f };//左下
 	vertexData_[0].texcoord = { 0.0f,1.0f };
 	vertexData_[1].position = { 0.0f,0.0f,0.0f,1.0f };//左上
 	vertexData_[1].texcoord = { 0.0f,0.0f };
-	vertexData_[2].position = { 640.0f,360.0f,0.0f,1.0f };//右下
+	vertexData_[2].position = { 1.0f,1.0f,0.0f,1.0f };//右下
 	vertexData_[2].texcoord = { 1.0f,1.0f };
-	vertexData_[3].position = { 640.0f,0.0f,0.0f,1.0f };//右上
+	vertexData_[3].position = { 1.0f,0.0f,0.0f,1.0f };//右上
 	vertexData_[3].texcoord = { 1.0f,0.0f };
 	// 法線情報の追加
 	vertexData_[0].normal = { 0.0f,0.0f,-1.0f };
@@ -80,4 +79,15 @@ void Sprite::TransformationMatrixDataInitialize()
 	transformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
 	transformationMatrixData_->WVP = MakeIdentity4x4();
 	transformationMatrixData_->World = MakeIdentity4x4();
+}
+
+void Sprite::UpdateMatrix()
+{
+	Matrix4x4 worldMatrix = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
+	Matrix4x4 viewMatrix = MakeIdentity4x4();
+	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
+	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+	transformationMatrixData_->WVP = worldViewProjectionMatrix;
+	transformationMatrixData_->World = worldViewProjectionMatrix;
+	transformationMatrixData_->WorldInverseTranspose = Inverse(worldViewProjectionMatrix);
 }

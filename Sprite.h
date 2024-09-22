@@ -44,6 +44,25 @@ public:
 
 	void Draw();
 
+	/*==================== アクセッサ ====================*/
+
+	// サイズ
+	const Vector2& GetSize()const { return size_; }
+	void SetSize(const Vector2& size) { this->size_ = size; }
+	
+	// 回転
+	const float& GetRotation()const { return rotation_; }
+	void SetRotation(const float& rotation) { this->rotation_ = rotation; }
+	
+	// 座標
+	const Vector2& GetPosition()const { return position_; }
+	void SetPosition(const Vector2& position) { this->position_ = position; }
+
+	// カラー
+	const Vector4& GetColor()const { return materialData_->color; }
+	void SetColor(const Vector4& color) { materialData_->color = color; }
+
+
 private:
 
 	void VertexDataInitialize();
@@ -51,6 +70,8 @@ private:
 	void MaterialDataInitialize();
 
 	void TransformationMatrixDataInitialize();
+
+	void UpdateMatrix();
 
 private:
 
@@ -77,6 +98,11 @@ private:
 
 	// トランスフォーム
 	Transform transform_ { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+
+	// アクセッサー用のメンバ変数
+	Vector2 size_{ 640.0f,360.0f };
+	float rotation_ = 0.0f;
+	Vector2 position_ = { 0.0f,0.0f };
 
 };
 
