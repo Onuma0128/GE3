@@ -61,6 +61,13 @@ public:
 	// 描画後の処理
 	void PostDraw();
 
+	/*========================== ゲッター ===========================*/
+
+	// コマンドリスト
+	ID3D12GraphicsCommandList* GetCommandList()const { return commandList_.Get(); }
+	// パイプラインのゲッター
+	PipelineState* GetPipelineState()const { return pipelineState_; }
+
 private:
 	// Logger
 	Logger* logger_ = nullptr;

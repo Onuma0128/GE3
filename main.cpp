@@ -5,6 +5,8 @@
 #include "Input.h"
 #include "LoadSound.h"
 #include "DirectXEngine.h"
+#include "SpriteBase.h"
+#include "Sprite.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -16,6 +18,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<Input> input_ = std::make_unique<Input>();
 	input_->Initialize(winApp_.get());
+
+	std::unique_ptr<SpriteBase> spriteBase_ = std::make_unique<SpriteBase>();
+	spriteBase_->Initialize(directXEngine_.get());
+
+	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
+	sprite_->Initialize(spriteBase_.get());
 
 	// オーディオ
 	ComPtr<IXAudio2> xAudio2;
@@ -40,6 +48,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// 描画前の処理
 			directXEngine_->PreDraw();
+
+			// Spriteの描画準備
+			spriteBase_->DrawBase();
 
 			// 描画処理
 			directXEngine_->Draw();
