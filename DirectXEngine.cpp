@@ -434,13 +434,13 @@ void DirectXEngine::Draw()
 	commandList_->DrawInstanced(1536, 1, 0, 0);
 	///==============================================================================================
 	// Sprite
-	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewSprite());
-	commandList_->IASetIndexBuffer(&vertexResource_->GetIndexBufferViewSprite());
-	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceSprite()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetTransformationMatrixResourceSprite()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
-	// 描画
-	commandList_->DrawIndexedInstanced(6, 1, 0, 0, 0);
+	//commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewSprite());
+	//commandList_->IASetIndexBuffer(&vertexResource_->GetIndexBufferViewSprite());
+	//commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceSprite()->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetTransformationMatrixResourceSprite()->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
+	//// 描画
+	//commandList_->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
 void DirectXEngine::PostDraw()

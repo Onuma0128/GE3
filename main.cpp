@@ -46,14 +46,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 入力の更新
 			input_->Update();
 
+			sprite_->Update();
+
 			// 描画前の処理
 			directXEngine_->PreDraw();
 
-			// Spriteの描画準備
-			spriteBase_->DrawBase();
-
 			// 描画処理
 			directXEngine_->Draw();
+
+			// Spriteの描画準備
+			spriteBase_->DrawBase();
+			sprite_->Draw();
 
 			// 描画後の処理
 			directXEngine_->PostDraw();

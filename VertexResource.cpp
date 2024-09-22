@@ -52,31 +52,31 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	///=============================================================================================================
 
 	// Sprite用の頂点リソースを作る
-	vertexResourceSprite_ = CreateBufferResource(device, sizeof(VertexData) * 4).Get();
-	indexResourceSprite_ = CreateBufferResource(device, sizeof(uint32_t) * 6).Get();
-	vertexBufferViewSprite_.BufferLocation = vertexResourceSprite_->GetGPUVirtualAddress();
-	indexBufferViewSprite_.BufferLocation = indexResourceSprite_->GetGPUVirtualAddress();
-	vertexBufferViewSprite_.SizeInBytes = sizeof(VertexData) * 4;
-	indexBufferViewSprite_.SizeInBytes = sizeof(uint32_t) * 6;
-	vertexBufferViewSprite_.StrideInBytes = sizeof(VertexData);
-	indexBufferViewSprite_.Format = DXGI_FORMAT_R32_UINT;
-	// 書き込むためのアドレスを取得
-	vertexResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite_));
-	// 四角形の4つの頂点
-	vertexDataSprite_[0].position = { 0.0f,360.0f,0.0f,1.0f };//左下
-	vertexDataSprite_[0].texcoord = { 0.0f,1.0f };
-	vertexDataSprite_[1].position = { 0.0f,0.0f,0.0f,1.0f };//左上
-	vertexDataSprite_[1].texcoord = { 0.0f,0.0f };
-	vertexDataSprite_[2].position = { 640.0f,360.0f,0.0f,1.0f };//右下
-	vertexDataSprite_[2].texcoord = { 1.0f,1.0f };
-	vertexDataSprite_[3].position = { 640.0f,0.0f,0.0f,1.0f };//右上
-	vertexDataSprite_[3].texcoord = { 1.0f,0.0f };
-	// 法線情報の追加
-	vertexDataSprite_[0].normal = { 0.0f,0.0f,-1.0f };
-	// IndexData
-	indexResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSprite_));
-	indexDataSprite_[0] = 0; indexDataSprite_[1] = 1; indexDataSprite_[2] = 2;
-	indexDataSprite_[3] = 1; indexDataSprite_[4] = 3; indexDataSprite_[5] = 2;
+	//vertexResourceSprite_ = CreateBufferResource(device, sizeof(VertexData) * 4).Get();
+	//indexResourceSprite_ = CreateBufferResource(device, sizeof(uint32_t) * 6).Get();
+	//vertexBufferViewSprite_.BufferLocation = vertexResourceSprite_->GetGPUVirtualAddress();
+	//indexBufferViewSprite_.BufferLocation = indexResourceSprite_->GetGPUVirtualAddress();
+	//vertexBufferViewSprite_.SizeInBytes = sizeof(VertexData) * 4;
+	//indexBufferViewSprite_.SizeInBytes = sizeof(uint32_t) * 6;
+	//vertexBufferViewSprite_.StrideInBytes = sizeof(VertexData);
+	//indexBufferViewSprite_.Format = DXGI_FORMAT_R32_UINT;
+	//// 書き込むためのアドレスを取得
+	//vertexResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite_));
+	//// 四角形の4つの頂点
+	//vertexDataSprite_[0].position = { 0.0f,360.0f,0.0f,1.0f };//左下
+	//vertexDataSprite_[0].texcoord = { 0.0f,1.0f };
+	//vertexDataSprite_[1].position = { 0.0f,0.0f,0.0f,1.0f };//左上
+	//vertexDataSprite_[1].texcoord = { 0.0f,0.0f };
+	//vertexDataSprite_[2].position = { 640.0f,360.0f,0.0f,1.0f };//右下
+	//vertexDataSprite_[2].texcoord = { 1.0f,1.0f };
+	//vertexDataSprite_[3].position = { 640.0f,0.0f,0.0f,1.0f };//右上
+	//vertexDataSprite_[3].texcoord = { 1.0f,0.0f };
+	//// 法線情報の追加
+	//vertexDataSprite_[0].normal = { 0.0f,0.0f,-1.0f };
+	//// IndexData
+	//indexResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSprite_));
+	//indexDataSprite_[0] = 0; indexDataSprite_[1] = 1; indexDataSprite_[2] = 2;
+	//indexDataSprite_[3] = 1; indexDataSprite_[4] = 3; indexDataSprite_[5] = 2;
 
 	/*===================================== Light =====================================*/
 
@@ -162,26 +162,26 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	materialDataSphere_->shininess = 16.0f;
 
 	// Sprite用のマテリアルリソースを作る
-	materialResourceSprite_ = CreateBufferResource(device, sizeof(Material)).Get();
-	// 書き込むためのアドレスを取得
-	materialResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite_));
-	// 今回は白を書き込んでいく
-	materialDataSprite_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialDataSprite_->enableLighting = false;
-	materialDataSprite_->uvTransform = MakeIdentity4x4();
+	//materialResourceSprite_ = CreateBufferResource(device, sizeof(Material)).Get();
+	//// 書き込むためのアドレスを取得
+	//materialResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite_));
+	//// 今回は白を書き込んでいく
+	//materialDataSprite_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	//materialDataSprite_->enableLighting = false;
+	//materialDataSprite_->uvTransform = MakeIdentity4x4();
 
 	///=============================================================================================================
 
 	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
 	wvpResourceObject_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
 	wvpResourceSphere_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
-	transformationMatrixResourceSprite_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
+	//transformationMatrixResourceSprite_ = CreateBufferResource(device, sizeof(Matrix4x4)).Get();
 	cameraResource_ = CreateBufferResource(device, sizeof(Vector3)).Get();
 
 	// 書き込むためのアドレスを取得
 	wvpResourceObject_->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataObject_));
 	wvpResourceSphere_->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataSphere_));
-	transformationMatrixResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixDataSprite_));
+	//transformationMatrixResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixDataSprite_));
 	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
 
 	// 単位行列を書き込んでおく
@@ -189,8 +189,8 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	wvpDataObject_->World = MakeIdentity4x4();
 	wvpDataSphere_->WVP = MakeIdentity4x4();
 	wvpDataSphere_->World = MakeIdentity4x4();
-	transformationMatrixDataSprite_->WVP = MakeIdentity4x4();
-	transformationMatrixDataSprite_->World = MakeIdentity4x4();
+	/*transformationMatrixDataSprite_->WVP = MakeIdentity4x4();
+	transformationMatrixDataSprite_->World = MakeIdentity4x4();*/
 	cameraData_->worldPosition = cameraTransform_.translate;
 
 	///=============================================================================================================
@@ -288,19 +288,19 @@ void VertexResource::Update()
 	materialDataSphere_->uvTransform = uvTransformMatrix_;
 
 	//Sprite用
-	Matrix4x4 worldMatrixSprite = MakeAfineMatrix(transformSprite_.scale, transformSprite_.rotate, transformSprite_.translate);
-	Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
-	Matrix4x4 projectionMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
-	Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectionMatrixSprite));
-	transformationMatrixDataSprite_->WVP = worldViewProjectionMatrixSprite;
-	transformationMatrixDataSprite_->World = worldViewProjectionMatrixSprite;
-	transformationMatrixDataSprite_->WorldInverseTranspose = Inverse(worldViewProjectionMatrixSprite);
+	//Matrix4x4 worldMatrixSprite = MakeAfineMatrix(transformSprite_.scale, transformSprite_.rotate, transformSprite_.translate);
+	//Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
+	//Matrix4x4 projectionMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
+	//Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectionMatrixSprite));
+	//transformationMatrixDataSprite_->WVP = worldViewProjectionMatrixSprite;
+	//transformationMatrixDataSprite_->World = worldViewProjectionMatrixSprite;
+	//transformationMatrixDataSprite_->WorldInverseTranspose = Inverse(worldViewProjectionMatrixSprite);
 
-	//UVの行列を生成
-	uvTransformMatrix_ = MakeScaleMatrix(uvTransformSprite_.scale);
-	uvTransformMatrix_ = Multiply(uvTransformMatrix_, MakeRotateZMatrix(uvTransformSprite_.rotate.z));
-	uvTransformMatrix_ = Multiply(uvTransformMatrix_, MakeTranslateMatrix(uvTransformSprite_.translate));
-	materialDataSprite_->uvTransform = uvTransformMatrix_;
+	////UVの行列を生成
+	//uvTransformMatrix_ = MakeScaleMatrix(uvTransformSprite_.scale);
+	//uvTransformMatrix_ = Multiply(uvTransformMatrix_, MakeRotateZMatrix(uvTransformSprite_.rotate.z));
+	//uvTransformMatrix_ = Multiply(uvTransformMatrix_, MakeTranslateMatrix(uvTransformSprite_.translate));
+	//materialDataSprite_->uvTransform = uvTransformMatrix_;
 
 	//LightのNormalize
 	directionalLightData_->direction = Normalize(directionalLightData_->direction);
@@ -371,7 +371,7 @@ void VertexResource::ImGui()
 			ImGui::TreePop();
 		}
 
-		if (ImGui::TreeNodeEx("Sprite", flag)) {
+		/*if (ImGui::TreeNodeEx("Sprite", flag)) {
 			ImGui::DragFloat3("Scale", &transformSprite_.scale.x, 0.01f);
 			ImGui::DragFloat3("Rotate", &transformSprite_.rotate.x, 0.01f);
 			ImGui::DragFloat3("Translate", &transformSprite_.translate.x, 5.0f);
@@ -379,7 +379,7 @@ void VertexResource::ImGui()
 			ImGui::DragFloat2("UVScale", &uvTransformSprite_.scale.x, 0.01f, -10.0f, 10.0f);
 			ImGui::SliderAngle("UVRotate", &uvTransformSprite_.rotate.z);
 			ImGui::TreePop();
-		}
+		}*/
 
 		if (ImGui::TreeNodeEx("Camera & Light", flag)) {
 			ImGui::DragFloat3("Rotate", &cameraTransform_.rotate.x, 0.01f);

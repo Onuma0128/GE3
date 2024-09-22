@@ -63,8 +63,11 @@ public:
 
 	/*========================== ゲッター ===========================*/
 
+	// デバイス
+	ID3D12Device* GetDevice()const { return device_.Get(); }
 	// コマンドリスト
 	ID3D12GraphicsCommandList* GetCommandList()const { return commandList_.Get(); }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetTexture()const { return textureSrvHandleGPU_[2]; }
 	// パイプラインのゲッター
 	PipelineState* GetPipelineState()const { return pipelineState_; }
 

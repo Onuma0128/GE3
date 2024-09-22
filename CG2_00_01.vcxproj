@@ -119,7 +119,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="LoadTexture.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MT3.cpp" />
+    <ClCompile Include="math\MT3.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBase.cpp" />
@@ -147,7 +152,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="LoadSound.h" />
     <ClInclude Include="LoadTexture.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="MT3.h" />
+    <ClInclude Include="math\MT3.h" />
+    <ClInclude Include="math\structure\Matrix3x3.h" />
+    <ClInclude Include="math\structure\Matrix4x4.h" />
+    <ClInclude Include="math\structure\Transform.h" />
+    <ClInclude Include="math\structure\Vector2.h" />
+    <ClInclude Include="math\structure\Vector3.h" />
+    <ClInclude Include="math\structure\Vector4.h" />
     <ClInclude Include="PipelineState.h" />
     <ClInclude Include="ResourceObject.h" />
     <ClInclude Include="Sprite.h" />

@@ -4,36 +4,16 @@
 #include <random>
 #include <cassert>
 #include <list>
+#include "structure/Vector2.h"
+#include "structure/Vector3.h"
+#include "structure/Vector4.h"
+#include "structure/Matrix3x3.h"
+#include "structure/Matrix4x4.h"
+#include "structure/Transform.h"
 
-struct Vector2 {
-	float x;
-	float y;
-};
-struct Vector3 {
-	float x;
-	float y;
-	float z;
-};
-struct Vector4 {
-	float x;
-	float y;
-	float z;
-	float w;
-};
-struct Matrix3x3 {
-	float m[3][3];
-};
-struct Matrix4x4 {
-	float m[4][4];
-};
 struct AABB {
 	Vector3 min;
 	Vector3 max;
-};
-struct Transform {
-	Vector3 scale;
-	Vector3 rotate;
-	Vector3 translate;
 };
 struct VertexData {
 	Vector4 position;

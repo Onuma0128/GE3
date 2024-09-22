@@ -2,7 +2,7 @@
 #include "LoadTexture.h"
 #include "DescriptorHeap.h"
 #include "DepthStencilTexture.h"
-#include "MT3.h"
+#include "math/MT3.h"
 #include <array>
 
 class TextureResource
