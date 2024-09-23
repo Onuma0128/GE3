@@ -16,6 +16,9 @@ using Microsoft::WRL::ComPtr;
 class DirectXEngine
 {
 public:
+	// 最大SRV数
+	static const uint32_t kMaxSRVCount;
+
 	~DirectXEngine();
 
 	// 初期化
@@ -65,6 +68,8 @@ public:
 
 	// デバイス
 	ID3D12Device* GetDevice()const { return device_.Get(); }
+	// SRVデスクリプター
+	ID3D12DescriptorHeap* GetSRVDescriptorHeap() { return srvDescriptorHeap_.Get(); }
 	// コマンドリスト
 	ID3D12GraphicsCommandList* GetCommandList()const { return commandList_.Get(); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetTexture()const { return textureSrvHandleGPU_[2]; }

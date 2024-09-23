@@ -7,6 +7,7 @@
 #include "DirectXEngine.h"
 #include "SpriteBase.h"
 #include "Sprite.h"
+#include "TextureManager.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -22,8 +23,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<SpriteBase> spriteBase_ = std::make_unique<SpriteBase>();
 	spriteBase_->Initialize(directXEngine_.get());
 
+	TextureManager::GetInstance()->Initialize(directXEngine_.get());
+
 	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize(spriteBase_.get());
+	sprite_->Initialize(spriteBase_.get(), "resources/uvChecker.png");
+	sprite_->SetPosition({ 640,360 });
+	sprite_->SetSize({ 64,64 });
 
 	// オーディオ
 	ComPtr<IXAudio2> xAudio2;
@@ -70,6 +75,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+
+	TextureManager::GetInstance()->Finalize();
 
 	xAudio2.Reset();
 	SoundUnload(&soundData1);

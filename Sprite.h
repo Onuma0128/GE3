@@ -3,6 +3,7 @@
 #pragma comment(lib,"d3d12.lib")
 #include <wrl.h>
 #include <stdint.h>
+#include <string>
 
 #include "math/structure/Vector2.h"
 #include "math/structure/Vector3.h"
@@ -38,7 +39,7 @@ public:
 		Matrix4x4 WorldInverseTranspose;
 	};
 
-	void Initialize(SpriteBase* spriteBase);
+	void Initialize(SpriteBase* spriteBase, std::string textureFilePath);
 
 	void Update();
 
@@ -76,6 +77,8 @@ private:
 private:
 
 	SpriteBase* spriteBase_ = nullptr;
+	// テクスチャ番号　
+	uint32_t textureIndex_ = 0;
 
 	// バッファリソース
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
