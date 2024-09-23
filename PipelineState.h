@@ -26,7 +26,7 @@ public:
 	// ブレンド
 	void ParticleBlendState(D3D12_BLEND_DESC& blendDesc);
 	// ラスタライザ
-	void RasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc);
+	void RasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc, bool enableCulling);
 	// シェーダーコンパイル
 	void Object3dShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& geometryShader, ComPtr<IDxcBlob>& pixelShader);
 	void ParticleShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& pixelShader);
@@ -37,7 +37,7 @@ public:
 	///==============================================================================================================
 
 	// パイプラインの生成
-	ComPtr<ID3D12PipelineState> CreateObject3dPipelineState();
+	ComPtr<ID3D12PipelineState> CreateObject3dPipelineState(bool enableCulling);
 	ComPtr<ID3D12PipelineState> CreateParticlePipelineState();
 
 private:

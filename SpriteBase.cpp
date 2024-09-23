@@ -5,7 +5,7 @@ void SpriteBase::Initialize(DirectXEngine* dxEngine)
 	dxEngine_ = dxEngine;
 
 	rootSignature_ = dxEngine_->GetPipelineState()->CreateObject3dRootSignature().Get();
-	pipelineState_ = dxEngine_->GetPipelineState()->CreateObject3dPipelineState().Get();
+	pipelineState_ = dxEngine_->GetPipelineState()->CreateObject3dPipelineState(true).Get();
 }
 
 void SpriteBase::DrawBase()

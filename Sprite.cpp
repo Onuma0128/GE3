@@ -21,9 +21,7 @@ void Sprite::Initialize(SpriteBase* spriteBase, std::string textureFilePath)
 void Sprite::Update()
 {
 	// セッターで貰った値を格納
-	transform_.scale = { size_.x,size_.y,1.0f };
-	transform_.rotate = { 0.0f,0.0f,rotation_ };
-	transform_.translate = { position_.x,position_.y,0.0f };
+	AccessorUpdate();
 
 	UpdateMatrix();
 }
@@ -84,6 +82,38 @@ void Sprite::TransformationMatrixDataInitialize()
 	transformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
 	transformationMatrixData_->WVP = MakeIdentity4x4();
 	transformationMatrixData_->World = MakeIdentity4x4();
+}
+
+void Sprite::AccessorUpdate()
+{
+	// トランスフォームを設定
+	transform_.scale = { size_.x,size_.y,1.0f };
+	transform_.rotate = { 0.0f,0.0f,rotation_ };
+	transform_.translate = { position_.x,position_.y,0.0f };
+
+	// アンカーポイントを設定
+	float left = 0.0f - anchorPoint_.x;
+	float right = 1.0f - anchorPoint_.x;
+	float top = 0.0f - anchorPoint_.y;
+	float bottom = 1.0f - anchorPoint_.y;
+
+	// フリップを設定(反転する)
+	// 左右反転
+	if (isFlipX_) {
+		left = -left;
+		right = -right;
+	}
+	// 上下反転
+	if (isFlipY_) {
+		top = -top;
+		bottom = -bottom;
+	}
+
+	// アンカーポイントを設定
+	vertexData_[0].position = { left,bottom,0.0f,1.0f };
+	vertexData_[1].position = { left,top,0.0f,1.0f };
+	vertexData_[2].position = { right,bottom,0.0f,1.0f };
+	vertexData_[3].position = { right,top,0.0f,1.0f };
 }
 
 void Sprite::UpdateMatrix()

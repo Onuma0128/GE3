@@ -39,6 +39,8 @@ public:
 		Matrix4x4 WorldInverseTranspose;
 	};
 
+	/*==================== メンバ関数 ====================*/
+
 	void Initialize(SpriteBase* spriteBase, std::string textureFilePath);
 
 	void Update();
@@ -63,6 +65,16 @@ public:
 	const Vector4& GetColor()const { return materialData_->color; }
 	void SetColor(const Vector4& color) { materialData_->color = color; }
 
+	// アンカーポイント
+	const Vector2& GetAnchorPoint()const { return anchorPoint_; }
+	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint_ = anchorPoint; }
+
+	// 左右フリップ
+	const bool& GetFlipX()const { return isFlipX_; }
+	void SetFlipX(const bool& isFlipX) { this->isFlipX_ = isFlipX; }
+	// 上下フリップ
+	const bool& GetFlipY()const { return isFlipY_; }
+	void SetFlipY(const bool& isFlipY) { this->isFlipY_ = isFlipY; }
 
 private:
 
@@ -71,6 +83,8 @@ private:
 	void MaterialDataInitialize();
 
 	void TransformationMatrixDataInitialize();
+
+	void AccessorUpdate();
 
 	void UpdateMatrix();
 
@@ -102,10 +116,19 @@ private:
 	// トランスフォーム
 	Transform transform_ { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
-	// アクセッサー用のメンバ変数
-	Vector2 size_{ 640.0f,360.0f };
-	float rotation_ = 0.0f;
-	Vector2 position_ = { 0.0f,0.0f };
+	/*==================== アクセッサー用のメンバ変数 ====================*/
 
+	// サイズ
+	Vector2 size_{ 640.0f,360.0f };
+	// 回転
+	float rotation_ = 0.0f;
+	// 座標
+	Vector2 position_ = { 0.0f,0.0f };
+	// アンカーポイント
+	Vector2 anchorPoint_ = { 0.0f,0.0f };
+	// 左右フリップ
+	bool isFlipX_ = false;
+	// 上下フリップ
+	bool isFlipY_ = false;
 };
 

@@ -26,9 +26,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TextureManager::GetInstance()->Initialize(directXEngine_.get());
 
 	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize(spriteBase_.get(), "resources/uvChecker.png");
+	sprite_->Initialize(spriteBase_.get(), "resources/Apple.png");
 	sprite_->SetPosition({ 640,360 });
-	sprite_->SetSize({ 64,64 });
+	sprite_->SetSize({ 256,256 });
+	sprite_->SetAnchorPoint({ 0.5f,0.5f });
 
 	// オーディオ
 	ComPtr<IXAudio2> xAudio2;

@@ -341,7 +341,7 @@ void DirectXEngine::PipelineStateInitialize()
 	pipelineState_->Initialize(device_, dxcUtils_, dxcCompiler_, includeHandler_);
 	// Object3d
 	object3dRootSignature_ = pipelineState_->CreateObject3dRootSignature();
-	object3dPipelineState_ = pipelineState_->CreateObject3dPipelineState();
+	object3dPipelineState_ = pipelineState_->CreateObject3dPipelineState(false);
 	// Particle
 	ParticleRootSignature_ = pipelineState_->CreateParticleRootSignature();
 	ParticlePipelineState_ = pipelineState_->CreateParticlePipelineState();

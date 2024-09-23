@@ -67,10 +67,14 @@ void PipelineState::ParticleBlendState(D3D12_BLEND_DESC& blendDesc)
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 }
 
-void PipelineState::RasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc)
+void PipelineState::RasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc, bool enableCulling)
 {
-	//rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
-	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	if (enableCulling) {
+		rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+	}
+	else {
+		rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	}
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 }
 
@@ -238,7 +242,7 @@ ComPtr<ID3D12RootSignature> PipelineState::CreateParticleRootSignature()
 	return newRootSignature_;
 }
 	
-ComPtr<ID3D12PipelineState> PipelineState::CreateObject3dPipelineState()
+ComPtr<ID3D12PipelineState> PipelineState::CreateObject3dPipelineState(bool enableCulling)
 {
 	// インプットレイアウト
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3]{};
@@ -251,7 +255,7 @@ ComPtr<ID3D12PipelineState> PipelineState::CreateObject3dPipelineState()
 
 	// ラスタライザ
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
-	RasterizerState(rasterizerDesc);
+	RasterizerState(rasterizerDesc, enableCulling);
 
 	// シェーダーのコンパイル
 	ComPtr<IDxcBlob> vertexShaderBlob;
@@ -300,7 +304,7 @@ ComPtr<ID3D12PipelineState> PipelineState::CreateParticlePipelineState()
 
 	// ラスタライザ
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
-	RasterizerState(rasterizerDesc);
+	RasterizerState(rasterizerDesc, false);
 
 	// シェーダーのコンパイル
 	ComPtr<IDxcBlob> vertexShaderBlob;
