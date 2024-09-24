@@ -3,13 +3,13 @@
 #include "WinApp.h"
 #include "TextureManager.h"
 
-void Sprite::Initialize(SpriteBase* spriteBase, std::string textureFilePath)
+void Sprite::Initialize(std::string textureFilePath)
 {
-	this->spriteBase_ = spriteBase;
+	this->spriteBase_ = SpriteBase::GetInstance()->GetInstance();
 
-	TextureManager::GetInstance()->LoadTexture(textureFilePath);
+	TextureManager::GetInstance()->LoadTexture("resources/" + textureFilePath);
 
-	textureIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+	textureIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/" + textureFilePath);
 
 	VertexDataInitialize();
 

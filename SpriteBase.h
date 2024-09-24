@@ -8,11 +8,23 @@ using Microsoft::WRL::ComPtr;
 
 class SpriteBase
 {
+private:
+	static SpriteBase* instance_;
+
+	SpriteBase() = default;
+	~SpriteBase() = default;
+	SpriteBase(SpriteBase&) = delete;
+	SpriteBase& operator=(SpriteBase&) = delete;
+
 public:
+	// シングルトンインスタンスの取得
+	static SpriteBase* GetInstance();
 
 	void Initialize(DirectXEngine* dxEngine);
 
 	void DrawBase();
+
+	void Finalize();
 
 
 	// ゲッター

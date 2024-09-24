@@ -41,7 +41,7 @@ public:
 
 	/*==================== メンバ関数 ====================*/
 
-	void Initialize(SpriteBase* spriteBase, std::string textureFilePath);
+	void Initialize(std::string textureFilePath);
 
 	void Update();
 

@@ -20,13 +20,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Input> input_ = std::make_unique<Input>();
 	input_->Initialize(winApp_.get());
 
-	std::unique_ptr<SpriteBase> spriteBase_ = std::make_unique<SpriteBase>();
-	spriteBase_->Initialize(directXEngine_.get());
+	SpriteBase::GetInstance()->Initialize(directXEngine_.get());
 
 	TextureManager::GetInstance()->Initialize(directXEngine_.get());
 
 	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize(spriteBase_.get(), "resources/Apple.png");
+	sprite_->Initialize("uvChecker.png");
 	sprite_->SetPosition({ 640,360 });
 	sprite_->SetSize({ 256,256 });
 	sprite_->SetAnchorPoint({ 0.5f,0.5f });
@@ -61,7 +60,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			directXEngine_->Draw();
 
 			// Spriteの描画準備
-			spriteBase_->DrawBase();
+			SpriteBase::GetInstance()->DrawBase();
 			sprite_->Draw();
 
 			// 描画後の処理
@@ -78,6 +77,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGui::DestroyContext();
 
 	TextureManager::GetInstance()->Finalize();
+	SpriteBase::GetInstance()->Finalize();
 
 	xAudio2.Reset();
 	SoundUnload(&soundData1);
