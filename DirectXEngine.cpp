@@ -8,6 +8,7 @@
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
 #include "TextureManager.h"
+#include "LightManager.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -303,11 +304,10 @@ void DirectXEngine::TextureResourceInitialize()
 	textureResource_ = new TextureResource();
 	textureResource_->Initialize(device_, srvDescriptorHeap_, descriptorSizeSRV_);
 	textureSrvHandleGPU_[0] = textureResource_->GetTextureSrvHandleGPU(vertexResource_->GetModelData().material.textureFilePath, 1);
-	textureSrvHandleGPU_[1] = textureResource_->GetTextureSrvHandleGPU(vertexResource_->GetModelDataObject().material.textureFilePath, 2);
-	textureSrvHandleGPU_[2] = textureResource_->GetTextureSrvHandleGPU("resources/uvChecker.png", 3);
-	textureSrvHandleGPU_[3] = textureResource_->GetTextureSrvHandleGPU("resources/checkerBoard.png", 4);
-	textureSrvHandleGPU_[4] = textureResource_->GetTextureSrvHandleGPU("resources/circle.png", 5);
-	textureSrvHandleGPU_[5] = textureResource_->GetTextureSrvHandleGPU("resources/monsterBall.png", 6);
+	textureSrvHandleGPU_[1] = textureResource_->GetTextureSrvHandleGPU("resources/uvChecker.png", 2);
+	textureSrvHandleGPU_[2] = textureResource_->GetTextureSrvHandleGPU("resources/checkerBoard.png", 3);
+	textureSrvHandleGPU_[3] = textureResource_->GetTextureSrvHandleGPU("resources/circle.png", 4);
+	textureSrvHandleGPU_[4] = textureResource_->GetTextureSrvHandleGPU("resources/monsterBall.png", 5);
 }
 
 void DirectXEngine::InstancingSrvInitialize()
@@ -339,9 +339,6 @@ void DirectXEngine::PipelineStateInitialize()
 	// 新しいパイプライン
 	pipelineState_ = new PipelineState();
 	pipelineState_->Initialize(device_, dxcUtils_, dxcCompiler_, includeHandler_);
-	// Object3d
-	object3dRootSignature_ = pipelineState_->CreateObject3dRootSignature();
-	object3dPipelineState_ = pipelineState_->CreateObject3dPipelineState(false);
 	// Particle
 	ParticleRootSignature_ = pipelineState_->CreateParticleRootSignature();
 	ParticlePipelineState_ = pipelineState_->CreateParticlePipelineState();
@@ -402,48 +399,12 @@ void DirectXEngine::Draw()
 	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetInstancingResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseCircle() ? textureSrvHandleGPU_[4] : textureSrvHandleGPU_[0]);
-	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseCircle() ? textureSrvHandleGPU_[3] : textureSrvHandleGPU_[0]);
+	commandList_->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootDescriptorTable(4, instancingSrvHandleGPU_);
 	// 描画
 	commandList_->DrawInstanced(UINT(vertexResource_->GetModelData().vertices.size()), vertexResource_->GetNumInstance(), 0, 0);
 	///==============================================================================================
-	// 新しいパイプラインステートを設定(Object3d.hlsl)
-	commandList_->SetGraphicsRootSignature(object3dRootSignature_.Get());
-	commandList_->SetPipelineState(object3dPipelineState_.Get());
-	///==============================================================================================
-	// Object
-	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewObject());
-	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceObject()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetwvpResourceObject()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
-	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetPointLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(5, vertexResource_->GetSpotLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(6, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
-	// 描画
-	commandList_->DrawInstanced(UINT(vertexResource_->GetModelDataObject().vertices.size()), 1, 0, 0);
-	///==============================================================================================
-	// Sphere
-	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewSphere());
-	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceSphere()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetwvpResourceSphere()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseMonsterBall() ? textureSrvHandleGPU_[5] : textureSrvHandleGPU_[2]);
-	commandList_->SetGraphicsRootConstantBufferView(3, vertexResource_->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(4, vertexResource_->GetPointLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(5, vertexResource_->GetSpotLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(6, vertexResource_->GetCameraResource()->GetGPUVirtualAddress());
-	// 描画
-	commandList_->DrawInstanced(1536, 1, 0, 0);
-	///==============================================================================================
-	// Sprite
-	//commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferViewSprite());
-	//commandList_->IASetIndexBuffer(&vertexResource_->GetIndexBufferViewSprite());
-	//commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResourceSprite()->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetTransformationMatrixResourceSprite()->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_[2]);
-	//// 描画
-	//commandList_->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
 void DirectXEngine::PostDraw()

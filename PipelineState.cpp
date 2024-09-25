@@ -71,11 +71,12 @@ void PipelineState::RasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc, bool 
 {
 	if (enableCulling) {
 		rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 	}
 	else {
 		rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 	}
-	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 }
 
 void PipelineState::Object3dShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& geometryShader, ComPtr<IDxcBlob>& pixelShader)

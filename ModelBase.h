@@ -6,19 +6,19 @@
 
 using Microsoft::WRL::ComPtr;
 
-class SpriteBase
+class ModelBase
 {
 private:
-	static SpriteBase* instance_;
+	static ModelBase* instance_;
 
-	SpriteBase() = default;
-	~SpriteBase() = default;
-	SpriteBase(SpriteBase&) = delete;
-	SpriteBase& operator=(SpriteBase&) = delete;
+	ModelBase() = default;
+	~ModelBase() = default;
+	ModelBase(ModelBase&) = delete;
+	ModelBase& operator=(ModelBase&) = delete;
 
 public:
 	// シングルトンインスタンスの取得
-	static SpriteBase* GetInstance();
+	static ModelBase* GetInstance();
 
 	void Initialize(DirectXEngine* dxEngine);
 

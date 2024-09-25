@@ -5,7 +5,7 @@
 
 void Sprite::Initialize(std::string textureFilePath)
 {
-	this->spriteBase_ = SpriteBase::GetInstance()->GetInstance();
+	this->spriteBase_ = SpriteBase::GetInstance();
 
 	TextureManager::GetInstance()->LoadTexture("resources/" + textureFilePath);
 

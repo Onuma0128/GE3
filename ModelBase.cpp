@@ -1,31 +1,31 @@
-#include "SpriteBase.h"
+#include "ModelBase.h"
 
-SpriteBase* SpriteBase::instance_ = nullptr;
+ModelBase* ModelBase::instance_ = nullptr;
 
-SpriteBase* SpriteBase::GetInstance()
+ModelBase* ModelBase::GetInstance()
 {
 	if (instance_ == nullptr) {
-		instance_ = new SpriteBase;
+		instance_ = new ModelBase;
 	}
 	return instance_;
 }
 
-void SpriteBase::Initialize(DirectXEngine* dxEngine)
+void ModelBase::Initialize(DirectXEngine* dxEngine)
 {
 	dxEngine_ = dxEngine;
 
 	rootSignature_ = dxEngine_->GetPipelineState()->CreateObject3dRootSignature().Get();
-	pipelineState_ = dxEngine_->GetPipelineState()->CreateObject3dPipelineState(true).Get();
+	pipelineState_ = dxEngine_->GetPipelineState()->CreateObject3dPipelineState(false).Get();
 }
 
-void SpriteBase::DrawBase()
+void ModelBase::DrawBase()
 {
 	dxEngine_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 	dxEngine_->GetCommandList()->SetPipelineState(pipelineState_.Get());
 	dxEngine_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void SpriteBase::Finalize()
+void ModelBase::Finalize()
 {
 	delete instance_;
 	instance_ = nullptr;

@@ -114,6 +114,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="LoadObjFile.cpp" />
     <ClCompile Include="LoadSound.cpp" />
     <ClCompile Include="LoadTexture.cpp" />
@@ -125,6 +126,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelBase.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBase.cpp" />
@@ -149,6 +152,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="LightManager.h" />
     <ClInclude Include="LoadObjFile.h" />
     <ClInclude Include="LoadSound.h" />
     <ClInclude Include="LoadTexture.h" />
@@ -160,6 +164,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="math\structure\Vector2.h" />
     <ClInclude Include="math\structure\Vector3.h" />
     <ClInclude Include="math\structure\Vector4.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelBase.h" />
     <ClInclude Include="PipelineState.h" />
     <ClInclude Include="ResourceObject.h" />
     <ClInclude Include="Sprite.h" />

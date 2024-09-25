@@ -76,6 +76,10 @@ public:
 	// パイプラインのゲッター
 	PipelineState* GetPipelineState()const { return pipelineState_; }
 
+	Matrix4x4 GetCameraView()const { return vertexResource_->GetCameraView(); }
+
+	ID3D12Resource* GetCameraResource()const { return vertexResource_->GetCameraResource().Get(); }
+
 private:
 	// Logger
 	Logger* logger_ = nullptr;
@@ -132,9 +136,6 @@ private:
 	// TextureSrvHandleGPUの生成
 	std::array<D3D12_GPU_DESCRIPTOR_HANDLE, 6> textureSrvHandleGPU_ = {};
 	// PipelineStateの生成
-	// Object3d
-	ComPtr<ID3D12RootSignature> object3dRootSignature_ = nullptr;
-	ComPtr<ID3D12PipelineState> object3dPipelineState_ = nullptr;
 	// Particle
 	ComPtr<ID3D12RootSignature> ParticleRootSignature_ = nullptr;
 	ComPtr<ID3D12PipelineState> ParticlePipelineState_ = nullptr;
