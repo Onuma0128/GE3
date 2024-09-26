@@ -1,13 +1,13 @@
-#include "Model.h"
-#include "ModelBase.h"
+#include "Object3d.h"
+#include "Object3dBase.h"
 #include "TextureManager.h"
 #include "LightManager.h"
 
-void Model::Initialize(std::string modelFilePath)
+void Object3d::Initialize()
 {
-	this->modelBase_ = ModelBase::GetInstance();
+	this->object3dBase_ = Object3dBase::GetInstance();
 
-    modelData_ = LoadObjFile("resources", modelFilePath);
+    modelData_ = LoadObjFile("resources", "teapot.obj");
 
     TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
 
@@ -23,35 +23,35 @@ void Model::Initialize(std::string modelFilePath)
     transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 }
 
-void Model::Update()
+void Object3d::Update()
 {
     Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
     Matrix4x4 worldMatrixObject = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-    Matrix4x4 worldViewMatrixObject = Multiply(worldMatrixObject, modelBase_->GetDxEngine()->GetCameraView()); // カメラから見たワールド座標に変換
+    Matrix4x4 worldViewMatrixObject = Multiply(worldMatrixObject, object3dBase_->GetDxEngine()->GetCameraView()); // カメラから見たワールド座標に変換
     Matrix4x4 worldViewProjectionMatrixObject = Multiply(worldViewMatrixObject, projectionMatrix); // 射影行列を適用してワールドビュープロジェクション行列を計算
     wvpData_->WVP = worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
     wvpData_->World = worldViewMatrixObject; // ワールド座標行列を更新
     wvpData_->WorldInverseTranspose = Inverse(worldViewMatrixObject);
 }
 
-void Model::Draw()
+void Object3d::Draw()
 {
-    modelBase_->GetDxEngine()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureIndex));
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(4, LightManager::GetInstance()->GetPointLightResource()->GetGPUVirtualAddress());
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(5, LightManager::GetInstance()->GetSpotLightResource()->GetGPUVirtualAddress());
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, modelBase_->GetDxEngine()->GetCameraResource()->GetGPUVirtualAddress());
+    object3dBase_->GetDxEngine()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureIndex));
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(4, LightManager::GetInstance()->GetPointLightResource()->GetGPUVirtualAddress());
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(5, LightManager::GetInstance()->GetSpotLightResource()->GetGPUVirtualAddress());
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, object3dBase_->GetDxEngine()->GetCameraResource()->GetGPUVirtualAddress());
     // 描画
-    modelBase_->GetDxEngine()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+    object3dBase_->GetDxEngine()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
 
-void Model::MakeVertexData()
+void Object3d::MakeVertexData()
 {
     // 実際に頂点リソースを作る
-    vertexResource_ = CreateBufferResource(modelBase_->GetDxEngine()->GetDevice(), sizeof(VertexData) * modelData_.vertices.size()).Get();
+    vertexResource_ = CreateBufferResource(object3dBase_->GetDxEngine()->GetDevice(), sizeof(VertexData) * modelData_.vertices.size()).Get();
     vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
     vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());
     vertexBufferView_.StrideInBytes = sizeof(VertexData);
@@ -60,10 +60,10 @@ void Model::MakeVertexData()
     std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
 }
 
-void Model::MakeMaterialData()
+void Object3d::MakeMaterialData()
 {
     // マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-    materialResource_ = CreateBufferResource(modelBase_->GetDxEngine()->GetDevice(), sizeof(Material)).Get();
+    materialResource_ = CreateBufferResource(object3dBase_->GetDxEngine()->GetDevice(), sizeof(Material)).Get();
     // 書き込むためのアドレスを取得
     materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
     // 今回は白を書き込んでいく
@@ -73,15 +73,15 @@ void Model::MakeMaterialData()
     materialData_->shininess = 8.0f;
 }
 
-void Model::MakeWvpData()
+void Object3d::MakeWvpData()
 {
-    wvpResource_ = CreateBufferResource(modelBase_->GetDxEngine()->GetDevice(), sizeof(Matrix4x4)).Get();
+    wvpResource_ = CreateBufferResource(object3dBase_->GetDxEngine()->GetDevice(), sizeof(Matrix4x4)).Get();
     wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
     wvpData_->WVP = MakeIdentity4x4();
     wvpData_->World = MakeIdentity4x4();
 }
 
-std::wstring Model::s2ws(const std::string& str)
+std::wstring Object3d::s2ws(const std::string& str)
 {
 	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
 	std::wstring wstrTo(size_needed, 0);
@@ -89,7 +89,7 @@ std::wstring Model::s2ws(const std::string& str)
 	return wstrTo;
 }
 
-Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std::string& filename)
+Object3d::ModelData Object3d::LoadObjFile(const std::string& directoryPath, const std::string& filename)
 {
     std::wstring filePath = s2ws(directoryPath + "/" + filename);
     HANDLE hFile = CreateFile(filePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -179,7 +179,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
     return modelData;
 }
 
-Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
+Object3d::MaterialData Object3d::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
 {
     MaterialData materialData; // 構築するMaterialData
     std::string line; // ファイルから読んだ1行を格納するもの

@@ -1,16 +1,16 @@
-#include "ModelBase.h"
+#include "Object3dBase.h"
 
-ModelBase* ModelBase::instance_ = nullptr;
+Object3dBase* Object3dBase::instance_ = nullptr;
 
-ModelBase* ModelBase::GetInstance()
+Object3dBase* Object3dBase::GetInstance()
 {
 	if (instance_ == nullptr) {
-		instance_ = new ModelBase;
+		instance_ = new Object3dBase;
 	}
 	return instance_;
 }
 
-void ModelBase::Initialize(DirectXEngine* dxEngine)
+void Object3dBase::Initialize(DirectXEngine* dxEngine)
 {
 	dxEngine_ = dxEngine;
 
@@ -18,14 +18,14 @@ void ModelBase::Initialize(DirectXEngine* dxEngine)
 	pipelineState_ = dxEngine_->GetPipelineState()->CreateObject3dPipelineState(false).Get();
 }
 
-void ModelBase::DrawBase()
+void Object3dBase::DrawBase()
 {
 	dxEngine_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 	dxEngine_->GetCommandList()->SetPipelineState(pipelineState_.Get());
 	dxEngine_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ModelBase::Finalize()
+void Object3dBase::Finalize()
 {
 	delete instance_;
 	instance_ = nullptr;

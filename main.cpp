@@ -7,8 +7,8 @@
 #include "DirectXEngine.h"
 #include "SpriteBase.h"
 #include "Sprite.h"
-#include "ModelBase.h"
-#include "Model.h"
+#include "Object3dBase.h"
+#include "Object3d.h"
 #include "TextureManager.h"
 #include "LightManager.h"
 
@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/*==================== モデル描画準備用 ====================*/
 
-	ModelBase::GetInstance()->Initialize(directXEngine_.get());
+	Object3dBase::GetInstance()->Initialize(directXEngine_.get());
 
 	/*==================== スプライト描画準備用 ====================*/
 	
@@ -45,8 +45,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sprite_->SetSize({ 128,128 });
 	sprite_->SetAnchorPoint({ 0.5f,0.5f });
 
-	std::unique_ptr<Model> model_ = std::make_unique<Model>();
-	model_->Initialize("teapot.obj");
+	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
+	object3d_->Initialize();
 
 	// オーディオ
 	ComPtr<IXAudio2> xAudio2;
@@ -69,7 +69,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 入力の更新
 			input_->Update();
 
-			model_->Update();
+			object3d_->Update();
 			sprite_->Update();
 
 			// 描画前の処理
@@ -82,8 +82,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			LightManager::GetInstance()->Update();
 
 			// Modelの描画準備
-			ModelBase::GetInstance()->DrawBase();
-			model_->Draw();
+			Object3dBase::GetInstance()->DrawBase();
+			object3d_->Draw();
 
 			// Spriteの描画準備
 			SpriteBase::GetInstance()->DrawBase();
@@ -104,7 +104,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	TextureManager::GetInstance()->Finalize();
 	SpriteBase::GetInstance()->Finalize();
-	ModelBase::GetInstance()->Finalize();
+	Object3dBase::GetInstance()->Finalize();
 	LightManager::GetInstance()->Finalize();
 
 	xAudio2.Reset();

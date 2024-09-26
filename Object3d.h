@@ -13,9 +13,9 @@
 
 using Microsoft::WRL::ComPtr;
 
-class ModelBase;
+class Object3dBase;
 
-class Model
+class Object3d
 {
 public:
 
@@ -53,7 +53,7 @@ public:
 	/*==================== メンバ関数 ====================*/
 
 	// 初期化
-	void Initialize(std::string modelFilePath);
+	void Initialize();
 
 	// 更新
 	void Update();
@@ -74,14 +74,14 @@ private:
 
 	static std::wstring s2ws(const std::string& str);
 
-	static Model::ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+	static Object3d::ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
-	static Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+	static Object3d::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 
 private:
 
-	ModelBase* modelBase_ = nullptr;
+	Object3dBase* object3dBase_ = nullptr;
 
 	/*==================== モデルのデータ ====================*/
 

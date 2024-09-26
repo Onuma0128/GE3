@@ -6,19 +6,19 @@
 
 using Microsoft::WRL::ComPtr;
 
-class ModelBase
+class Object3dBase
 {
 private:
-	static ModelBase* instance_;
+	static Object3dBase* instance_;
 
-	ModelBase() = default;
-	~ModelBase() = default;
-	ModelBase(ModelBase&) = delete;
-	ModelBase& operator=(ModelBase&) = delete;
+	Object3dBase() = default;
+	~Object3dBase() = default;
+	Object3dBase(Object3dBase&) = delete;
+	Object3dBase& operator=(Object3dBase&) = delete;
 
 public:
 	// シングルトンインスタンスの取得
-	static ModelBase* GetInstance();
+	static Object3dBase* GetInstance();
 
 	void Initialize(DirectXEngine* dxEngine);
 
