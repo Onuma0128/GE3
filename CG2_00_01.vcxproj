@@ -126,6 +126,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelBase.cpp" />
     <ClCompile Include="Object3d.cpp" />
     <ClCompile Include="Object3dBase.cpp" />
     <ClCompile Include="PipelineState.cpp" />
@@ -164,6 +166,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="math\structure\Vector2.h" />
     <ClInclude Include="math\structure\Vector3.h" />
     <ClInclude Include="math\structure\Vector4.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelBase.h" />
     <ClInclude Include="Object3d.h" />
     <ClInclude Include="Object3dBase.h" />
     <ClInclude Include="PipelineState.h" />

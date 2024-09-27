@@ -1,6 +1,7 @@
 #include <dxgidebug.h>
 #pragma comment(lib,"dxguid.lib")
 #include <memory>
+#include <vector>
 #include "wrl.h"
 #include "Input.h"
 #include "LoadSound.h"
@@ -9,6 +10,8 @@
 #include "Sprite.h"
 #include "Object3dBase.h"
 #include "Object3d.h"
+#include "Model.h"
+#include "ModelBase.h"
 #include "TextureManager.h"
 #include "LightManager.h"
 
@@ -30,6 +33,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/*==================== モデル描画準備用 ====================*/
 
 	Object3dBase::GetInstance()->Initialize(directXEngine_.get());
+	ModelBase::GetInstance()->Initialize(directXEngine_.get());
 
 	/*==================== スプライト描画準備用 ====================*/
 	
@@ -46,7 +50,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sprite_->SetAnchorPoint({ 0.5f,0.5f });
 
 	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
+	std::unique_ptr<Model> model_ = std::make_unique<Model>();
 	object3d_->Initialize();
+	model_->Initialize();
+	object3d_->SetModel(model_.get());
 
 	// オーディオ
 	ComPtr<IXAudio2> xAudio2;
@@ -105,6 +112,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TextureManager::GetInstance()->Finalize();
 	SpriteBase::GetInstance()->Finalize();
 	Object3dBase::GetInstance()->Finalize();
+	ModelBase::GetInstance()->Finalize();
 	LightManager::GetInstance()->Finalize();
 
 	xAudio2.Reset();
