@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "externals/DirectXTex/DirectXTex.h"
+#include "DirectXTex.h"
 #include "wrl.h"
 #include <d3d12.h>
 #pragma comment(lib,"d3d12.lib")

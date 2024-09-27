@@ -1,5 +1,5 @@
 #pragma once
-#include "math/MT3.h"
+#include "MT3.h"
 #include <fstream>
 #include <sstream>
 

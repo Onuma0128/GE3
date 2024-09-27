@@ -5,10 +5,10 @@
 #include <vector>
 #include <string>
 
-#include "math/structure/Vector2.h"
-#include "math/structure/Vector3.h"
-#include "math/structure/Vector4.h"
-#include "math/structure/Matrix4x4.h"
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Vector4.h"
+#include "Matrix4x4.h"
 
 using Microsoft::WRL::ComPtr;
 

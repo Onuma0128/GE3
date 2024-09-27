@@ -1,5 +1,5 @@
 #include "LightManager.h"
-#include "externals/imgui/imgui.h"
+#include "imgui.h"
 
 LightManager* LightManager::instance_ = nullptr;
 
