@@ -38,35 +38,6 @@ struct Material {
 	Matrix4x4 uvTransform;
 	float shininess;
 };
-struct TransformationMatrix {
-	Matrix4x4 WVP;
-	Matrix4x4 World;
-	Matrix4x4 WorldInverseTranspose;
-};
-struct DirectionalLight {
-	Vector4 color;
-	Vector3 direction;
-	float intensity;
-};
-struct PointLight {
-	Vector4 color;
-	Vector3 position;
-	float intensity;
-	float radius;
-	float decay;
-	float padding[2];
-};
-struct SpotLight {
-	Vector4 color;
-	Vector3 position;
-	float intensity;
-	Vector3 direction;
-	float distance;
-	float decay;
-	float cosAngle;
-	float cosFalloffStart;
-	float padding;
-};
 struct Particle {
 	Transform transform;
 	Vector3 velocity;

@@ -6,7 +6,6 @@
 #include "StringUtility.h"
 #include "WinApp.h"
 #include "VertexResource.h"
-#include "TextureResource.h"
 #include "PipelineState.h"
 #include <dxcapi.h>
 #include <array>
@@ -47,8 +46,6 @@ public:
 	void ImGuiInitialize();
 	// VertexResourceの初期化
 	void VertexResourceInitialize();
-	// TextureResourceの初期化
-	void TextureResourceInitialize();
 	// InstancingSRVの初期化
 	void InstancingSrvInitialize();
 	// IncludeHandlerの初期化
@@ -89,8 +86,6 @@ private:
 	WinApp* winApp_ = nullptr;
 	// VertexResource
 	VertexResource* vertexResource_ = nullptr;
-	// TextureResource
-	TextureResource* textureResource_ = nullptr;
 	// PipelineState
 	PipelineState* pipelineState_ = nullptr;
 
@@ -134,7 +129,7 @@ private:
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
 	ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
 	// TextureSrvHandleGPUの生成
-	std::array<D3D12_GPU_DESCRIPTOR_HANDLE, 6> textureSrvHandleGPU_ = {};
+	std::array<D3D12_GPU_DESCRIPTOR_HANDLE, 2> textureSrvHandleGPU_ = {};
 	// PipelineStateの生成
 	// Particle
 	ComPtr<ID3D12RootSignature> ParticleRootSignature_ = nullptr;

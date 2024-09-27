@@ -19,7 +19,6 @@ DirectXEngine::~DirectXEngine()
 	delete logger_;
 	delete stringUtility_;
 	delete vertexResource_;
-	delete textureResource_;
 	delete pipelineState_;
 
 	//解放の処理
@@ -55,8 +54,6 @@ void DirectXEngine::Initialize(WinApp* winApp)
 	ImGuiInitialize();
 	// VertexResourceの初期化
 	VertexResourceInitialize();
-	// TextureResourceの初期化
-	TextureResourceInitialize();
 	// InstancingSRVの初期化
 	InstancingSrvInitialize();
 	// IncludeHandlerの初期化
@@ -299,17 +296,6 @@ void DirectXEngine::VertexResourceInitialize()
 	vertexResource_->Initialize(device_);
 }
 
-void DirectXEngine::TextureResourceInitialize()
-{
-	textureResource_ = new TextureResource();
-	textureResource_->Initialize(device_, srvDescriptorHeap_, descriptorSizeSRV_);
-	textureSrvHandleGPU_[0] = textureResource_->GetTextureSrvHandleGPU(vertexResource_->GetModelData().material.textureFilePath, 1);
-	textureSrvHandleGPU_[1] = textureResource_->GetTextureSrvHandleGPU("resources/uvChecker.png", 2);
-	textureSrvHandleGPU_[2] = textureResource_->GetTextureSrvHandleGPU("resources/checkerBoard.png", 3);
-	textureSrvHandleGPU_[3] = textureResource_->GetTextureSrvHandleGPU("resources/circle.png", 4);
-	textureSrvHandleGPU_[4] = textureResource_->GetTextureSrvHandleGPU("resources/monsterBall.png", 5);
-}
-
 void DirectXEngine::InstancingSrvInitialize()
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc{};
@@ -396,10 +382,15 @@ void DirectXEngine::Draw()
 	commandList_->SetPipelineState(ParticlePipelineState_.Get());
 	///==============================================================================================
 	// Particle
+	TextureManager::GetInstance()->LoadTexture("resources/circle.png");
+	uint32_t textIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/uvChecker.png");
+	textureSrvHandleGPU_[0] = TextureManager::GetInstance()->GetSrvHandleGPU(textIndex);
+	textIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/circle.png"); 
+	textureSrvHandleGPU_[1] = TextureManager::GetInstance()->GetSrvHandleGPU(textIndex);
 	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetInstancingResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseCircle() ? textureSrvHandleGPU_[3] : textureSrvHandleGPU_[0]);
+	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseCircle() ? textureSrvHandleGPU_[1] : textureSrvHandleGPU_[0]);
 	commandList_->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootDescriptorTable(4, instancingSrvHandleGPU_);
 	// 描画
