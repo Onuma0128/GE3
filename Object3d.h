@@ -43,7 +43,7 @@ public:
 
 	/*==================== アクセッサ ====================*/
 
-	void SetModel(Model* model) { this->model_ = model; }
+	void SetModel(const std::string& filePath);
 
 	// サイズ
 	const Vector3& GetScale()const { return transform_.scale; }

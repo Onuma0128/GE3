@@ -2,11 +2,11 @@
 #include "ModelBase.h"
 #include "TextureManager.h"
 
-void Model::Initialize()
+void Model::Initialize(const std::string& filename)
 {
     this->modelBase_ = ModelBase::GetInstance();
 
-    modelData_ = LoadObjFile("resources", "teapot.obj");
+    modelData_ = LoadObjFile("resources", filename);
 
     TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
 

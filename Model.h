@@ -46,7 +46,7 @@ public:
 	/*==================== メンバ関数 ====================*/
 
 		// 初期化
-	void Initialize();
+	void Initialize(const std::string& filename);
 
 	// 描画
 	void Draw();

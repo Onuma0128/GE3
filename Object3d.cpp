@@ -1,6 +1,7 @@
 #include "Object3d.h"
 #include "Object3dBase.h"
 #include "LightManager.h"
+#include "ModelManager.h"
 
 void Object3d::Initialize()
 {
@@ -42,5 +43,11 @@ void Object3d::MakeWvpData()
     wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
     wvpData_->WVP = MakeIdentity4x4();
     wvpData_->World = MakeIdentity4x4();
+}
+
+void Object3d::SetModel(const std::string& filePath)
+{
+    ModelManager::GetInstance()->LoadModel(filePath);
+    model_ = ModelManager::GetInstance()->FindModel(filePath);
 }
 
