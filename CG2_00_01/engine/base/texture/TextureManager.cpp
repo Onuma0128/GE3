@@ -2,7 +2,7 @@
 #include "LoadTexture.h"
 
 TextureManager* TextureManager::instance_ = nullptr;
-uint32_t TextureManager::kSRVIndexTop = 7;
+uint32_t TextureManager::kSRVIndexTop = 1;
 
 TextureManager* TextureManager::GetInstance()
 {

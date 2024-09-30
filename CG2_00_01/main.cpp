@@ -17,44 +17,56 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	std::unique_ptr<WinApp>winApp_ = std::make_unique<WinApp>();
+	WinApp* winApp_ = new WinApp();
 	winApp_->Initialize();
 
-	std::unique_ptr<DirectXEngine> directXEngine_ = std::make_unique<DirectXEngine>();
-	directXEngine_->Initialize(winApp_.get());
+	DirectXEngine* directXEngine_ = new DirectXEngine();
+	directXEngine_->Initialize(winApp_);
 
-	std::unique_ptr<Input> input_ = std::make_unique<Input>();
-	input_->Initialize(winApp_.get());
+	Input* input_ = new Input();
+	input_->Initialize(winApp_);
 
 	/*==================== ライト準備用 ====================*/
 
-	LightManager::GetInstance()->Initialize(directXEngine_.get());
+	LightManager::GetInstance()->Initialize(directXEngine_);
 
 	/*==================== モデル描画準備用 ====================*/
 
-	Object3dBase::GetInstance()->Initialize(directXEngine_.get());
+	Object3dBase::GetInstance()->Initialize(directXEngine_);
 
 	/*==================== スプライト描画準備用 ====================*/
 	
-	SpriteBase::GetInstance()->Initialize(directXEngine_.get());
+	SpriteBase::GetInstance()->Initialize(directXEngine_);
 
 	/*==================== テクスチャ読み込み ====================*/
 
-	TextureManager::GetInstance()->Initialize(directXEngine_.get());
+	TextureManager::GetInstance()->Initialize(directXEngine_);
 
 	/*==================== モデル読み込み ====================*/
 
-	ModelManager::GetInstance()->Initialize(directXEngine_.get());
+	ModelManager::GetInstance()->Initialize(directXEngine_);
 
-	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
+	Sprite* sprite_ = new Sprite();
 	sprite_->Initialize("uvChecker.png");
 	sprite_->SetPosition({ 64,64 });
 	sprite_->SetSize({ 128,128 });
 	sprite_->SetAnchorPoint({ 0.5f,0.5f });
 
-	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
+	std::vector<Object3d*> obj_;
+
+	Object3d* object3d_ = new Object3d();
 	object3d_->Initialize();
-	object3d_->SetModel("plane.obj");
+	object3d_->SetModel("terrain.obj");
+	obj_.push_back(object3d_);
+
+	Object3d* object3dTest_ = new Object3d();
+	object3dTest_->Initialize();
+	object3dTest_->SetModel("teapot.obj");
+	obj_.push_back(object3dTest_);
+
+	/*Object3d* object3dTest_ = new Object3d();
+	object3dTest_->Initialize();
+	object3dTest_->SetModel("terrain.obj");*/
 
 	// オーディオ
 	ComPtr<IXAudio2> xAudio2;
@@ -77,7 +89,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 入力の更新
 			input_->Update();
 
-			object3d_->Update();
+			
+			for (auto& obj : obj_) {
+				obj->Update();
+			}
+
 			sprite_->Update();
 
 			// 描画前の処理
@@ -91,7 +107,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// Modelの描画準備
 			Object3dBase::GetInstance()->DrawBase();
-			object3d_->Draw();
+			for (auto& obj : obj_) {
+				obj->Draw();
+			}
 
 			// Spriteの描画準備
 			SpriteBase::GetInstance()->DrawBase();
@@ -119,6 +137,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	xAudio2.Reset();
 	SoundUnload(&soundData1);
 	winApp_->Finalize();
+
+	delete input_;
+
+	delete directXEngine_;
 
 	return 0;
 }
