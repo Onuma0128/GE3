@@ -5,6 +5,10 @@
 #include <vector>
 #include <string>
 
+#include "assimp//Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
@@ -37,9 +41,16 @@ public:
 		uint32_t textureIndex = 0;
 	};
 
+	struct Node {
+		Matrix4x4 localMatrix;
+		std::string name;
+		std::vector<Node> children;
+	};
+
 	struct ModelData {
 		std::vector<VertexData> vertices;
 		MaterialData material;
+		Node rootNode;
 	};
 
 public:
@@ -57,6 +68,8 @@ public:
 	// マテリアルデータの作成
 	void MakeMaterialData();
 
+	const ModelData GetModelData()const { return modelData_; }
+
 private:
 
 	static std::wstring s2ws(const std::string& str);
@@ -65,6 +78,7 @@ private:
 
 	static Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
+	static Model::Node ReadNode(aiNode* node);
 
 private:
 

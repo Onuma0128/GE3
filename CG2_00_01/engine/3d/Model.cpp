@@ -1,9 +1,7 @@
 #include "Model.h"
 #include "ModelBase.h"
 #include "TextureManager.h"
-#include "assimp//Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+
 
 void Model::Initialize(const std::string& filename)
 {
@@ -112,6 +110,8 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
         }
     }
 
+    modelData.rootNode = ReadNode(scene->mRootNode);
+
     return modelData;
 }
 
@@ -138,4 +138,22 @@ Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directory
         materialData.textureFilePath = directoryPath + "/" + textureFilename;
     }
     return materialData;
+}
+
+Model::Node Model::ReadNode(aiNode* node)
+{
+    Node result;
+    aiMatrix4x4 aiLocalMatrix = node->mTransformation;
+    aiLocalMatrix.Transpose();
+    for (uint32_t i = 0; i < 4; ++i) {
+        for (uint32_t j = 0; j < 4; ++j) {
+            result.localMatrix.m[i][j] = aiLocalMatrix[i][j];
+        }
+    }
+    result.name = node->mName.C_Str();
+    result.children.resize(node->mNumChildren);
+    for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
+        result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
+    }
+    return result;
 }

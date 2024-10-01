@@ -18,9 +18,9 @@ void Object3d::Update()
     Matrix4x4 worldMatrixObject = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
     Matrix4x4 worldViewMatrixObject = Multiply(worldMatrixObject, object3dBase_->GetDxEngine()->GetCameraView()); // カメラから見たワールド座標に変換
     Matrix4x4 worldViewProjectionMatrixObject = Multiply(worldViewMatrixObject, projectionMatrix); // 射影行列を適用してワールドビュープロジェクション行列を計算
-    wvpData_->WVP = worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
-    wvpData_->World = worldViewMatrixObject; // ワールド座標行列を更新
-    wvpData_->WorldInverseTranspose = Inverse(worldViewMatrixObject);
+    wvpData_->WVP = model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
+    wvpData_->World = model_->GetModelData().rootNode.localMatrix * worldViewMatrixObject; // ワールド座標行列を更新
+    wvpData_->WorldInverseTranspose = model_->GetModelData().rootNode.localMatrix * Inverse(worldViewMatrixObject);
 }
 
 void Object3d::Draw()
