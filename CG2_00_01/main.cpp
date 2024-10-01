@@ -61,7 +61,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Object3d* object3dTest_ = new Object3d();
 	object3dTest_->Initialize();
-	object3dTest_->SetModel("teapot.obj");
+	object3dTest_->SetModel("plane.obj");
 	obj_.push_back(object3dTest_);
 
 	/*Object3d* object3dTest_ = new Object3d();

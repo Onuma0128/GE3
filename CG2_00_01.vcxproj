@@ -54,14 +54,14 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <PerUserRedirection>true</PerUserRedirection>
     </Link>
     <PreBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -81,16 +81,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\assimp\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
