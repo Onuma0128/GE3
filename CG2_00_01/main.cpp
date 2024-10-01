@@ -139,8 +139,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SoundUnload(&soundData1);
 	winApp_->Finalize();
 
-	delete input_;
+	delete sprite_;
+	delete object3d_;
+	delete object3dTest_;
 
+	delete input_;
+	delete winApp_;
 	delete directXEngine_;
 
 	return 0;
