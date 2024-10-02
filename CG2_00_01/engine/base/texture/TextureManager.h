@@ -57,7 +57,7 @@ public:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(uint32_t textureIndex);
 
 
-public:
+private:
 	// テクスチャデータ
 	std::vector<TextureData> textureDatas_;
 	
