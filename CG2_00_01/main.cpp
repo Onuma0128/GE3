@@ -82,7 +82,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	hr = xAudio2->CreateMasteringVoice(&masterVoice);
 	// 音声読み込み
 	SoundData soundData1 = SoundLoadWave("resources/Alarm01.wav");
-	SoundPlayWave(xAudio2.Get(), soundData1);
+	//SoundPlayWave(xAudio2.Get(), soundData1);
 
 	//ウィンドウの×ボタンが押されるまでループ
 	while (true) {
