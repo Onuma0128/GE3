@@ -6,6 +6,7 @@
 void Object3d::Initialize()
 {
 	this->object3dBase_ = Object3dBase::GetInstance();
+    this->camera_ = Object3dBase::GetInstance()->GetDefaultCamera();
 
     MakeWvpData();
 
@@ -16,7 +17,7 @@ void Object3d::Update()
 {
     Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
     Matrix4x4 worldMatrixObject = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-    Matrix4x4 worldViewMatrixObject = Multiply(worldMatrixObject, object3dBase_->GetDxEngine()->GetCameraView()); // カメラから見たワールド座標に変換
+    Matrix4x4 worldViewMatrixObject = Multiply(worldMatrixObject, camera_->GetViewMatrix()); // カメラから見たワールド座標に変換
     Matrix4x4 worldViewProjectionMatrixObject = Multiply(worldViewMatrixObject, projectionMatrix); // 射影行列を適用してワールドビュープロジェクション行列を計算
     wvpData_->WVP = model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
     wvpData_->World = model_->GetModelData().rootNode.localMatrix * worldViewMatrixObject; // ワールド座標行列を更新
@@ -29,7 +30,7 @@ void Object3d::Draw()
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(4, LightManager::GetInstance()->GetPointLightResource()->GetGPUVirtualAddress());
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(5, LightManager::GetInstance()->GetSpotLightResource()->GetGPUVirtualAddress());
-    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, object3dBase_->GetDxEngine()->GetCameraResource()->GetGPUVirtualAddress());
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, camera_->GetCameraResource()->GetGPUVirtualAddress());
 
     if (model_) {
         model_->Draw();

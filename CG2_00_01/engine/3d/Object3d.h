@@ -11,6 +11,7 @@
 #include "Matrix4x4.h"
 #include "Transform.h"
 #include "Model.h"
+#include "Camera.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -45,6 +46,8 @@ public:
 
 	void SetModel(const std::string& filePath);
 
+	void SetCamera(Camera* camera) { camera_ = camera; }
+
 	// サイズ
 	const Vector3& GetScale()const { return transform_.scale; }
 	void SetScale(const Vector3& scale) { transform_.scale = scale; }
@@ -62,6 +65,8 @@ private:
 	Object3dBase* object3dBase_ = nullptr;
 
 	Model* model_ = nullptr;
+
+	Camera* camera_ = nullptr;
 
 	/*==================== トランスフォーム ====================*/
 

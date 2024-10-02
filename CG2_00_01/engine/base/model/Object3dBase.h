@@ -3,6 +3,7 @@
 #pragma comment(lib,"d3d12.lib")
 #include "wrl.h"
 #include "DirectXEngine.h"
+#include "Camera.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -30,9 +31,14 @@ public:
 	// ゲッター
 	DirectXEngine* GetDxEngine() const { return dxEngine_; }
 
+	void SetDefaultCamera(Camera* camera) {defaultCamera_ = camera; } 
+	Camera* GetDefaultCamera() const{ return defaultCamera_; }
+
 private:
 
 	DirectXEngine* dxEngine_ = nullptr;
+
+	Camera* defaultCamera_ = nullptr;
 
 	// ルートシグネチャ
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;

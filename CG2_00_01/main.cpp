@@ -14,6 +14,7 @@
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "LightManager.h"
+#include "Camera.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -26,6 +27,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Input* input_ = new Input();
 	input_->Initialize(winApp_);
 
+	Camera* camera_ = new Camera(directXEngine_);
+
 	/*==================== ライト準備用 ====================*/
 
 	LightManager::GetInstance()->Initialize(directXEngine_);
@@ -33,6 +36,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/*==================== モデル描画準備用 ====================*/
 
 	Object3dBase::GetInstance()->Initialize(directXEngine_);
+	Object3dBase::GetInstance()->SetDefaultCamera(camera_);
 
 	/*==================== スプライト描画準備用 ====================*/
 	
@@ -90,6 +94,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 入力の更新
 			input_->Update();
 
+			camera_->Update();
 			
 			for (auto& obj : obj_) {
 				obj->Update();
@@ -144,6 +149,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	delete object3dTest_;
 
 	delete input_;
+	delete camera_;
 	delete winApp_;
 	delete directXEngine_;
 

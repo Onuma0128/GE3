@@ -73,9 +73,10 @@ public:
 	// パイプラインのゲッター
 	PipelineState* GetPipelineState()const { return pipelineState_; }
 
-	Matrix4x4 GetCameraView()const { return vertexResource_->GetCameraView(); }
 
-	ID3D12Resource* GetCameraResource()const { return vertexResource_->GetCameraResource().Get(); }
+	/*Matrix4x4 GetCameraView()const { return vertexResource_->GetCameraView(); }
+
+	ID3D12Resource* GetCameraResource()const { return vertexResource_->GetCameraResource().Get(); }*/
 
 private:
 	// Logger

@@ -38,14 +38,14 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 
 	///=============================================================================================================
 
-	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
-	cameraResource_ = CreateBufferResource(device, sizeof(Vector3)).Get();
+	//// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
+	//cameraResource_ = CreateBufferResource(device, sizeof(Vector3)).Get();
 
-	// 書き込むためのアドレスを取得
-	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
+	//// 書き込むためのアドレスを取得
+	//cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
 
-	// 単位行列を書き込んでおく
-	cameraData_->worldPosition = cameraTransform_.translate;
+	//// 単位行列を書き込んでおく
+	//cameraData_->worldPosition = cameraTransform_.translate;
 
 	///=============================================================================================================
 
@@ -71,54 +71,54 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 
 void VertexResource::Update()
 {
-	//カメラのワールド座標を取得
-	Matrix4x4 cameraMatrix = MakeAfineMatrix(cameraTransform_.scale, cameraTransform_.rotate, cameraTransform_.translate);
-	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
-	Matrix4x4 viewMatrix = Inverse(cameraMatrix);
-	cameraData_->worldPosition = cameraTransform_.translate;
+	////カメラのワールド座標を取得
+	//Matrix4x4 cameraMatrix = MakeAfineMatrix(cameraTransform_.scale, cameraTransform_.rotate, cameraTransform_.translate);
+	//Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
+	//Matrix4x4 viewMatrix = Inverse(cameraMatrix);
+	//cameraData_->worldPosition = cameraTransform_.translate;
 
 	// エミッターによるパーティクルの発生
-	if (moveStart_) {
-		emitter_.frequencyTime += kDeltaTime;
-	}
-	if (emitter_.frequency <= emitter_.frequencyTime) {
-		std::mt19937 randomEngine_(seedGenerator_());
-		particles_.splice(particles_.end(), Emit(emitter_, randomEngine_));
-		emitter_.frequencyTime -= emitter_.frequency;
-	}
+	//if (moveStart_) {
+	//	emitter_.frequencyTime += kDeltaTime;
+	//}
+	//if (emitter_.frequency <= emitter_.frequencyTime) {
+	//	std::mt19937 randomEngine_(seedGenerator_());
+	//	particles_.splice(particles_.end(), Emit(emitter_, randomEngine_));
+	//	emitter_.frequencyTime -= emitter_.frequency;
+	//}
 
-	// パーティクルの更新
-	numInstance = 0;
-	for (std::list<Particle>::iterator particleIterator = particles_.begin();
-		particleIterator != particles_.end();) {
-		if ((*particleIterator).lifeTime <= (*particleIterator).currentTime) {
-			particleIterator = particles_.erase(particleIterator);
-			continue;
-		}
-		Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
-		Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, cameraMatrix);
-		billboardMatrix.m[3][0] = 0.0f; billboardMatrix.m[3][1] = 0.0f; billboardMatrix.m[3][2] = 0.0f;
-		Matrix4x4 worldMatrix = MakeScaleMatrix(particleIterator->transform.scale) * billboardMatrix * MakeTranslateMatrix(particleIterator->transform.translate);
-		Matrix4x4 worldViewMatrix = Multiply(worldMatrix, viewMatrix);
-		Matrix4x4 worldViewProjectionMatrix = Multiply(worldViewMatrix, projectionMatrix);
-		//パーティクルの動き
-		if (moveStart_) {
-			if (IsCollision(accelerationField_.area, particleIterator->transform.translate) && isFieldStart_) {
-				particleIterator->velocity = accelerationField_.acceleration * kDeltaTime + particleIterator->velocity;
-			}
-			particleIterator->transform.translate = particleIterator->velocity * kDeltaTime + particleIterator->transform.translate;
-			particleIterator->currentTime += kDeltaTime;
-		}
-		float alpha = 1.0f - (particleIterator->currentTime / particleIterator->lifeTime);
-		if (numInstance < kNumMaxInstance) {
-			instancingData_[numInstance].WVP = worldViewProjectionMatrix;
-			instancingData_[numInstance].World = worldViewMatrix;
-			instancingData_[numInstance].color = particleIterator->color;
-			instancingData_[numInstance].color.w = alpha;
-			++numInstance;
-		}
-		++particleIterator;
-	}
+	//// パーティクルの更新
+	//numInstance = 0;
+	//for (std::list<Particle>::iterator particleIterator = particles_.begin();
+	//	particleIterator != particles_.end();) {
+	//	if ((*particleIterator).lifeTime <= (*particleIterator).currentTime) {
+	//		particleIterator = particles_.erase(particleIterator);
+	//		continue;
+	//	}
+	//	Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
+	//	Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, cameraMatrix);
+	//	billboardMatrix.m[3][0] = 0.0f; billboardMatrix.m[3][1] = 0.0f; billboardMatrix.m[3][2] = 0.0f;
+	//	Matrix4x4 worldMatrix = MakeScaleMatrix(particleIterator->transform.scale) * billboardMatrix * MakeTranslateMatrix(particleIterator->transform.translate);
+	//	Matrix4x4 worldViewMatrix = Multiply(worldMatrix, viewMatrix);
+	//	Matrix4x4 worldViewProjectionMatrix = Multiply(worldViewMatrix, projectionMatrix);
+	//	//パーティクルの動き
+	//	if (moveStart_) {
+	//		if (IsCollision(accelerationField_.area, particleIterator->transform.translate) && isFieldStart_) {
+	//			particleIterator->velocity = accelerationField_.acceleration * kDeltaTime + particleIterator->velocity;
+	//		}
+	//		particleIterator->transform.translate = particleIterator->velocity * kDeltaTime + particleIterator->transform.translate;
+	//		particleIterator->currentTime += kDeltaTime;
+	//	}
+	//	float alpha = 1.0f - (particleIterator->currentTime / particleIterator->lifeTime);
+	//	if (numInstance < kNumMaxInstance) {
+	//		instancingData_[numInstance].WVP = worldViewProjectionMatrix;
+	//		instancingData_[numInstance].World = worldViewMatrix;
+	//		instancingData_[numInstance].color = particleIterator->color;
+	//		instancingData_[numInstance].color.w = alpha;
+	//		++numInstance;
+	//	}
+	//	++particleIterator;
+	//}
 
 	//Sprite用
 	//Matrix4x4 worldMatrixSprite = MakeAfineMatrix(transformSprite_.scale, transformSprite_.rotate, transformSprite_.translate);
@@ -170,11 +170,11 @@ void VertexResource::ImGui()
 			ImGui::TreePop();
 		}*/
 
-		if (ImGui::TreeNodeEx("Camera", flag)) {
+		/*if (ImGui::TreeNodeEx("Camera", flag)) {
 			ImGui::DragFloat3("Rotate", &cameraTransform_.rotate.x, 0.01f);
 			ImGui::DragFloat3("Translate", &cameraTransform_.translate.x, 0.01f);
 			ImGui::TreePop();
-		}
+		}*/
 
 		ImGui::TreePop();
 	}

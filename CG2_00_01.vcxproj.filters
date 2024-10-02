@@ -91,6 +91,12 @@
     <Filter Include="ヘッダー ファイル\base\sprite">
       <UniqueIdentifier>{665cd993-2169-46e3-b586-1d8d9e1f087d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\base\camera">
+      <UniqueIdentifier>{678c52a7-342b-4ba8-b5e6-faa98ab35ddc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\base\camera">
+      <UniqueIdentifier>{eaecae55-c1de-4571-9a4d-e6c51b00e71d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CG2_00_01\main.cpp">
@@ -188,6 +194,9 @@
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\math\MT3.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\base\camera\Camera.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -307,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\audio\LoadSound.h">
       <Filter>ヘッダー ファイル\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\base\camera\Camera.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -32,13 +32,6 @@ public:
 
 	ComPtr<ID3D12Resource> GetMaterialResource() { return materialResource_; }
 	ComPtr<ID3D12Resource> GetInstancingResource() { return instancingResource_; }
-	ComPtr<ID3D12Resource> GetCameraResource() { return cameraResource_; }
-
-	Matrix4x4 GetCameraView()const {
-		Matrix4x4 cameraMatrix = MakeAfineMatrix(cameraTransform_.scale, cameraTransform_.rotate, cameraTransform_.translate);
-		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
-		return viewMatrix;
-	}
 
 	void ImGui();
 
@@ -68,11 +61,8 @@ private:
 	// WVP用のリソースを作る
 	// Instancing用のTransformationMatrixリソースを作る
 	ComPtr<ID3D12Resource> instancingResource_ = nullptr;
-	//
-	ComPtr<ID3D12Resource> cameraResource_ = nullptr;
 	// データを書き込む
 	ParticleForGPU* instancingData_ = nullptr;
-	CameraForGPU* cameraData_ = nullptr;
 
 	///=================================================================
 
@@ -87,8 +77,6 @@ private:
 	bool moveStart_ = false;
 	bool isFieldStart_ = false;
 	bool useCircle_ = true;
-	//Camera変数を作る
-	Transform cameraTransform_{ {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };
 	//UVTransform変数
 	Transform uvTransformSprite_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	Matrix4x4 uvTransformMatrix_{};
