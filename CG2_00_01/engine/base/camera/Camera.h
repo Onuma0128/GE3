@@ -19,13 +19,24 @@ public:
 		Vector3 worldPosition;
 	};
 
+private:
+
+	static Camera* instance_;
+
+	Camera() = default;
+	~Camera() = default;
+	Camera(Camera&) = delete;
+	Camera& operator=(Camera&) = delete;
+
 public:
+	// シングルトンインスタンスの取得
+	static Camera* GetInstance();
 
-	Camera(DirectXEngine* dxEngine);
+	void Initialize(DirectXEngine* dxEngine);
 
-	// 更新
 	void Update();
 
+	void Finalize();
 
 	void MakeCameraData();
 

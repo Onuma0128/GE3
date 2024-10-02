@@ -10,9 +10,6 @@
 #include "Sprite.h"
 #include "Object3dBase.h"
 #include "Object3d.h"
-#include "Model.h"
-#include "ModelManager.h"
-#include "TextureManager.h"
 #include "LightManager.h"
 #include "Camera.h"
 
@@ -27,29 +24,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Input* input_ = new Input();
 	input_->Initialize(winApp_);
 
-	Camera* camera_ = new Camera(directXEngine_);
-
-	/*==================== ライト準備用 ====================*/
-
-	LightManager::GetInstance()->Initialize(directXEngine_);
-
-	/*==================== モデル描画準備用 ====================*/
-
-	Object3dBase::GetInstance()->Initialize(directXEngine_);
-	Object3dBase::GetInstance()->SetDefaultCamera(camera_);
-
-	/*==================== スプライト描画準備用 ====================*/
-	
-	SpriteBase::GetInstance()->Initialize(directXEngine_);
-
-	/*==================== テクスチャ読み込み ====================*/
-
-	TextureManager::GetInstance()->Initialize(directXEngine_);
-
-	/*==================== モデル読み込み ====================*/
-
-	ModelManager::GetInstance()->Initialize(directXEngine_);
-
 	Sprite* sprite_ = new Sprite();
 	sprite_->Initialize("uvChecker.png");
 	sprite_->SetPosition({ 64,64 });
@@ -60,7 +34,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Object3d* object3d_ = new Object3d();
 	object3d_->Initialize();
-	object3d_->SetModel("terrain.obj");
+	object3d_->SetModel("teapot.obj");
 	obj_.push_back(object3d_);
 
 	Object3d* object3dTest_ = new Object3d();
@@ -68,10 +42,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	object3dTest_->SetModel("plane.gltf");
 	object3dTest_->SetRotation({ 0,3.14f,0 });
 	obj_.push_back(object3dTest_);
-
-	/*Object3d* object3dTest_ = new Object3d();
-	object3dTest_->Initialize();
-	object3dTest_->SetModel("terrain.obj");*/
 
 	// オーディオ
 	ComPtr<IXAudio2> xAudio2;
@@ -94,7 +64,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 入力の更新
 			input_->Update();
 
-			camera_->Update();
+			// カメラの更新
+			Camera::GetInstance()->Update();
 			
 			for (auto& obj : obj_) {
 				obj->Update();
@@ -123,22 +94,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// 描画後の処理
 			directXEngine_->PostDraw();
-
-			if (input_->TriggerKey(DIK_S)) {
-				SoundPlayWave(xAudio2.Get(), soundData1);
-			}
 		}
 	}
 	//ImGuiの終了処理
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-
-	TextureManager::GetInstance()->Finalize();
-	SpriteBase::GetInstance()->Finalize();
-	Object3dBase::GetInstance()->Finalize();
-	LightManager::GetInstance()->Finalize();
-	ModelManager::GetInstance()->Finalize();
 
 	xAudio2.Reset();
 	SoundUnload(&soundData1);
@@ -149,7 +110,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	delete object3dTest_;
 
 	delete input_;
-	delete camera_;
 	delete winApp_;
 	delete directXEngine_;
 
