@@ -16,7 +16,7 @@ class DirectXEngine
 {
 public:
 	// 最大SRV数
-	static const uint32_t kMaxSRVCount;
+	//static const uint32_t kMaxSRVCount;
 
 	~DirectXEngine();
 
@@ -66,12 +66,13 @@ public:
 	// デバイス
 	ID3D12Device* GetDevice()const { return device_.Get(); }
 	// SRVデスクリプター
-	ID3D12DescriptorHeap* GetSRVDescriptorHeap() { return srvDescriptorHeap_.Get(); }
+	//ID3D12DescriptorHeap* GetSRVDescriptorHeap() { return srvDescriptorHeap_.Get(); }
 	// コマンドリスト
 	ID3D12GraphicsCommandList* GetCommandList()const { return commandList_.Get(); }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetTexture()const { return textureSrvHandleGPU_[2]; }
+	//D3D12_GPU_DESCRIPTOR_HANDLE GetTexture()const { return textureSrvHandleGPU_[2]; }
 	// パイプラインのゲッター
 	PipelineState* GetPipelineState()const { return pipelineState_; }
+	VertexResource* GetVertexResource()const { return vertexResource_; }
 
 
 	/*Matrix4x4 GetCameraView()const { return vertexResource_->GetCameraView(); }
@@ -111,8 +112,8 @@ private:
 	ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
 	// 各種でスクリプタヒープの生成
 	ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
-	ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
-	uint32_t descriptorSizeSRV_ = NULL;
+	//ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
+	//uint32_t descriptorSizeSRV_ = NULL;
 	uint32_t descriptorSizeRTV_ = NULL;
 	uint32_t descriptorSizeDSV_ = NULL;
 	//RTVを2つ作るのでディスクリプタを2つ用意
@@ -130,14 +131,14 @@ private:
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
 	ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
 	// TextureSrvHandleGPUの生成
-	std::array<D3D12_GPU_DESCRIPTOR_HANDLE, 2> textureSrvHandleGPU_ = {};
+	//std::array<D3D12_GPU_DESCRIPTOR_HANDLE, 2> textureSrvHandleGPU_ = {};
 	// PipelineStateの生成
 	// Particle
 	ComPtr<ID3D12RootSignature> ParticleRootSignature_ = nullptr;
 	ComPtr<ID3D12PipelineState> ParticlePipelineState_ = nullptr;
 	// InstancingSRVの生成
-	D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU_ = {};
-	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU_ = {};
+	/*D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU_ = {};
+	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU_ = {};*/
 	// IncludeHandlerの生成
 	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 	// TransitionBarrierの生成

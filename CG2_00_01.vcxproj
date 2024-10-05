@@ -136,6 +136,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\texture\TextureManager.cpp" />
     <ClCompile Include="CG2_00_01\engine\3d\VertexResource.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\WinApp.cpp" />
+    <ClCompile Include="CG2_00_01\engine\base\dxEngine\SrvManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\engine\base\camera\Camera.h" />
@@ -178,6 +179,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\base\texture\TextureManager.h" />
     <ClInclude Include="CG2_00_01\engine\3d\VertexResource.h" />
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\WinApp.h" />
+    <ClInclude Include="CG2_00_01\engine\base\dxEngine\SrvManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

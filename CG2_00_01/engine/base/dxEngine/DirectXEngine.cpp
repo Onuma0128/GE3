@@ -14,13 +14,15 @@
 #include "SpriteBase.h"
 #include "TextureManager.h"
 #include "ModelManager.h"
+#include "SrvManager.h"
 
 using Microsoft::WRL::ComPtr;
 
-const uint32_t DirectXEngine::kMaxSRVCount = 512;
+//const uint32_t DirectXEngine::kMaxSRVCount = 512;
 
 DirectXEngine::~DirectXEngine()
 {
+	SrvManager::GetInstance()->Finalize();
 	Camera::GetInstance()->Finalize();
 	TextureManager::GetInstance()->Finalize();
 	SpriteBase::GetInstance()->Finalize();
@@ -62,10 +64,12 @@ void DirectXEngine::Initialize(WinApp* winApp)
 	RectInitialize();
 	// DXCコンパイラの初期化
 	DxcCompilerInitialize();
-	// ImGuiの初期化
-	ImGuiInitialize();
 	// VertexResourceの初期化
 	VertexResourceInitialize();
+	// SRVの初期化
+	SrvManager::GetInstance()->Initialize(this);
+	// ImGuiの初期化
+	ImGuiInitialize();
 	// InstancingSRVの初期化
 	InstancingSrvInitialize();
 	// IncludeHandlerの初期化
@@ -238,9 +242,9 @@ void DirectXEngine::DescriptorHeapInitialize()
 {
 	//ディスクリプタヒープの生成(RTV,SRV)
 	rtvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
-	srvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
+	//srvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 	//DescriptorSizeを取得しておく
-	descriptorSizeSRV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//descriptorSizeSRV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	descriptorSizeRTV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	descriptorSizeDSV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 }
@@ -321,9 +325,9 @@ void DirectXEngine::ImGuiInitialize()
 	ImGui_ImplDX12_Init(device_.Get(),
 		swapChainDesc_.BufferCount,
 		rtvDesc_.Format,
-		srvDescriptorHeap_.Get(),
-		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
-		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
+		SrvManager::GetInstance()->GetDescriptorHeap(),
+		SrvManager::GetInstance()->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(),
+		SrvManager::GetInstance()->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart()
 	);
 }
 
@@ -335,17 +339,12 @@ void DirectXEngine::VertexResourceInitialize()
 
 void DirectXEngine::InstancingSrvInitialize()
 {
-	D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc{};
-	instancingSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	instancingSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	instancingSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-	instancingSrvDesc.Buffer.FirstElement = 0;
-	instancingSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	instancingSrvDesc.Buffer.NumElements = kNumMaxInstance;
-	instancingSrvDesc.Buffer.StructureByteStride = sizeof(ParticleForGPU);
-	instancingSrvHandleCPU_ = GetCPUDescriptorHandle(srvDescriptorHeap_, descriptorSizeSRV_, 20);
-	instancingSrvHandleGPU_ = GetGPUDescriptorHandle(srvDescriptorHeap_, descriptorSizeSRV_, 20);
-	device_->CreateShaderResourceView(vertexResource_->GetInstancingResource().Get(), &instancingSrvDesc, instancingSrvHandleCPU_);
+	SrvManager::GetInstance()->CreateSRVforStructuredBuffer(
+		1,
+		vertexResource_->GetInstancingResource().Get(),
+		kNumMaxInstance,
+		sizeof(ParticleForGPU)
+	);
 }
 
 void DirectXEngine::IncludeHandlerInitialize()
@@ -397,8 +396,7 @@ void DirectXEngine::PreDraw()
 	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f }; //青っぽい色。RGBAの順
 	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
 	//描画用のDescriptorHeapの設定
-	ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
-	commandList_->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
+	SrvManager::GetInstance()->PreDraw();
 	//コマンドを積む
 	commandList_->RSSetViewports(1, &viewport_);
 	commandList_->RSSetScissorRects(1, &scissorRect_);
@@ -420,16 +418,13 @@ void DirectXEngine::Draw()
 	///==============================================================================================
 	// Particle
 	TextureManager::GetInstance()->LoadTexture("resources/circle.png");
-	uint32_t textIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/uvChecker.png");
-	textureSrvHandleGPU_[0] = TextureManager::GetInstance()->GetSrvHandleGPU(textIndex);
-	textIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/circle.png"); 
-	textureSrvHandleGPU_[1] = TextureManager::GetInstance()->GetSrvHandleGPU(textIndex);
+	uint32_t textIndex = TextureManager::GetInstance()->GetSrvIndex("resources/circle.png");
 	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
 	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetInstancingResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, vertexResource_->GetuseCircle() ? textureSrvHandleGPU_[1] : textureSrvHandleGPU_[0]);
+	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textIndex);
 	commandList_->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(4, instancingSrvHandleGPU_);
+	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(4, 1);
 	// 描画
 	commandList_->DrawInstanced(UINT(vertexResource_->GetModelData().vertices.size()), vertexResource_->GetNumInstance(), 0, 0);
 	///==============================================================================================

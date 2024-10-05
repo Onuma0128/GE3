@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "ModelBase.h"
 #include "TextureManager.h"
+#include "SrvManager.h"
 
 
 void Model::Initialize(const std::string& filename)
@@ -12,7 +13,7 @@ void Model::Initialize(const std::string& filename)
     TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
 
     modelData_.material.textureIndex =
-        TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath);
+        TextureManager::GetInstance()->GetSrvIndex(modelData_.material.textureFilePath);
 
     MakeVertexData();
 
@@ -23,7 +24,8 @@ void Model::Draw()
 {
     modelBase_->GetDxEngine()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
     modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureIndex));
+    SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, modelData_.material.textureIndex);
+    //modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureIndex));
     // 描画
     modelBase_->GetDxEngine()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }

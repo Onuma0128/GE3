@@ -24,11 +24,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Input* input_ = new Input();
 	input_->Initialize(winApp_);
 
+	std::vector<Sprite*> sprites_;
+
 	Sprite* sprite_ = new Sprite();
 	sprite_->Initialize("uvChecker.png");
 	sprite_->SetPosition({ 64,64 });
 	sprite_->SetSize({ 128,128 });
 	sprite_->SetAnchorPoint({ 0.5f,0.5f });
+	sprites_.push_back(sprite_);
+
+	Sprite* sprite1_ = new Sprite();
+	sprite1_->Initialize("Apple.png");
+	sprite1_->SetPosition({ 640,64 });
+	sprite1_->SetSize({ 128,128 });
+	sprite1_->SetAnchorPoint({ 0.5f,0.5f });
+	sprites_.push_back(sprite1_);
+
 
 	std::vector<Object3d*> obj_;
 
@@ -36,6 +47,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	object3d_->Initialize();
 	object3d_->SetModel("teapot.obj");
 	obj_.push_back(object3d_);
+
+	Object3d* object3d1_ = new Object3d();
+	object3d1_->Initialize();
+	object3d1_->SetModel("terrain.obj");
+	obj_.push_back(object3d1_);
 
 	Object3d* object3dTest_ = new Object3d();
 	object3dTest_->Initialize();
@@ -70,8 +86,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (auto& obj : obj_) {
 				obj->Update();
 			}
-
-			sprite_->Update();
+			for (auto& sprite : sprites_) {
+				sprite->Update();
+			}
 
 			// 描画前の処理
 			directXEngine_->PreDraw();
@@ -90,7 +107,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// Spriteの描画準備
 			SpriteBase::GetInstance()->DrawBase();
-			sprite_->Draw();
+			for (auto& sprite : sprites_) {
+				sprite->Draw();
+			}
 
 			// 描画後の処理
 			directXEngine_->PostDraw();
@@ -105,9 +124,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SoundUnload(&soundData1);
 	winApp_->Finalize();
 
-	delete sprite_;
-	delete object3d_;
-	delete object3dTest_;
+	for (auto& sprite : sprites_) {
+		delete sprite;
+		sprite = nullptr;
+	}
+	for (auto& obj : obj_) {
+		delete obj;
+		obj = nullptr;
+	}
 
 	delete input_;
 	delete winApp_;

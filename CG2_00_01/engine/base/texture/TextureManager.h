@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <unordered_map>
+
 #include "DirectXTex.h"
 #include "wrl.h"
 #include <d3d12.h>
@@ -22,9 +24,9 @@ private:
 private:
 	// テクスチャ一枚分のデータ
 	struct TextureData {
-		std::string filePath;
 		DirectX::TexMetadata metadata;
 		ComPtr<ID3D12Resource> resource;
+		uint32_t srvIndex;
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
 	};
@@ -51,15 +53,20 @@ public:
 
 	/*========================== ゲッター ===========================*/
 
-	// SRVインデックスの開始番号
-	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
-	// テクスチャ番号からGPUハンドルを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(uint32_t textureIndex);
+	//// SRVインデックスの開始番号
+	//uint32_t GetTextureIndexByFilePath(const std::string& filePath);
+	//// テクスチャ番号からGPUハンドルを取得
+	//D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(uint32_t textureIndex);
+
+	const DirectX::TexMetadata& GetMetaData(const std::string& filePath);
+	uint32_t GetSrvIndex(const std::string& filePath);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
+
 
 
 private:
 	// テクスチャデータ
-	std::vector<TextureData> textureDatas_;
+	std::unordered_map<std::string, TextureData> textureDatas_;
 	
 	DirectXEngine* dxEngine_ = nullptr;
 };

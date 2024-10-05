@@ -2,6 +2,7 @@
 #include "SpriteBase.h"
 #include "WinApp.h"
 #include "TextureManager.h"
+#include "SrvManager.h"
 
 void Sprite::Initialize(std::string textureFilePath)
 {
@@ -9,7 +10,7 @@ void Sprite::Initialize(std::string textureFilePath)
 
 	TextureManager::GetInstance()->LoadTexture("resources/" + textureFilePath);
 
-	textureIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/" + textureFilePath);
+	textureIndex_ = TextureManager::GetInstance()->GetSrvIndex("resources/" + textureFilePath);
 
 	VertexDataInitialize();
 
@@ -32,7 +33,8 @@ void Sprite::Draw()
 	spriteBase_->GetDxEngine()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
-	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex_));
+	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textureIndex_);
+	//spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex_));
 	spriteBase_->GetDxEngine()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
