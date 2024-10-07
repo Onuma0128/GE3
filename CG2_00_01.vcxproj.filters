@@ -19,36 +19,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ヘッダー ファイル\2d">
-      <UniqueIdentifier>{e1a4df91-b233-47df-8731-7c11849a4982}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\3d">
-      <UniqueIdentifier>{90c92317-93ae-4b08-9252-fe7d284b0014}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\base">
-      <UniqueIdentifier>{e2738d6b-400a-4f34-a4d8-b313ec92eeed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\base\dxEnginr">
-      <UniqueIdentifier>{88e69974-723e-4d39-9eff-b5bedc332cb8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\base\model">
-      <UniqueIdentifier>{8eb41a9f-f947-49f3-ae0e-39e91d4567dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\base\texture">
-      <UniqueIdentifier>{91b3f296-03fb-4331-91be-c6015902faa0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\input">
-      <UniqueIdentifier>{017b02f3-02ba-44b2-b40e-b7726ee96488}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\audio">
-      <UniqueIdentifier>{60979980-545b-4c1c-be1b-06aafcc2b088}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\math">
-      <UniqueIdentifier>{ec2b36c6-476d-4ea0-a078-44c57f853752}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\base\light">
-      <UniqueIdentifier>{c6b290a4-59a3-4e34-b902-6563d6a3006d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\engine">
       <UniqueIdentifier>{2cddc3c1-07f7-4952-ac38-fa937ce50f00}</UniqueIdentifier>
     </Filter>
@@ -88,14 +58,53 @@
     <Filter Include="ソース ファイル\application">
       <UniqueIdentifier>{b4e65827-dd77-40ec-a3e6-47eb432404c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\base\sprite">
-      <UniqueIdentifier>{665cd993-2169-46e3-b586-1d8d9e1f087d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\engine\base\camera">
       <UniqueIdentifier>{678c52a7-342b-4ba8-b5e6-faa98ab35ddc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\base\camera">
+    <Filter Include="ソース ファイル\game">
+      <UniqueIdentifier>{4d40f4b5-0ebd-4b8d-b1af-c7f443c03bf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine">
+      <UniqueIdentifier>{a9449f87-d769-40b6-b350-ce00a1f2cbff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\2d">
+      <UniqueIdentifier>{e1a4df91-b233-47df-8731-7c11849a4982}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\3d">
+      <UniqueIdentifier>{90c92317-93ae-4b08-9252-fe7d284b0014}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\audio">
+      <UniqueIdentifier>{60979980-545b-4c1c-be1b-06aafcc2b088}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base">
+      <UniqueIdentifier>{e2738d6b-400a-4f34-a4d8-b313ec92eeed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\dxEnginr">
+      <UniqueIdentifier>{88e69974-723e-4d39-9eff-b5bedc332cb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\model">
+      <UniqueIdentifier>{8eb41a9f-f947-49f3-ae0e-39e91d4567dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\texture">
+      <UniqueIdentifier>{91b3f296-03fb-4331-91be-c6015902faa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\light">
+      <UniqueIdentifier>{c6b290a4-59a3-4e34-b902-6563d6a3006d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\sprite">
+      <UniqueIdentifier>{665cd993-2169-46e3-b586-1d8d9e1f087d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\camera">
       <UniqueIdentifier>{eaecae55-c1de-4571-9a4d-e6c51b00e71d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\input">
+      <UniqueIdentifier>{017b02f3-02ba-44b2-b40e-b7726ee96488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\math">
+      <UniqueIdentifier>{ec2b36c6-476d-4ea0-a078-44c57f853752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\game">
+      <UniqueIdentifier>{1b26b5cc-2dd5-4ab2-b176-efc9932a8506}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +210,9 @@
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\SrvManager.cpp">
       <Filter>ソース ファイル\engine\base\dxEngine</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\game\MyGame.cpp">
+      <Filter>ソース ファイル\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -228,103 +240,106 @@
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\2d\Logger.h">
-      <Filter>ヘッダー ファイル\2d</Filter>
+      <Filter>ヘッダー ファイル\engine\2d</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\2d\LoadTexture.h">
-      <Filter>ヘッダー ファイル\2d</Filter>
+      <Filter>ヘッダー ファイル\engine\2d</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\2d\Sprite.h">
-      <Filter>ヘッダー ファイル\2d</Filter>
+      <Filter>ヘッダー ファイル\engine\2d</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\3d\LoadObjFile.h">
-      <Filter>ヘッダー ファイル\3d</Filter>
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\3d\Model.h">
-      <Filter>ヘッダー ファイル\3d</Filter>
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\3d\Object3d.h">
-      <Filter>ヘッダー ファイル\3d</Filter>
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\3d\VertexResource.h">
-      <Filter>ヘッダー ファイル\3d</Filter>
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\CompileShader.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\D3DResourceLeakChecker.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\DepthStencilTexture.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\DescriptorHeap.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\DirectXEngine.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\PipelineState.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\StringUtility.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\WinApp.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\light\LightManager.h">
-      <Filter>ヘッダー ファイル\base\light</Filter>
+      <Filter>ヘッダー ファイル\engine\base\light</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\model\ModelBase.h">
-      <Filter>ヘッダー ファイル\base\model</Filter>
+      <Filter>ヘッダー ファイル\engine\base\model</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\model\ModelManager.h">
-      <Filter>ヘッダー ファイル\base\model</Filter>
+      <Filter>ヘッダー ファイル\engine\base\model</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\model\Object3dBase.h">
-      <Filter>ヘッダー ファイル\base\model</Filter>
+      <Filter>ヘッダー ファイル\engine\base\model</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\texture\TextureManager.h">
-      <Filter>ヘッダー ファイル\base\texture</Filter>
+      <Filter>ヘッダー ファイル\engine\base\texture</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\sprite\SpriteBase.h">
-      <Filter>ヘッダー ファイル\base\sprite</Filter>
+      <Filter>ヘッダー ファイル\engine\base\sprite</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\input\Input.h">
-      <Filter>ヘッダー ファイル\input</Filter>
+      <Filter>ヘッダー ファイル\engine\input</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\ResourceObject.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\Matrix3x3.h">
-      <Filter>ヘッダー ファイル\math</Filter>
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\Matrix4x4.h">
-      <Filter>ヘッダー ファイル\math</Filter>
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\MT3.h">
-      <Filter>ヘッダー ファイル\math</Filter>
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\Transform.h">
-      <Filter>ヘッダー ファイル\math</Filter>
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\Vector2.h">
-      <Filter>ヘッダー ファイル\math</Filter>
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\Vector3.h">
-      <Filter>ヘッダー ファイル\math</Filter>
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\Vector4.h">
-      <Filter>ヘッダー ファイル\math</Filter>
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\audio\LoadSound.h">
-      <Filter>ヘッダー ファイル\audio</Filter>
+      <Filter>ヘッダー ファイル\engine\audio</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\camera\Camera.h">
-      <Filter>ヘッダー ファイル\base\camera</Filter>
+      <Filter>ヘッダー ファイル\engine\base\camera</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\SrvManager.h">
-      <Filter>ヘッダー ファイル\base\dxEnginr</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\game\MyGame.h">
+      <Filter>ヘッダー ファイル\game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
