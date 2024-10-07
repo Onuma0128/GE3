@@ -3,47 +3,31 @@
 #pragma comment(lib,"dxguid.lib")
 #include <memory>
 #include <vector>
-#include "wrl.h"
-#include "Input.h"
-#include "LoadSound.h"
-#include "DirectXEngine.h"
 #include "SpriteBase.h"
 #include "Sprite.h"
 #include "Object3dBase.h"
 #include "Object3d.h"
-#include "LightManager.h"
-#include "Camera.h"
+#include "Framework.h"
 
-class MyGame
+class MyGame : public Framework
 {
 public:
 
 	// 初期化
-	void Initialize();
+	void Initialize() override;
 
 	// 終了
-	void Finalize();
+	void Finalize() override;
 
 	// 更新
-	void Update();
+	void Update() override;
 
 	// 描画
-	void Draw();
-
-
-	bool isEndRequst() { return endRequst_; }
+	void Draw() override;
 
 private:
-	// ゲーム終了フラグ
-	bool endRequst_ = false;
 
-	WinApp* winApp_ = nullptr;
-	DirectXEngine* directXEngine_ = nullptr;
-	Input* input_ = nullptr;
+	std::vector<std::unique_ptr<Sprite>> sprites_;
+	std::vector <std::unique_ptr<Object3d>> obj_;
 
-	std::vector<Sprite*> sprites_;
-	std::vector<Object3d*> obj_;
-
-	ComPtr<IXAudio2> xAudio2;
-	SoundData soundData1;
 };

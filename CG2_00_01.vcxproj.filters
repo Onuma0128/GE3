@@ -213,6 +213,9 @@
     <ClCompile Include="CG2_00_01\game\MyGame.cpp">
       <Filter>ソース ファイル\game</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\game\Framework.cpp">
+      <Filter>ソース ファイル\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -339,6 +342,9 @@
       <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\MyGame.h">
+      <Filter>ヘッダー ファイル\game</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\game\Framework.h">
       <Filter>ヘッダー ファイル\game</Filter>
     </ClInclude>
   </ItemGroup>

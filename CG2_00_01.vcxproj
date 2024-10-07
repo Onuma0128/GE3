@@ -138,6 +138,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\WinApp.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\SrvManager.cpp" />
     <ClCompile Include="CG2_00_01\game\MyGame.cpp" />
+    <ClCompile Include="CG2_00_01\game\Framework.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\engine\base\camera\Camera.h" />
@@ -182,6 +183,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\WinApp.h" />
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\SrvManager.h" />
     <ClInclude Include="CG2_00_01\game\MyGame.h" />
+    <ClInclude Include="CG2_00_01\game\Framework.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

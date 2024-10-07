@@ -1,24 +1,18 @@
+#include <dxgidebug.h>
+#pragma comment(lib,"dxguid.lib")
+#include <memory>
+
+#include "Framework.h"
 #include "MyGame.h"
+#include "D3DResourceLeakChecker.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	MyGame myGame_;
-	// 初期化
-	myGame_.Initialize();
+	D3DResourceLeakChecker leakCheck;
 
-	//ウィンドウの×ボタンが押されるまでループ
-	while (true) {
-		// 更新
-		myGame_.Update();
-		// 呼び出されたらループ終了
-		if (myGame_.isEndRequst()) {
-			break;
-		}
-		// 描画
-		myGame_.Draw();	
-	}
-	// 終了
-	myGame_.Finalize();
+	std::unique_ptr<Framework> game = std::make_unique<MyGame>();
+
+	game->Run();
 
 	return 0;
 }
