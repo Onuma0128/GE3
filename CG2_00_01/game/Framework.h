@@ -5,7 +5,6 @@
 #include "WinApp.h"
 #include "DirectXEngine.h"
 #include "Input.h"
-#include "LoadSound.h"
 
 class Framework
 {
@@ -33,7 +32,4 @@ protected:
 	std::unique_ptr<WinApp> winApp_ = nullptr;
 	std::unique_ptr<DirectXEngine> directXEngine_ = nullptr;
 	std::unique_ptr<Input> input_ = nullptr;
-
-	ComPtr<IXAudio2> xAudio2;
-	SoundData soundData1;
 };

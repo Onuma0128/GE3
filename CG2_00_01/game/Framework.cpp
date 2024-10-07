@@ -11,16 +11,6 @@ void Framework::Initialize()
 
 	input_ = std::make_unique<Input>();
 	input_->Initialize(winApp_.get());
-
-	// オーディオ
-	IXAudio2MasteringVoice* masterVoice;
-	// XAudio2エンジンを生成
-	HRESULT hr{};
-	hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-	hr = xAudio2->CreateMasteringVoice(&masterVoice);
-	// 音声読み込み
-	soundData1 = SoundLoadWave("resources/Alarm01.wav");
-	//SoundPlayWave(xAudio2.Get(), soundData1);
 }
 
 void Framework::Finalize()
@@ -29,10 +19,6 @@ void Framework::Finalize()
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-
-	xAudio2.Reset();
-	SoundUnload(&soundData1);
-	winApp_->Finalize();
 }
 
 void Framework::Update()

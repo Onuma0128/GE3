@@ -106,6 +106,12 @@
     <Filter Include="ヘッダー ファイル\game">
       <UniqueIdentifier>{1b26b5cc-2dd5-4ab2-b176-efc9932a8506}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\game\scene">
+      <UniqueIdentifier>{61c19e4f-8902-40cb-a68a-ce53dcdbde91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\game\scene">
+      <UniqueIdentifier>{e21b9a56-fa9a-4e9d-aece-1c4d88546533}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CG2_00_01\main.cpp">
@@ -215,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="CG2_00_01\game\Framework.cpp">
       <Filter>ソース ファイル\game</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2_00_01\game\scene\GamePlayScene.cpp">
+      <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -346,6 +355,9 @@
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\Framework.h">
       <Filter>ヘッダー ファイル\game</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\game\scene\GamePlayScene.h">
+      <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

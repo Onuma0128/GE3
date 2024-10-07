@@ -1,13 +1,8 @@
 #pragma once
 #include <dxgidebug.h>
 #pragma comment(lib,"dxguid.lib")
-#include <memory>
-#include <vector>
-#include "SpriteBase.h"
-#include "Sprite.h"
-#include "Object3dBase.h"
-#include "Object3d.h"
 #include "Framework.h"
+#include "scene/GamePlayScene.h"
 
 class MyGame : public Framework
 {
@@ -27,7 +22,5 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<Sprite>> sprites_;
-	std::vector <std::unique_ptr<Object3d>> obj_;
-
+	GamePlayScene* scene_ = nullptr;
 };
