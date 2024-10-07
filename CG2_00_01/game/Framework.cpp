@@ -9,16 +9,19 @@ void Framework::Initialize()
 	directXEngine_ = std::make_unique<DirectXEngine>();
 	directXEngine_->Initialize(winApp_.get());
 
-	input_ = std::make_unique<Input>();
-	input_->Initialize(winApp_.get());
+	Input::GetInstance()->Initialize(winApp_.get());
 }
 
 void Framework::Finalize()
 {
+	Input::GetInstance()->Finalize();
+
 	//ImGuiの終了処理
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+
+	SceneManager::GetInstance()->Finalize();
 }
 
 void Framework::Update()
@@ -29,10 +32,13 @@ void Framework::Update()
 	}
 	else {
 		// 入力の更新
-		input_->Update();
+		Input::GetInstance()->Update();
 
 		// カメラの更新
 		Camera::GetInstance()->Update();
+
+		// シーンの更新
+		SceneManager::GetInstance()->Update();
 	}
 }
 

@@ -231,6 +231,9 @@
     <ClCompile Include="CG2_00_01\game\scene\TitleScene.cpp">
       <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\game\scene\SceneManager.cpp">
+      <Filter>ソース ファイル\game\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -369,6 +372,9 @@
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\scene\TitleScene.h">
+      <Filter>ヘッダー ファイル\game\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\game\scene\SceneManager.h">
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
   </ItemGroup>

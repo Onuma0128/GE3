@@ -1,11 +1,17 @@
 #include "TitleScene.h"
+#include "Input.h"
+#include "SpriteBase.h"
+#include "Object3dBase.h"
+
+#include "scene/GamePlayScene.h"
+#include "scene/SceneManager.h"
 
 void TitleScene::Initialize()
 {
 	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize("uvChecker.png");
-	sprite_->SetPosition({ 640,320 });
-	sprite_->SetSize({ 400,400 });
+	sprite_->SetPosition({ 64,64 });
+	sprite_->SetSize({ 128,128 });
 	sprite_->SetAnchorPoint({ 0.5f,0.5f });
 	sprites_.push_back(std::move(sprite_));
 
@@ -20,17 +26,6 @@ void TitleScene::Initialize()
 	object3d_->Initialize();
 	object3d_->SetModel("teapot.obj");
 	obj_.push_back(std::move(object3d_));
-
-	std::unique_ptr<Object3d> object3d1_ = std::make_unique<Object3d>();
-	object3d1_->Initialize();
-	object3d1_->SetModel("terrain.obj");
-	obj_.push_back(std::move(object3d1_));
-
-	std::unique_ptr<Object3d> object3dTest_ = std::make_unique<Object3d>();
-	object3dTest_->Initialize();
-	object3dTest_->SetModel("plane.gltf");
-	object3dTest_->SetRotation({ 0,3.14f,0 });
-	obj_.push_back(std::move(object3dTest_));
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
@@ -51,6 +46,11 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		BaseScene* scene = new GamePlayScene();
+		SceneManager::GetInstance()->SetNextScene(scene);
+	}
+
 	for (auto& obj : obj_) {
 		obj->Update();
 	}

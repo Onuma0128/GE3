@@ -142,6 +142,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\game\Framework.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\GamePlayScene.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\TitleScene.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\game\scene\BaseScene.h" />
@@ -190,6 +191,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\game\Framework.h" />
     <ClInclude Include="CG2_00_01\game\scene\GamePlayScene.h" />
     <ClInclude Include="CG2_00_01\game\scene\TitleScene.h" />
+    <ClInclude Include="CG2_00_01\game\scene\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

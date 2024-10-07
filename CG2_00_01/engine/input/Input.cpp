@@ -2,9 +2,14 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
-Input::~Input()
+Input* Input::instance_ = nullptr;
+
+Input* Input::GetInstance()
 {
-	//delete winApp_;
+	if (instance_ == nullptr) {
+		instance_ = new Input;
+	}
+	return instance_;
 }
 
 void Input::Initialize(WinApp* winApp)
@@ -60,4 +65,10 @@ bool Input::TriggerKey(BYTE keyNumber)
 	}
 	// そうでなければfalseを返す
 	return false;
+}
+
+void Input::Finalize()
+{
+	delete instance_;
+	instance_ = nullptr;
 }

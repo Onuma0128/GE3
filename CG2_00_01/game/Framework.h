@@ -6,6 +6,8 @@
 #include "DirectXEngine.h"
 #include "Input.h"
 
+#include "scene/SceneManager.h"
+
 class Framework
 {
 public:
@@ -31,5 +33,4 @@ protected:
 
 	std::unique_ptr<WinApp> winApp_ = nullptr;
 	std::unique_ptr<DirectXEngine> directXEngine_ = nullptr;
-	std::unique_ptr<Input> input_ = nullptr;
 };

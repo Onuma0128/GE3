@@ -3,18 +3,15 @@
 #include <vector>
 #include "wrl.h"
 
-#include "SpriteBase.h"
-#include "Sprite.h"
-#include "Object3dBase.h"
-#include "Object3d.h"
 #include "LoadSound.h"
+#include "Sprite.h"
+#include "Object3d.h"
 #include "scene/BaseScene.h"
 
 using Microsoft::WRL::ComPtr;
 
 class TitleScene : public BaseScene
 {
-
 public:
 
 	void Initialize() override;

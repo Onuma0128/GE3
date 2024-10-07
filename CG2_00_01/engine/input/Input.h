@@ -8,8 +8,18 @@
 
 class Input
 {
+private:
+	static Input* instance_;
+
+	Input() = default;
+	~Input() = default;
+	Input(Input&) = delete;
+	Input& operator=(Input&) = delete;
+
 public:
-	~Input();
+	// シングルトンインスタンスの取得
+	static Input* GetInstance();
+public:
 
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// 初期化
@@ -20,6 +30,8 @@ public:
 	bool PushKey(BYTE keyNumber);
 	// キーのトリガーをチェック
 	bool TriggerKey(BYTE keyNumber);
+	// 終了
+	void Finalize();
 
 private:
 	ComPtr<IDirectInput8> directInput_;

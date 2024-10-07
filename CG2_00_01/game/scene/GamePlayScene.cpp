@@ -1,4 +1,7 @@
 #include "GamePlayScene.h"
+#include "Input.h"
+#include "scene/TitleScene.h"
+#include "SceneManager.h"
 
 void GamePlayScene::Initialize()
 {
@@ -51,6 +54,11 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
+	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
+		BaseScene* scene = new TitleScene();
+		SceneManager::GetInstance()->SetNextScene(scene);
+	}
+
 	for (auto& obj : obj_) {
 		obj->Update();
 	}
