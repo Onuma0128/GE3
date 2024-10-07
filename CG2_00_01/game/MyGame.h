@@ -3,6 +3,7 @@
 #pragma comment(lib,"dxguid.lib")
 #include "Framework.h"
 #include "scene/GamePlayScene.h"
+#include "scene/TitleScene.h"
 
 class MyGame : public Framework
 {
@@ -22,5 +23,5 @@ public:
 
 private:
 
-	GamePlayScene* scene_ = nullptr;
+	TitleScene* scene_ = nullptr;
 };

@@ -12,8 +12,9 @@
 
 using Microsoft::WRL::ComPtr;
 
-class GamePlayScene : public BaseScene
+class TitleScene : public BaseScene
 {
+
 public:
 
 	void Initialize() override;

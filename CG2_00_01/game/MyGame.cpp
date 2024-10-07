@@ -5,7 +5,7 @@ void MyGame::Initialize()
 {
 	Framework::Initialize();
 
-	scene_ = new GamePlayScene();
+	scene_ = new TitleScene();
 	scene_->Initialize();
 }
 
