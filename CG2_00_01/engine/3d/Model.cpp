@@ -76,7 +76,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
     for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
         aiMesh* mesh = scene->mMeshes[meshIndex];
         assert(mesh->HasNormals());
-        assert(mesh->HasTextureCoords(0));
+        //assert(mesh->HasTextureCoords(0));
 
         // faceを解析
         for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
@@ -88,12 +88,17 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
                 uint32_t vertexIndex = face.mIndices[element];
                 aiVector3D& position = mesh->mVertices[vertexIndex];
                 aiVector3D& normal = mesh->mNormals[vertexIndex];
-                aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
                 
                 VertexData vertex;
                 vertex.position = { position.x,position.y,position.z,1.0f };
                 vertex.normal = { normal.x,normal.y,normal.z };
-                vertex.texcoord = { texcoord.x,texcoord.y };
+                if (mesh->HasTextureCoords(0)) {
+                    aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+                    vertex.texcoord = { texcoord.x,texcoord.y };
+                }
+                else {
+                    vertex.texcoord = { 0.0f,0.0f };
+                }
 
                 vertex.position.x *= -1.0f;
                 vertex.normal.x *= -1.0f;
@@ -103,12 +108,22 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
     }
 
     // materialを解析
+    bool textureFound = false;  // テクスチャが見つかったかどうかのフラグ
     for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
         aiMaterial* material = scene->mMaterials[materialIndex];
+
+        // Diffuseテクスチャを確認
         if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
             aiString textureFilePath;
             material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
             modelData.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
+            textureFound = true; // テクスチャが見つかった
+        }
+        // 他にも必要なテクスチャタイプがあればここで追加で確認する
+
+        // いずれのテクスチャも見つからなければデフォルトのwhite1x1.pngを割り当てる
+        if (!textureFound) {
+            modelData.material.textureFilePath = directoryPath + "/white1x1.png";
         }
     }
 

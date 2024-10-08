@@ -24,7 +24,8 @@ void TitleScene::Initialize()
 
 	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize();
-	object3d_->SetModel("teapot.obj");
+	object3d_->SetModel("suzanne.obj");
+	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
 	obj_.push_back(std::move(object3d_));
 
 	// オーディオ

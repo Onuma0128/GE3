@@ -39,15 +39,24 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	assert(SUCCEEDED(hr));
 
 	// ミップマップの作成
-	DirectX::ScratchImage mipImages{};
-	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
-	assert(SUCCEEDED(hr));
-
-	// テクスチャデータを追加
+	const DirectX::TexMetadata& metadata = image.GetMetadata();
 	TextureData& textureData = textureDatas_[filePath];
-	textureData.metadata = mipImages.GetMetadata();
-	textureData.resource = CreateTextureResource(textureData.metadata);
-	UploadTextureData(textureData.resource, mipImages);
+	if (metadata.width <= 1 && metadata.height <= 1) {
+		// テクスチャデータを追加
+		textureData.metadata = image.GetMetadata();
+		textureData.resource = CreateTextureResource(textureData.metadata);
+		UploadTextureData(textureData.resource, image);
+	}
+	else {
+		DirectX::ScratchImage mipImages{};
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+		assert(SUCCEEDED(hr));
+
+		// テクスチャデータを追加
+		textureData.metadata = mipImages.GetMetadata();
+		textureData.resource = CreateTextureResource(textureData.metadata);
+		UploadTextureData(textureData.resource, mipImages);
+	}
 
 	// テクスチャデータの要素数番号
 	textureData.srvIndex = SrvManager::GetInstance()->Allocate() + kSRVIndexTop;
