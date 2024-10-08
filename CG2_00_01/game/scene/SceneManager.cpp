@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include <cassert>
 
 SceneManager* SceneManager::instance_ = nullptr;
 
@@ -43,4 +44,12 @@ void SceneManager::Finalize()
 
 	delete instance_;
 	instance_ = nullptr;
+}
+
+void SceneManager::ChangeScene(const std::string& sceneName)
+{
+	assert(sceneFactory_);
+	assert(nextScene_ == nullptr);
+
+	nextScene_ = sceneFactory_->CreateScene(sceneName);
 }

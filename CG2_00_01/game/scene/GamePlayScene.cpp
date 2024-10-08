@@ -1,6 +1,6 @@
 #include "GamePlayScene.h"
 #include "Input.h"
-#include "scene/TitleScene.h"
+#include "TitleScene.h"
 #include "SceneManager.h"
 
 void GamePlayScene::Initialize()
@@ -55,8 +55,7 @@ void GamePlayScene::Finalize()
 void GamePlayScene::Update()
 {
 	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
-		BaseScene* scene = new TitleScene();
-		SceneManager::GetInstance()->SetNextScene(scene);
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
 	for (auto& obj : obj_) {

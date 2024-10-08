@@ -14,6 +14,8 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
+	delete sceneFactory_;
+
 	Input::GetInstance()->Finalize();
 
 	//ImGuiの終了処理

@@ -1,14 +1,15 @@
 #include "MyGame.h"
 #include "LightManager.h"
-#include "scene/SceneManager.h"
+#include "SceneManager.h"
+#include "SceneFactory.h"
 
 void MyGame::Initialize()
 {
 	Framework::Initialize();
 
-	BaseScene* scene_ = new TitleScene();
-
-	SceneManager::GetInstance()->SetNextScene(scene_);
+	sceneFactory_ = new SceneFactory();
+	SceneManager::GetInstance()->SetSceneFactory(sceneFactory_);
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 }
 
 void MyGame::Finalize()

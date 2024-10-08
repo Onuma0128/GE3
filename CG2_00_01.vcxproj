@@ -54,7 +54,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\camera;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;$(ProjectDir)CG2_00_01\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\camera;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;$(ProjectDir)CG2_00_01\game;$(ProjectDir)CG2_00_01\game\scene;$(ProjectDir)CG2_00_01\game\sceneFactory;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -98,6 +98,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CG2_00_01\game\sceneFactory\AbstractSceneFactory.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\BaseScene.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\camera\Camera.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\CompileShader.cpp" />
@@ -143,8 +144,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\game\scene\GamePlayScene.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\TitleScene.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\SceneManager.cpp" />
+    <ClCompile Include="CG2_00_01\game\sceneFactory\SceneFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CG2_00_01\game\sceneFactory\AbstractSceneFactory.h" />
     <ClInclude Include="CG2_00_01\game\scene\BaseScene.h" />
     <ClInclude Include="CG2_00_01\engine\base\camera\Camera.h" />
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\CompileShader.h" />
@@ -192,6 +195,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\game\scene\GamePlayScene.h" />
     <ClInclude Include="CG2_00_01\game\scene\TitleScene.h" />
     <ClInclude Include="CG2_00_01\game\scene\SceneManager.h" />
+    <ClInclude Include="CG2_00_01\game\sceneFactory\SceneFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

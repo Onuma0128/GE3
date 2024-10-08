@@ -8,7 +8,7 @@
 #include "Object3dBase.h"
 #include "Object3d.h"
 #include "LoadSound.h"
-#include "scene/BaseScene.h"
+#include "BaseScene.h"
 
 using Microsoft::WRL::ComPtr;
 

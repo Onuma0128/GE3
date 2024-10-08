@@ -6,7 +6,7 @@
 #include "LoadSound.h"
 #include "Sprite.h"
 #include "Object3d.h"
-#include "scene/BaseScene.h"
+#include "BaseScene.h"
 
 using Microsoft::WRL::ComPtr;
 

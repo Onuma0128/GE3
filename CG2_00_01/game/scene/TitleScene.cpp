@@ -3,8 +3,7 @@
 #include "SpriteBase.h"
 #include "Object3dBase.h"
 
-#include "scene/GamePlayScene.h"
-#include "scene/SceneManager.h"
+#include "SceneManager.h"
 
 void TitleScene::Initialize()
 {
@@ -48,8 +47,7 @@ void TitleScene::Finalize()
 void TitleScene::Update()
 {
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
-		BaseScene* scene = new GamePlayScene();
-		SceneManager::GetInstance()->SetNextScene(scene);
+		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
 	for (auto& obj : obj_) {
