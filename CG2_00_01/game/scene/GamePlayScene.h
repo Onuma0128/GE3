@@ -7,8 +7,11 @@
 #include "Sprite.h"
 #include "Object3dBase.h"
 #include "Object3d.h"
-#include "LoadSound.h"
 #include "BaseScene.h"
+#include "Camera.h"
+
+#include "railCamera/RailCamera.h"
+
 
 using Microsoft::WRL::ComPtr;
 
@@ -26,10 +29,9 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<Sprite>> sprites_;
-	std::vector <std::unique_ptr<Object3d>> obj_;
+	std::unique_ptr<Object3d> ground_;
 
-	ComPtr<IXAudio2> xAudio2;
-	SoundData soundData1;
+	std::unique_ptr<RailCamera> railCamera_;
+
 };
 

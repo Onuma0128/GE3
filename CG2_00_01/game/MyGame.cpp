@@ -32,7 +32,7 @@ void MyGame::Draw()
 	directXEngine_->PreDraw();
 
 	// 描画処理
-	directXEngine_->Draw();
+	//directXEngine_->Draw();
 
 	// ライトの更新
 	LightManager::GetInstance()->Update();

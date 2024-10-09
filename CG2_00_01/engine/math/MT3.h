@@ -116,6 +116,9 @@ std::list<Particle> Emit(const Emitter& emitter, std::mt19937& randomEngine);
 // AABBとpoint
 bool IsCollision(const AABB& aabb, const Vector3& point);
 
+Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t);
+Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t);
+
 //単項演算子
 Vector3 operator+(const Vector3& v);
 Vector3 operator-(const Vector3& v);
