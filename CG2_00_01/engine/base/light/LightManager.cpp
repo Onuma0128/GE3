@@ -38,6 +38,7 @@ void LightManager::Update()
 			ImGui::TreePop();
 		}
 		if (ImGui::TreeNodeEx("Point Light", flag)) {
+			ImGui::ColorEdit4("LightColor", (float*)&pointLightData_->color.x);
 			ImGui::DragFloat3("PointLightData.pos", &pointLightData_->position.x, 0.01f);
 			ImGui::DragFloat("PointLightIntensity", &pointLightData_->intensity, 0.01f);
 			ImGui::DragFloat("PointLightRadius", &pointLightData_->radius, 0.01f);
@@ -45,6 +46,7 @@ void LightManager::Update()
 			ImGui::TreePop();
 		}
 		if (ImGui::TreeNodeEx("Spot Light", flag)) {
+			ImGui::ColorEdit4("LightColor", (float*)&spotLightData_->color.x);
 			ImGui::DragFloat3("SpotLightData.pos", &spotLightData_->position.x, 0.01f);
 			ImGui::DragFloat3("SpotLightData.direction", &spotLightData_->direction.x, 0.01f);
 			ImGui::DragFloat("SpotLightData.intensity", &spotLightData_->intensity, 0.01f);
