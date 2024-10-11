@@ -9,15 +9,32 @@ void RailCamera::Initialize()
 	cameraObj_->Initialize();
 	cameraObj_->SetModel("suzanne.obj");
 
-	cameraOffset_ = { {1,1,1},{0,0,0},{0,0,0} };
-
 	controlPoints_ = {
 		{0,0,0},
 		{0,3,5},
 		{0,5,10},
 		{0,3,15},
-		{0,0,20}
+		{0,-2,18}
 	};
+
+	for (int i = 0; i < controlPoints_.size() - 1; ++i) {
+		for (int j = 0; j < 10; ++j) {
+			if (!controlPoints_.empty()) {
+				// スプライン上の現在の位置を計算
+				Vector3 position = CatmullRomPosition(controlPoints_, t_);
+				// 少し先の位置を計算し、注視点を決定
+				float nextT = t_ + 0.1f;
+				Vector3 nextPosition = CatmullRomPosition(controlPoints_, nextT);
+				// カメラの位置を更新
+				std::unique_ptr<Line3d> line = std::make_unique<Line3d>();
+				line->Initialize(position, nextPosition);
+				line3d_.push_back(std::move(line));
+				// 時間を進行
+				t_ += 0.1f;
+			}
+		}
+		t_ = 0.0f;
+	}
 
 	for (uint32_t i = 0; i < controlPoints_.size(); ++i) {
 		std::unique_ptr<Object3d> obj = std::make_unique<Object3d>();
@@ -33,13 +50,14 @@ void RailCamera::Update()
 {
 	cameraObj_->Update();
 
-	camera_->SetRotate(cameraOffset_.rotate);
-	camera_->SetTranslate(cameraOffset_.translate);
-
 	RailCameraMove();
 
 	for (auto& obj : railPoints_) {
 		obj->Update();
+	}
+
+	for (auto& line : line3d_) {
+		line->Update();
 	}
 }
 
@@ -52,12 +70,11 @@ void RailCamera::Draw()
 	}
 }
 
-void RailCamera::Debug_ImGui()
+void RailCamera::DrawLine()
 {
-	ImGui::Begin("camera");
-	ImGui::DragFloat3("rotate", &cameraOffset_.rotate.x, 0.01f);
-	ImGui::DragFloat3("translate", &cameraOffset_.translate.x, 0.1f);
-	ImGui::End();
+	for (auto& line : line3d_) {
+		line->Draw();
+	}
 }
 
 void RailCamera::RailCameraMove()
