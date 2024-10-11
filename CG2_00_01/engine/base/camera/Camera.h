@@ -38,6 +38,8 @@ public:
 
 	void Finalize();
 
+	void Debug_ImGui();
+
 	void MakeCameraData();
 
 	/*==================== アクセッサ ====================*/

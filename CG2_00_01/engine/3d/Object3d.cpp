@@ -15,10 +15,9 @@ void Object3d::Initialize()
 
 void Object3d::Update()
 {
-    Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
     Matrix4x4 worldMatrixObject = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
     Matrix4x4 worldViewMatrixObject = Multiply(worldMatrixObject, camera_->GetViewMatrix()); // カメラから見たワールド座標に変換
-    Matrix4x4 worldViewProjectionMatrixObject = Multiply(worldViewMatrixObject, projectionMatrix); // 射影行列を適用してワールドビュープロジェクション行列を計算
+    Matrix4x4 worldViewProjectionMatrixObject = Multiply(worldViewMatrixObject, camera_->GetProjectionMatrix()); // 射影行列を適用してワールドビュープロジェクション行列を計算
     wvpData_->WVP = model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
     wvpData_->World = model_->GetModelData().rootNode.localMatrix * worldViewMatrixObject; // ワールド座標行列を更新
     wvpData_->WorldInverseTranspose = model_->GetModelData().rootNode.localMatrix * Inverse(worldViewMatrixObject);

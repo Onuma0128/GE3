@@ -36,9 +36,6 @@ void Framework::Update()
 		// 入力の更新
 		Input::GetInstance()->Update();
 
-		// カメラの更新
-		Camera::GetInstance()->Update();
-
 		// シーンの更新
 		SceneManager::GetInstance()->Update();
 	}

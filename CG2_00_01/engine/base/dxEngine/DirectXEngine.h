@@ -130,15 +130,10 @@ private:
 	// DxcCompilerの生成
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
 	ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
-	// TextureSrvHandleGPUの生成
-	//std::array<D3D12_GPU_DESCRIPTOR_HANDLE, 2> textureSrvHandleGPU_ = {};
 	// PipelineStateの生成
 	// Particle
 	ComPtr<ID3D12RootSignature> ParticleRootSignature_ = nullptr;
 	ComPtr<ID3D12PipelineState> ParticlePipelineState_ = nullptr;
-	// InstancingSRVの生成
-	/*D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU_ = {};
-	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU_ = {};*/
 	// IncludeHandlerの生成
 	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 	// TransitionBarrierの生成

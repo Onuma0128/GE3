@@ -38,7 +38,17 @@ void Camera::Initialize(DirectXEngine* dxEngine)
 void Camera::Update()
 {
 	worldMatrix_ = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	viewMatrix_ = Inverse(worldMatrix_);
+	// カメラの位置
+	Vector3 eye = transform_.translate;
+	// デフォルトの前方向ベクトル（Z軸方向）
+	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
+	// 回転行列を適用して、カメラの前方向ベクトルを計算
+	Matrix4x4 rotationMatrix = MakeRotateMatrix(transform_.rotate);
+	Vector3 forward = Transform_(defaultForward,rotationMatrix);
+	// カメラの注視点（カメラの位置に前方向ベクトルを加算）
+	Vector3 target = eye + forward;
+	// ビュー行列を計算
+	viewMatrix_ = LookAt(eye, target, { 0.0f, 1.0f, 0.0f });
 
 	projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
@@ -50,6 +60,16 @@ void Camera::Finalize()
 {
 	delete instance_;
 	instance_ = nullptr;
+}
+
+void Camera::Debug_ImGui()
+{
+	ImGui::Begin("Camera");
+
+	ImGui::DragFloat3("rotate", &transform_.rotate.x, 0.01f);
+	ImGui::DragFloat3("translate", &transform_.translate.x, 0.1f);
+
+	ImGui::End();
 }
 
 void Camera::MakeCameraData()
