@@ -19,25 +19,30 @@ public:
 
 	// ルートシグネチャ
 	ComPtr<ID3D12RootSignature> CreateObject3dRootSignature();
+	ComPtr<ID3D12RootSignature> CreateLine3dRootSignature();
 	ComPtr<ID3D12RootSignature> CreateParticleRootSignature();
 	// インプットレイアウト
 	void Object3dInputLayout(D3D12_INPUT_ELEMENT_DESC* inputElementDescs, D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc);
+	void Line3dInputLayout(D3D12_INPUT_ELEMENT_DESC* inputElementDescs, D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc);
 	void ParticleInputLayout(D3D12_INPUT_ELEMENT_DESC* inputElementDescs, D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc);
 	// ブレンド
 	void ParticleBlendState(D3D12_BLEND_DESC& blendDesc);
 	// ラスタライザ
 	void RasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc, bool enableCulling);
+	void Line3dRasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc);
 	// シェーダーコンパイル
 	void Object3dShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& geometryShader, ComPtr<IDxcBlob>& pixelShader);
+	void Line3dShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& pixelShader);
 	void ParticleShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& pixelShader);
 	// デスクリプターステンシル
-	void ParticleDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
 	void Object3dDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
+	void ParticleDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
 
 	///==============================================================================================================
 
 	// パイプラインの生成
 	ComPtr<ID3D12PipelineState> CreateObject3dPipelineState(bool enableCulling);
+	ComPtr<ID3D12PipelineState> CreateLine3dPipelineState();
 	ComPtr<ID3D12PipelineState> CreateParticlePipelineState();
 
 private:

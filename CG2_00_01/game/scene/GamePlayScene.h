@@ -8,6 +8,7 @@
 #include "Object3dBase.h"
 #include "Object3d.h"
 #include "BaseScene.h"
+#include "Line3d.h"
 #include "Camera.h"
 
 #include "railCamera/RailCamera.h"

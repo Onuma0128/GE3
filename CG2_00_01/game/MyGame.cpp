@@ -1,4 +1,5 @@
 #include "MyGame.h"
+#include "Camera.h"
 #include "LightManager.h"
 #include "SceneManager.h"
 #include "SceneFactory.h"
@@ -33,6 +34,10 @@ void MyGame::Draw()
 
 	// 描画処理
 	//directXEngine_->Draw();
+
+	Camera::GetInstance()->Debug_ImGui();
+	// カメラの更新
+	Camera::GetInstance()->Update();
 
 	// ライトの更新
 	LightManager::GetInstance()->Update();

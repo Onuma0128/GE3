@@ -73,6 +73,8 @@ Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 // スカラー倍
 Vector3 Multiply(float scalar, const Vector3& v);
 
+float Dot(const Vector3& v1, const Vector3& v2);
+Vector3 Cross(const Vector3& v1, const Vector3& v2);
 
 //単位行列
 Matrix4x4 MakeIdentity4x4();
@@ -96,6 +98,8 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
 // 行列の積
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+//
+Matrix4x4 LookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
 // 3次元アフィン変換
 Matrix4x4 MakeAfineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 Vector3 Transform_(const Vector3& vector, const Matrix4x4& matrix);

@@ -1,6 +1,8 @@
 #include "GamePlayScene.h"
+
 #include "Input.h"
 #include "SceneManager.h"
+#include "PrimitiveDrawer.h"
 
 void GamePlayScene::Initialize()
 {
@@ -38,6 +40,8 @@ void GamePlayScene::Draw()
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
-	
+
+
+	PrimitiveDrawer::GetInstance()->DrawBase();
 
 }

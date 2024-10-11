@@ -26,6 +26,19 @@ Vector3 Multiply(float scalar, const Vector3& v) {
 	return result;
 }
 
+float Dot(const Vector3& v1, const Vector3& v2) {
+	float result{};
+	result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+	return result;
+}
+
+Vector3 Cross(const Vector3& v1, const Vector3& v2) {
+	Vector3 result{};
+	result.x = v1.y * v2.z - v1.z * v2.y;
+	result.y = v1.z * v2.x - v1.x * v2.z;
+	result.z = v1.x * v2.y - v1.y * v2.x;
+	return result;
+}
 
 Matrix4x4 MakeIdentity4x4()
 {
@@ -96,6 +109,16 @@ Vector3 Transform_(const Vector3& vector, const Matrix4x4& matrix) {
 	result.x /= w;
 	result.y /= w;
 	result.z /= w;
+	return result;
+}
+
+Matrix4x4 LookAt(const Vector3& eye, const Vector3& target, const Vector3& up) {
+	Vector3 zaxis = Normalize(Subtract(target, eye)); // forward
+	Vector3 xaxis = Normalize(Cross(up, zaxis));      // right
+	Vector3 yaxis = Cross(zaxis, xaxis);              // up
+
+	Matrix4x4 result = { xaxis.x, yaxis.x, zaxis.x, 0, xaxis.y, yaxis.y, zaxis.y, 0, xaxis.z, yaxis.z, zaxis.z, 0, -Dot(xaxis, eye), -Dot(yaxis, eye), -Dot(zaxis, eye), 1 };
+
 	return result;
 }
 
