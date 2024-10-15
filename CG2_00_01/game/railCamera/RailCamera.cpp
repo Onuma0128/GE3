@@ -11,26 +11,27 @@ void RailCamera::Initialize()
 
 	controlPoints_ = {
 		{0,0,0},
-		{0,3,5},
-		{0,5,10},
-		{0,3,15},
-		{0,-2,18}
+		{3,3,5},
+		{2,5,10},
+		{-1,3,15},
+		{3,-2,18}
 	};
 
+	const float lineNum = 20;
 	for (int i = 0; i < controlPoints_.size() - 1; ++i) {
-		for (int j = 0; j < 10; ++j) {
+		for (int j = 0; j < (int)lineNum; ++j) {
 			if (!controlPoints_.empty()) {
 				// スプライン上の現在の位置を計算
 				Vector3 position = CatmullRomPosition(controlPoints_, t_);
 				// 少し先の位置を計算し、注視点を決定
-				float nextT = t_ + 0.1f;
+				float nextT = t_ + 1.0f / lineNum;
 				Vector3 nextPosition = CatmullRomPosition(controlPoints_, nextT);
 				// カメラの位置を更新
 				std::unique_ptr<Line3d> line = std::make_unique<Line3d>();
 				line->Initialize(position, nextPosition);
 				line3d_.push_back(std::move(line));
 				// 時間を進行
-				t_ += 0.1f;
+				t_ += 1.0f / lineNum;
 			}
 		}
 		t_ = 0.0f;
@@ -65,9 +66,9 @@ void RailCamera::Draw()
 {
 	cameraObj_->Draw();
 
-	for (auto& obj : railPoints_) {
+	/*for (auto& obj : railPoints_) {
 		obj->Draw();
-	}
+	}*/
 }
 
 void RailCamera::DrawLine()
@@ -89,6 +90,7 @@ void RailCamera::RailCameraMove()
 		Vector3 lookAtPosition = CatmullRomPosition(controlPoints_, nextT);
 		// カメラの位置を更新
 		cameraObj_->SetPosition(position);
+		//camera_->SetTranslate(position);
 		// 時間を進行
 		t_ += dt;
 		if (t_ > 1.0f) {
@@ -102,5 +104,6 @@ void RailCamera::RailCameraMove()
 		Vector3 velocityZ = Transform_(velocity, rotateMatrixY);
 		rotate.x = std::atan2(-velocityZ.y, velocityZ.z);
 		cameraObj_->SetRotation(rotate);
+		//camera_->SetRotate(rotate);
 	}
 }

@@ -25,6 +25,8 @@ void Input::Initialize(WinApp* winApp)
 		winApp_->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8,
 		(void**)&directInput_, nullptr);
 	assert(SUCCEEDED(hr));
+
+
 	// キーボードデバイスの生成
 	hr = directInput_->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
 	assert(SUCCEEDED(hr));
@@ -35,6 +37,19 @@ void Input::Initialize(WinApp* winApp)
 	hr = keyboard_->SetCooperativeLevel(
 		winApp_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(hr));
+
+	// マウスデバイスの生成
+	hr = directInput_->CreateDevice(GUID_SysMouse, &mouse_, NULL);
+	assert(SUCCEEDED(hr));
+	// 入力データ形式のセット
+	hr = mouse_->SetDataFormat(&c_dfDIMouse);
+	assert(SUCCEEDED(hr));
+	// 排他制御レベルのセット
+	hr = mouse_->SetCooperativeLevel(
+		winApp_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	assert(SUCCEEDED(hr));
+
+	mouse_->Acquire();
 }
 
 void Input::Update()
@@ -45,26 +60,43 @@ void Input::Update()
 	keyboard_->Acquire();
 	// 全キーの入力状態を取得する
 	keyboard_->GetDeviceState(sizeof(key_), key_);
+
+	// マウス情報の取得開始
+	mouse_->Acquire();
+	HRESULT hr = mouse_->GetDeviceState(sizeof(DIMOUSESTATE), &mouseState_);
+	if (FAILED(hr)) {
+		// デバイスが一時的に使用できない場合は再取得
+		mouse_->Acquire();
+	}
+
+	// マウスの移動量とボタンの状態を取得
+	mouseDeltaX_ = mouseState_.lX;
+	mouseDeltaY_ = mouseState_.lY;
+
+	memcpy(mouseButtonPre_, mouseButton_, sizeof(mouseButton_));
+	memcpy(mouseButton_, mouseState_.rgbButtons, sizeof(mouseButton_));
 }
 
 bool Input::PushKey(BYTE keyNumber)
 {
 	// 指定キーが押していればtrueを返す
-	if (key_[keyNumber]) {
-		return true;
-	}
-	// そうでなければfalseを返す
-	return false;
+	return key_[keyNumber] != 0;
 }
 
 bool Input::TriggerKey(BYTE keyNumber)
 {
 	// 指定キーが現在押されていて、前回は押されていなかった場合にtrueを返す
-	if (key_[keyNumber] && !keyPre_[keyNumber]) {
-		return true;
-	}
-	// そうでなければfalseを返す
-	return false;
+	return key_[keyNumber] && !keyPre_[keyNumber];
+}
+
+bool Input::PushMouseButton(int buttonNumber) const
+{
+	return (mouseButton_[buttonNumber] & 0x80) != 0;
+}
+
+bool Input::TriggerMouseButton(int buttonNumber) const
+{
+	return (mouseButton_[buttonNumber] & 0x80) != 0 && !(mouseButtonPre_[buttonNumber] & 0x80);
 }
 
 void Input::Finalize()
