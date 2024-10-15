@@ -2,6 +2,7 @@
 #include <d3d12.h>
 #pragma comment(lib,"d3d12.lib")
 #include "wrl.h"
+#include "vector"
 
 #include "PrimitiveDrawer.h"
 
@@ -21,15 +22,23 @@ public:
 
 	void Initialize(Vector3 startPos, Vector3 endPos);
 
+	void Initialize(const std::vector<Vector3>& positions);
+
 	void Update();
 
 	void Draw();
+
+	void Draws();
 
 	/*==================== メンバ関数 ====================*/
 
 	void CreatVertexResource();
 
+	void CreatVertexResource(const std::vector<Vector3>& positions);
+
 	void CreatVertexBufferView();
+
+	void CreatVertexBufferViews();
 
 private:
 
@@ -41,6 +50,7 @@ private:
 
 	VertexLineData* vertexData_ = nullptr;
 	Matrix4x4* wvpData_ = nullptr;
+	uint32_t lineCount_ = 0;
 
 	Vector3 startPos_ = {};
 	Vector3 endPos_ = {};

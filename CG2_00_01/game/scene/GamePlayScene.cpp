@@ -37,11 +37,15 @@ void GamePlayScene::Initialize()
 	object3dTest_->SetRotation({ 0,3.14f,0 });
 	obj_.push_back(std::move(object3dTest_));
 
-	for (float i = 0; i < 10; i++) {
-		std::unique_ptr<Line3d> line3d_ = std::make_unique<Line3d>();
-		line3d_->Initialize({ i,i,i }, { i + 1,i + 1 ,i + 1 });
-		lines_.push_back(std::move(line3d_));
+	std::vector<Vector3> lines;
+	for (float i = 0; i < 100; i++) {
+		Vector3 pos = { i,i,i };
+		Vector3 end = { i+1,i+1,i+1 };
+		lines.push_back(pos);
+		lines.push_back(end);
 	}
+	line3d_ = std::make_unique<Line3d>();
+	line3d_->Initialize(lines);
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
@@ -72,9 +76,7 @@ void GamePlayScene::Update()
 	for (auto& sprite : sprites_) {
 		sprite->Update();
 	}
-	for (auto& line : lines_) {
-		line->Update();
-	}
+	line3d_->Update();
 }
 
 void GamePlayScene::Draw()
@@ -93,8 +95,6 @@ void GamePlayScene::Draw()
 
 
 	PrimitiveDrawer::GetInstance()->DrawBase();
-	for (auto& line : lines_) {
-		line->Draw();
-	}
+	line3d_->Draws();
 
 }

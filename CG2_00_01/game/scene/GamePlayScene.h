@@ -29,7 +29,7 @@ private:
 
 	std::vector<std::unique_ptr<Sprite>> sprites_;
 	std::vector<std::unique_ptr<Object3d>> obj_;
-	std::vector<std::unique_ptr<Line3d>> lines_;
+	std::unique_ptr<Line3d> line3d_;
 
 	ComPtr<IXAudio2> xAudio2;
 	SoundData soundData1;
