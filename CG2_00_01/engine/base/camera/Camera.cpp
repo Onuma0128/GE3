@@ -1,10 +1,7 @@
 #include "Camera.h"
 
-#include "imgui.h"
-#include "imgui_impl_dx12.h"
-#include "imgui_impl_win32.h"
-
 #include "WinApp.h"
+
 #include "MT3.h"
 
 Camera* Camera::instance_ = nullptr;
@@ -20,6 +17,8 @@ Camera* Camera::GetInstance()
 void Camera::Initialize(DirectXEngine* dxEngine)
 {
 	dxEngine_ = dxEngine;
+
+	input_ = Input::GetInstance();
 
 	transform_ = { {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };
 	fovY_ = 0.45f;
@@ -37,17 +36,17 @@ void Camera::Initialize(DirectXEngine* dxEngine)
 
 void Camera::Update()
 {
+#ifdef _DEBUG
+	DebugCamera();
+#endif // _DEBUG
+
 	worldMatrix_ = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	// カメラの位置
+
 	Vector3 eye = transform_.translate;
-	// デフォルトの前方向ベクトル（Z軸方向）
 	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
-	// 回転行列を適用して、カメラの前方向ベクトルを計算
 	Matrix4x4 rotationMatrix = MakeRotateMatrix(transform_.rotate);
 	Vector3 forward = Transform_(defaultForward,rotationMatrix);
-	// カメラの注視点（カメラの位置に前方向ベクトルを加算）
 	Vector3 target = eye + forward;
-	// ビュー行列を計算
 	viewMatrix_ = LookAt(eye, target, { 0.0f, 1.0f, 0.0f });
 
 	projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
@@ -62,14 +61,41 @@ void Camera::Finalize()
 	instance_ = nullptr;
 }
 
-void Camera::Debug_ImGui()
+void Camera::DebugCamera()
 {
-	ImGui::Begin("Camera");
+	const float moveSpeed = 0.1f;
 
-	ImGui::DragFloat3("rotate", &transform_.rotate.x, 0.01f);
-	ImGui::DragFloat3("translate", &transform_.translate.x, 0.1f);
+	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
+	Matrix4x4 rotationMatrix = MakeRotateYMatrix(transform_.rotate.y);
+	Vector3 forward = Transform_(defaultForward, rotationMatrix);
 
-	ImGui::End();
+	// 右方向ベクトルを計算
+	Vector3 defaultRight = { 1.0f, 0.0f, 0.0f };
+	Vector3 right = Transform_(defaultRight, rotationMatrix);
+
+	if (input_->PushKey(DIK_W)) {
+		transform_.translate = transform_.translate + forward * moveSpeed;
+	}
+	if (input_->PushKey(DIK_S)) {
+		transform_.translate = transform_.translate - forward * moveSpeed;
+	}
+	if (input_->PushKey(DIK_A)) {
+		transform_.translate = transform_.translate - right * moveSpeed;
+	}
+	if (input_->PushKey(DIK_D)) {
+		transform_.translate = transform_.translate + right * moveSpeed;
+	}
+
+	// 右クリックされているなら
+	if (input_->PushMouseButton(1)) {
+		// マウスによるカメラ回転
+		float mouseDeltaX = static_cast<float>(input_->GetMouseDeltaX());
+		float mouseDeltaY = static_cast<float>(input_->GetMouseDeltaY());
+
+		// マウスの移動をカメラの回転に変換
+		transform_.rotate.y -= mouseDeltaX * mouseSensitivity_;
+		transform_.rotate.x -= mouseDeltaY * mouseSensitivity_;
+	}
 }
 
 void Camera::MakeCameraData()

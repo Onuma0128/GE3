@@ -38,15 +38,10 @@ void GamePlayScene::Initialize()
 	obj_.push_back(std::move(object3dTest_));
 
 	for (float i = 0; i < 10; i++) {
-
-	std::unique_ptr<Line3d> line3d_ = std::make_unique<Line3d>();
-	line3d_->Initialize({i,i,i}, {i+1,i + 1 ,i + 1 });
-	lines_.push_back(std::move(line3d_));
-
+		std::unique_ptr<Line3d> line3d_ = std::make_unique<Line3d>();
+		line3d_->Initialize({ i,i,i }, { i + 1,i + 1 ,i + 1 });
+		lines_.push_back(std::move(line3d_));
 	}
-	/*std::unique_ptr<Line3d> line3d1_ = std::make_unique<Line3d>();
-	line3d1_->Initialize({ 2,2,2 }, { 0,1,0 });
-	lines_.push_back(std::move(line3d1_));*/
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;

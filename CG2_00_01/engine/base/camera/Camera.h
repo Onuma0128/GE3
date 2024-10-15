@@ -4,6 +4,7 @@
 #include <wrl.h>
 
 #include "DirectXEngine.h"
+#include "Input.h"
 
 #include "Vector3.h"
 #include "Transform.h"
@@ -38,7 +39,7 @@ public:
 
 	void Finalize();
 
-	void Debug_ImGui();
+	void DebugCamera();
 
 	void MakeCameraData();
 
@@ -71,6 +72,8 @@ private:
 
 	DirectXEngine* dxEngine_;
 
+	Input* input_;
+
 	/*==================== カメラの変数 ====================*/
 
 	Transform transform_;
@@ -83,6 +86,8 @@ private:
 	float aspectRatio_;
 	float nearClip_;
 	float farClip_;
+
+	float mouseSensitivity_ = 0.001f;        
 
 	/*==================== カメラデータ ====================*/
 
