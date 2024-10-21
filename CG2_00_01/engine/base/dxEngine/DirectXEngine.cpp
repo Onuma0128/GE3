@@ -3,6 +3,7 @@
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #include <format>
+#include <thread>
 #include "DepthStencilTexture.h"
 #include "DescriptorHeap.h"
 #include "imgui_impl_dx12.h"
@@ -46,6 +47,8 @@ void DirectXEngine::Initialize(WinApp* winApp)
 	assert(winApp);
 	winApp_ = winApp;
 
+	// FPS固定の初期化
+	InitializeFixFPS();
 	// デバイスの初期化
 	DeviceInitialize();
 	// コマンド関連の初期化
@@ -371,6 +374,35 @@ void DirectXEngine::PipelineStateInitialize()
 	ParticlePipelineState_ = pipelineState_->CreateParticlePipelineState();
 }
 
+void DirectXEngine::InitializeFixFPS()
+{
+	reference_ = std::chrono::steady_clock::now();
+}
+
+void DirectXEngine::UpdateFixFPS()
+{
+	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+	// 現在時間を取得する
+	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now(); 
+
+		// 前回記録からの経過時間を取得する
+		std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_); 
+
+		// 1/60秒 (よりわずかに短い時間) 経っていない場合
+		if (elapsed < kMinCheckTime) {
+			
+				// 1/60秒経過するまで微小なスリープを繰り返す
+				while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
+					// 1マイクロ秒スリープ
+					std::this_thread::sleep_for(std::chrono::microseconds(1));
+				}
+		}
+
+	// 現在の時間を記録する
+	reference_ = std::chrono::steady_clock::now(); 
+}
+
 void DirectXEngine::PreDraw()
 {
 	//ImGuiの開始処理
@@ -459,7 +491,7 @@ void DirectXEngine::PostDraw()
 	//GPUとOSに画面の交換を行うよう通知をする
 	swapChain_->Present(1, 0);
 	//FenceValue値を更新
-	fenceValue_++;
+	++fenceValue_;
 	//GPUがここまでたどり着いた時に、Fenceの値を指定した値に代入するようにSignalを送る
 	commandQueue_->Signal(fence_.Get(), fenceValue_);
 	//Fenceの値が指定したSignal値にたどりついているか確認する
@@ -470,6 +502,8 @@ void DirectXEngine::PostDraw()
 		//イベントを待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
+	// FPS固定
+	UpdateFixFPS();
 	//次のフレーム用のコマンドリストを準備
 	hr = commandAllocator_->Reset();
 	assert(SUCCEEDED(hr));
