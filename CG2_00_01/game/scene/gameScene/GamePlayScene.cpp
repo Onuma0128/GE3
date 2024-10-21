@@ -29,6 +29,8 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
+	railCamera_->Debug_ImGui();
+
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
 	ground_->Draw();

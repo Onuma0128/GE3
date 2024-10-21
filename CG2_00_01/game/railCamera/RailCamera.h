@@ -9,6 +9,8 @@
 #include "Vector3.h"
 #include "Transform.h"
 
+const float lineNum = 100;
+
 class RailCamera
 {
 public:
@@ -21,20 +23,31 @@ public:
 
 	void DrawLine();
 
+	void Debug_ImGui();
+
 	void RailCameraMove();
+
+	// レールを作る
+	void CreateRail();
 
 private:
 
 	Camera* camera_;
-	Input* input_;
+	bool isDebug_ = true;
 	std::unique_ptr<Object3d> cameraObj_;
 	float t_ = 0;
 
 	// カメラが通る点
 	std::vector<Vector3> controlPoints_;
-	// レールのオブジェクト
-	std::vector<std::unique_ptr<Object3d>> railPoints_;
+	std::unique_ptr<Object3d> newLine_;
+	Vector3 newLinePos_{};
 
-	std::vector< std::unique_ptr<Line3d>> line3d_;
+	// レールの板ポリ
+	std::vector<std::unique_ptr<Object3d>> railObj_;
+
+	// ライン
+	std::vector<Vector3> lines;
+	std::unique_ptr<Line3d> line3d_;
+
 };
 
