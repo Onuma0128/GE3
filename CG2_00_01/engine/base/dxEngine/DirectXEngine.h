@@ -9,6 +9,7 @@
 #include "PipelineState.h"
 #include <dxcapi.h>
 #include <array>
+#include <chrono>
 
 using Microsoft::WRL::ComPtr;
 
@@ -52,7 +53,10 @@ public:
 	void IncludeHandlerInitialize();
 	// PipelineStateの初期化
 	void PipelineStateInitialize();
-
+	// FPS固定の初期化
+	void InitializeFixFPS();
+	// FPS固定の更新
+	void UpdateFixFPS();
 
 	// 描画前の処理
 	void PreDraw();
@@ -138,4 +142,6 @@ private:
 	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 	// TransitionBarrierの生成
 	D3D12_RESOURCE_BARRIER barrier_{};
+	// 記録時間
+	std::chrono::steady_clock::time_point reference_;
 };
