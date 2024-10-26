@@ -1,6 +1,8 @@
 #include "GamePlayScene.h"
 
+#include "Camera.h"
 #include "Input.h"
+#include "titleScene/TitleScene.h"
 #include "SceneManager.h"
 #include "PrimitiveDrawer.h"
 
@@ -27,8 +29,6 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	railCamera_->Debug_ImGui();
-
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
 	ground_->Draw();

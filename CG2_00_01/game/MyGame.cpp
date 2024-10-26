@@ -35,6 +35,7 @@ void MyGame::Draw()
 	// 描画処理
 	//directXEngine_->Draw();
 
+	// カメラのImGui
 	Camera::GetInstance()->CameraImGui();
 
 	// カメラの更新

@@ -26,7 +26,7 @@ public:
 	void Initialize(WinApp* winApp);
 	// 更新
 	void Update();
-	
+
 	// キーの押下をチェック
 	bool PushKey(BYTE keyNumber);
 	// キーのトリガーをチェック

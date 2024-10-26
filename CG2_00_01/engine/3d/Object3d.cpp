@@ -12,7 +12,7 @@ Object3d::Object3d(const std::string& filePath)
 
 void Object3d::Initialize()
 {
-	this->object3dBase_ = Object3dBase::GetInstance();
+    this->object3dBase_ = Object3dBase::GetInstance();
     this->camera_ = Object3dBase::GetInstance()->GetDefaultCamera();
 
     MakeWvpData();
@@ -71,4 +71,3 @@ const Matrix4x4& Object3d::GetWorldMatrix()
 {
     return worldMatrix_;
 }
-
