@@ -40,6 +40,15 @@ public:
 
 	void CreatVertexBufferViews();
 
+	/*==================== アクセッサ ====================*/
+
+	void SetPosition(const Vector3& start,const Vector3& end){
+		startPos_ = start;
+		endPos_ = end;
+		vertexData_[0].position = { startPos_.x ,startPos_.y,startPos_.z,1.0f };
+		vertexData_[1].position = { endPos_.x,endPos_.y,endPos_.z,1.0f };
+	}
+
 private:
 
 	PrimitiveDrawer* primitiveDrawer_ = nullptr;
