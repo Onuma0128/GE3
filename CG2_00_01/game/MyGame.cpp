@@ -29,13 +29,13 @@ void MyGame::Update()
 
 void MyGame::Draw()
 {
-	Camera::GetInstance()->CameraImGui();
-
 	// 描画前の処理
 	directXEngine_->PreDraw();
 
 	// 描画処理
 	//directXEngine_->Draw();
+
+	Camera::GetInstance()->CameraImGui();
 
 	// カメラの更新
 	Camera::GetInstance()->Update();
