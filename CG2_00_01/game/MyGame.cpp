@@ -29,6 +29,8 @@ void MyGame::Update()
 
 void MyGame::Draw()
 {
+	Camera::GetInstance()->CameraImGui();
+
 	// 描画前の処理
 	directXEngine_->PreDraw();
 

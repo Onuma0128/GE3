@@ -96,8 +96,6 @@ void RailCamera::Debug_ImGui()
 {
 	/*ImGui::Begin("RailCamera");
 	ImGui::End();*/
-
-	camera_->CameraImGui();
 }
 
 void RailCamera::RailCameraMove()
