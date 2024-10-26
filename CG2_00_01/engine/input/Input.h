@@ -35,9 +35,12 @@ public:
 	bool PushMouseButton(int buttonNumber)const;
 	// マウスボタンのトリガーをチェック
 	bool TriggerMouseButton(int buttonNumber)const;
-	// マウス座標の取得
+	// マウスの移動量の取得
 	int GetMouseDeltaX()const { return mouseDeltaX_; }
 	int GetMouseDeltaY()const { return mouseDeltaY_; }
+	// マウスの座標の取得
+	int GetMousePosX()const { return mousePosX_; }
+	int GetMousePosY()const { return mousePosY_; }
 
 	// 終了
 	void Finalize();
@@ -63,6 +66,9 @@ private:
 	// マウスの移動量
 	int mouseDeltaX_ = 0;
 	int mouseDeltaY_ = 0;
+	// マウスの座標
+	int mousePosX_ = 0;
+	int mousePosY_ = 0;
 
 	// WindowsAPI
 	WinApp* winApp_ = nullptr;

@@ -72,6 +72,13 @@ void Input::Update()
 	// マウスの移動量とボタンの状態を取得
 	mouseDeltaX_ = mouseState_.lX;
 	mouseDeltaY_ = mouseState_.lY;
+	POINT cursorPos;
+    if (GetCursorPos(&cursorPos)) {
+        // クライアント座標系に変換
+        ScreenToClient(winApp_->GetHwnd(), &cursorPos);
+        mousePosX_ = cursorPos.x;
+        mousePosY_ = cursorPos.y;
+    }
 
 	memcpy(mouseButtonPre_, mouseButton_, sizeof(mouseButton_));
 	memcpy(mouseButton_, mouseState_.rgbButtons, sizeof(mouseButton_));

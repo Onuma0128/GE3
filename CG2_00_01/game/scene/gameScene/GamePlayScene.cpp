@@ -6,9 +6,7 @@
 
 void GamePlayScene::Initialize()
 {
-	ground_ = std::make_unique<Object3d>();
-	ground_->Initialize();
-	ground_->SetModel("terrain.obj");
+	ground_ = std::make_unique<Object3d>("terrain.obj");
 
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
@@ -36,7 +34,6 @@ void GamePlayScene::Draw()
 	ground_->Draw();
 
 	railCamera_->Draw();
-
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();

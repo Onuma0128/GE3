@@ -4,6 +4,7 @@
 #include <wrl.h>
 
 #include "DirectXEngine.h"
+#include "WinApp.h"
 #include "Input.h"
 
 #include "Vector3.h"
@@ -39,12 +40,19 @@ public:
 
 	void Finalize();
 
-	void DebugCamera();
+	void UpdateMatrix(Transform transform);
 
+	void CameraImGui();
+
+private:
+
+	void DebugCamera();
+	void NormalCamera();
 	void MakeCameraData();
 
 	/*==================== アクセッサ ====================*/
 
+public:
 	// setter
 	// RT部分
 	void SetRotate(const Vector3& rotate) { transform_.rotate = rotate; }
@@ -61,9 +69,18 @@ public:
 	const Matrix4x4& GetViewMatrix()const { return viewMatrix_; }
 	const Matrix4x4& GetProjectionMatrix()const { return projectionMatrix_; }
 	const Matrix4x4& GetViewProjectionMatrix()const { return viewProjectionMatrix_; }
+	const Matrix4x4& GetViewportMatrix() {
+		viewportMatrix_ = MakeIdentity4x4();
+		viewportMatrix_.m[0][0] = static_cast<float>(WinApp::kClientWidth) / 2.0f;
+		viewportMatrix_.m[1][1] = static_cast<float>(WinApp::kClientHeight) / 2.0f;
+		viewportMatrix_.m[3][0] = static_cast<float>(WinApp::kClientWidth) / 2.0f;
+		viewportMatrix_.m[3][1] = static_cast<float>(WinApp::kClientHeight) / 2.0f;
+		return viewportMatrix_;
+	}
 
 	const Vector3& GetRotate()const { return transform_.rotate; }
 	const Vector3& GetTranslate()const { return transform_.translate; }
+	const bool GetIsDebug()const { return isDebug_; }
 
 	// カメラリソース
 	ID3D12Resource* GetCameraResource()const { return cameraResource_.Get(); }
@@ -77,17 +94,21 @@ private:
 	/*==================== カメラの変数 ====================*/
 
 	Transform transform_;
+	Transform debugTransform_;
+
 	Matrix4x4 worldMatrix_;
 	Matrix4x4 viewMatrix_;
 	Matrix4x4 viewProjectionMatrix_;
 	Matrix4x4 projectionMatrix_;
+	Matrix4x4 viewportMatrix_;
 
 	float fovY_;
 	float aspectRatio_;
 	float nearClip_;
 	float farClip_;
 
-	float mouseSensitivity_ = 0.001f;        
+	float mouseSensitivity_ = 0.001f;
+	bool isDebug_ = false;
 
 	/*==================== カメラデータ ====================*/
 

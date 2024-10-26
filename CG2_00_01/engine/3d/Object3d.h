@@ -30,6 +30,8 @@ public:
 public:
 	/*==================== メンバ関数 ====================*/
 
+	Object3d(const std::string& filePath);
+
 	// 初期化
 	void Initialize();
 
@@ -60,6 +62,12 @@ public:
 	const Vector3& GetPosition()const { return transform_.translate; }
 	void SetPosition(const Vector3& position) { transform_.translate = position; }
 
+	void SetParent(Object3d* obj) { parent_ = obj; }
+
+	const Vector3 GetWorldPosition();
+
+	const Matrix4x4& GetWorldMatrix();
+
 private:
 
 	Object3dBase* object3dBase_ = nullptr;
@@ -71,6 +79,10 @@ private:
 	/*==================== トランスフォーム ====================*/
 
 	Transform transform_;
+
+	Matrix4x4 worldMatrix_{};
+
+	Object3d* parent_;
 
 	/*==================== 座標変換行列 ====================*/
 

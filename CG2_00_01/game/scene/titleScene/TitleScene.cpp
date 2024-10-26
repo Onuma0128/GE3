@@ -21,9 +21,7 @@ void TitleScene::Initialize()
 	sprite1_->SetAnchorPoint({ 0.5f,0.5f });
 	sprites_.push_back(std::move(sprite1_));
 
-	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
-	object3d_->Initialize();
-	object3d_->SetModel("suzanne.obj");
+	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>("suzanne.obj");
 	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
 	obj_.push_back(std::move(object3d_));
 
@@ -46,7 +44,7 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Game");
 	}
 

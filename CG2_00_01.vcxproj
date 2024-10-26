@@ -98,6 +98,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\bullet\Bullet.cpp" />
     <ClCompile Include="CG2_00_01\game\sceneFactory\AbstractSceneFactory.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\BaseScene.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\camera\Camera.cpp" />
@@ -145,11 +146,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\game\scene\titleScene\TitleScene.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\SceneManager.cpp" />
     <ClCompile Include="CG2_00_01\game\sceneFactory\SceneFactory.cpp" />
-    <ClCompile Include="CG2_00_01\game\railCamera\RailCamera.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\railCamera\RailCamera.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\model\PrimitiveDrawer.cpp" />
     <ClCompile Include="CG2_00_01\engine\3d\Line3d.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\reticle\Reticle3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\bullet\Bullet.h" />
     <ClInclude Include="CG2_00_01\game\sceneFactory\AbstractSceneFactory.h" />
     <ClInclude Include="CG2_00_01\game\scene\BaseScene.h" />
     <ClInclude Include="CG2_00_01\engine\base\camera\Camera.h" />
@@ -199,9 +202,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\game\scene\titleScene\TitleScene.h" />
     <ClInclude Include="CG2_00_01\game\scene\SceneManager.h" />
     <ClInclude Include="CG2_00_01\game\sceneFactory\SceneFactory.h" />
-    <ClInclude Include="CG2_00_01\game\railCamera\RailCamera.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\railCamera\RailCamera.h" />
     <ClInclude Include="CG2_00_01\engine\base\model\PrimitiveDrawer.h" />
     <ClInclude Include="CG2_00_01\engine\3d\Line3d.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\reticle\Reticle3D.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

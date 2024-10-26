@@ -37,22 +37,12 @@ void Camera::Initialize(DirectXEngine* dxEngine)
 void Camera::Update()
 {
 #ifdef _DEBUG
-	DebugCamera();
+	if (isDebug_) {
+		DebugCamera();
+		return;
+	}
 #endif // _DEBUG
-
-	worldMatrix_ = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-
-	Vector3 eye = transform_.translate;
-	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
-	Matrix4x4 rotationMatrix = MakeRotateMatrix(transform_.rotate);
-	Vector3 forward = Transform_(defaultForward,rotationMatrix);
-	Vector3 target = eye + forward;
-	viewMatrix_ = LookAt(eye, target, { 0.0f, 1.0f, 0.0f });
-
-	projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
-	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
-
-	cameraData_->worldPosition = transform_.translate;
+	NormalCamera();
 }
 
 void Camera::Finalize()
@@ -66,7 +56,7 @@ void Camera::DebugCamera()
 	const float moveSpeed = 0.1f;
 
 	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
-	Matrix4x4 rotationMatrix = MakeRotateYMatrix(transform_.rotate.y);
+	Matrix4x4 rotationMatrix = MakeRotateYMatrix(debugTransform_.rotate.y);
 	Vector3 forward = Transform_(defaultForward, rotationMatrix);
 
 	// 右方向ベクトルを計算
@@ -74,16 +64,22 @@ void Camera::DebugCamera()
 	Vector3 right = Transform_(defaultRight, rotationMatrix);
 
 	if (input_->PushKey(DIK_W)) {
-		transform_.translate = transform_.translate + forward * moveSpeed;
+		debugTransform_.translate = debugTransform_.translate + forward * moveSpeed;
 	}
 	if (input_->PushKey(DIK_S)) {
-		transform_.translate = transform_.translate - forward * moveSpeed;
+		debugTransform_.translate = debugTransform_.translate - forward * moveSpeed;
 	}
 	if (input_->PushKey(DIK_A)) {
-		transform_.translate = transform_.translate - right * moveSpeed;
+		debugTransform_.translate = debugTransform_.translate - right * moveSpeed;
 	}
 	if (input_->PushKey(DIK_D)) {
-		transform_.translate = transform_.translate + right * moveSpeed;
+		debugTransform_.translate = debugTransform_.translate + right * moveSpeed;
+	}
+	if (input_->PushKey(DIK_Q)) {
+		debugTransform_.translate.y -= moveSpeed;
+	}
+	if (input_->PushKey(DIK_E)) {
+		debugTransform_.translate.y += moveSpeed;
 	}
 
 	// 右クリックされているなら
@@ -93,9 +89,46 @@ void Camera::DebugCamera()
 		float mouseDeltaY = static_cast<float>(input_->GetMouseDeltaY());
 
 		// マウスの移動をカメラの回転に変換
-		transform_.rotate.y -= mouseDeltaX * mouseSensitivity_;
-		transform_.rotate.x -= mouseDeltaY * mouseSensitivity_;
+		debugTransform_.rotate.y -= mouseDeltaX * mouseSensitivity_;
+		debugTransform_.rotate.x -= mouseDeltaY * mouseSensitivity_;
 	}
+
+	UpdateMatrix(debugTransform_);
+
+	// カメラのデータを更新
+	cameraData_->worldPosition = debugTransform_.translate;
+}
+
+void Camera::NormalCamera()
+{
+	UpdateMatrix(transform_);
+
+	// カメラのデータを更新
+	cameraData_->worldPosition = transform_.translate;
+}
+
+void Camera::UpdateMatrix(Transform transform)
+{
+	worldMatrix_ = MakeAfineMatrix(transform.scale, transform.rotate, transform.translate);
+
+	Vector3 eye = transform.translate;
+	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
+	Matrix4x4 rotationMatrix = MakeRotateMatrix(transform.rotate);
+	Vector3 forward = Transform_(defaultForward, rotationMatrix);
+	Vector3 target = eye + forward;
+	viewMatrix_ = LookAt(eye, target, { 0.0f, 1.0f, 0.0f });
+
+	projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
+	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
+}
+
+void Camera::CameraImGui()
+{
+#ifdef _DEBUG
+	ImGui::Begin("Camera");
+	ImGui::Checkbox("debug", &isDebug_);
+	ImGui::End();
+#endif // _DEBUG
 }
 
 void Camera::MakeCameraData()

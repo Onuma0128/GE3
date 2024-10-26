@@ -12,6 +12,7 @@
 #include "Camera.h"
 
 #include "railCamera/RailCamera.h"
+#include "bullet/Bullet.h"
 
 
 using Microsoft::WRL::ComPtr;
