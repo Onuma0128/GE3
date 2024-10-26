@@ -222,13 +222,13 @@
     <ClCompile Include="CG2_00_01\game\Framework.cpp">
       <Filter>ソース ファイル\game</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\game\scene\GamePlayScene.cpp">
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\GamePlayScene.cpp">
       <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\game\scene\BaseScene.cpp">
       <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\game\scene\TitleScene.cpp">
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\TitleScene.cpp">
       <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\game\scene\SceneManager.cpp">
@@ -377,13 +377,13 @@
     <ClInclude Include="CG2_00_01\game\Framework.h">
       <Filter>ヘッダー ファイル\game</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\game\scene\GamePlayScene.h">
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\GamePlayScene.h">
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\scene\BaseScene.h">
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\game\scene\TitleScene.h">
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\TitleScene.h">
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\scene\SceneManager.h">

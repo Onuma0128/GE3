@@ -141,8 +141,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\SrvManager.cpp" />
     <ClCompile Include="CG2_00_01\game\MyGame.cpp" />
     <ClCompile Include="CG2_00_01\game\Framework.cpp" />
-    <ClCompile Include="CG2_00_01\game\scene\GamePlayScene.cpp" />
-    <ClCompile Include="CG2_00_01\game\scene\TitleScene.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\GamePlayScene.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\TitleScene.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\SceneManager.cpp" />
     <ClCompile Include="CG2_00_01\game\sceneFactory\SceneFactory.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\model\PrimitiveDrawer.cpp" />
@@ -194,8 +194,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\SrvManager.h" />
     <ClInclude Include="CG2_00_01\game\MyGame.h" />
     <ClInclude Include="CG2_00_01\game\Framework.h" />
-    <ClInclude Include="CG2_00_01\game\scene\GamePlayScene.h" />
-    <ClInclude Include="CG2_00_01\game\scene\TitleScene.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\GamePlayScene.h" />
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\TitleScene.h" />
     <ClInclude Include="CG2_00_01\game\scene\SceneManager.h" />
     <ClInclude Include="CG2_00_01\game\sceneFactory\SceneFactory.h" />
     <ClInclude Include="CG2_00_01\engine\base\model\PrimitiveDrawer.h" />
