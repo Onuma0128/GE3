@@ -70,7 +70,7 @@ public:
 	const Matrix4x4& GetProjectionMatrix()const { return projectionMatrix_; }
 	const Matrix4x4& GetViewProjectionMatrix()const { return viewProjectionMatrix_; }
 	const Matrix4x4& GetViewportMatrix() {
-		viewportMatrix_ = MakeIdentity4x4();
+		viewportMatrix_ = Matrix4x4::Identity();
 		viewportMatrix_.m[0][0] = static_cast<float>(WinApp::kClientWidth) / 2.0f;
 		viewportMatrix_.m[1][1] = static_cast<float>(WinApp::kClientHeight) / 2.0f;
 		viewportMatrix_.m[3][0] = static_cast<float>(WinApp::kClientWidth) / 2.0f;

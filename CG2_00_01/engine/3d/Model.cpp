@@ -50,7 +50,7 @@ void Model::MakeMaterialData()
     // 今回は白を書き込んでいく
     materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     materialData_->enableLighting = true;
-    materialData_->uvTransform = MakeIdentity4x4();
+    materialData_->uvTransform = Matrix4x4::Identity();
     materialData_->shininess = 8.0f;
 }
 

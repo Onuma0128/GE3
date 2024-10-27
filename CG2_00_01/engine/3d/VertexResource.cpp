@@ -35,7 +35,7 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	// 今回は白を書き込んでいく
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData_->enableLighting = false;
-	materialData_->uvTransform = MakeIdentity4x4();
+	materialData_->uvTransform = Matrix4x4::Identity();
 
 	///=============================================================================================================
 
@@ -63,8 +63,8 @@ void VertexResource::Initialize(ComPtr<ID3D12Device> device)
 	particles_.splice(particles_.end(), Emit(emitter_, randomEngine_));
 
 	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
-		instancingData_[index].WVP = MakeIdentity4x4();
-		instancingData_[index].World = MakeIdentity4x4();
+		instancingData_[index].WVP = Matrix4x4::Identity();
+		instancingData_[index].World = Matrix4x4::Identity();
 	}
 	moveStart_ = false;
 	isFieldStart_ = false;
@@ -90,12 +90,12 @@ void VertexResource::Update()
 			particleIterator = particles_.erase(particleIterator);
 			continue;
 		}
-		Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
-		Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, Camera::GetInstance()->GetWorldMatrix());
+		Matrix4x4 backToFrontMatrix = Matrix4x4::RotateY(std::numbers::pi_v<float>);
+		Matrix4x4 billboardMatrix = backToFrontMatrix * Camera::GetInstance()->GetWorldMatrix();
 		billboardMatrix.m[3][0] = 0.0f; billboardMatrix.m[3][1] = 0.0f; billboardMatrix.m[3][2] = 0.0f;
-		Matrix4x4 worldMatrix = MakeScaleMatrix(particleIterator->transform.scale) * billboardMatrix * MakeTranslateMatrix(particleIterator->transform.translate);
-		Matrix4x4 worldViewMatrix = Multiply(worldMatrix, Camera::GetInstance()->GetViewMatrix());
-		Matrix4x4 worldViewProjectionMatrix = Multiply(worldViewMatrix, Camera::GetInstance()->GetProjectionMatrix());
+		Matrix4x4 worldMatrix = Matrix4x4::Scale(particleIterator->transform.scale) * billboardMatrix * Matrix4x4::Translate(particleIterator->transform.translate);
+		Matrix4x4 worldViewMatrix = worldMatrix * Camera::GetInstance()->GetViewMatrix();
+		Matrix4x4 worldViewProjectionMatrix = worldViewMatrix * Camera::GetInstance()->GetProjectionMatrix();
 		//パーティクルの動き
 		if (moveStart_) {
 			if (IsCollision(accelerationField_.area, particleIterator->transform.translate) && isFieldStart_) {
