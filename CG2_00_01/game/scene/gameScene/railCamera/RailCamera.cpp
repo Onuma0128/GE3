@@ -90,6 +90,10 @@ void RailCamera::DrawLine()
 {
 	// ラインの複数描画
 	line3d_->Draws();
+
+	for (auto& bullet : bullets_) {
+		bullet->LineDraw();
+	}
 }
 
 void RailCamera::Debug_ImGui()
@@ -167,7 +171,8 @@ void RailCamera::CreateBullet()
 		Vector3 velocity = Subtract(reticle3d_->GetWorldPosition(), cameraObj_->GetWorldPosition());
 		// 弾を生成
 		std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>();
-		bullet->Initialize(cameraObj_->GetPosition(), velocity * 0.05f);
+		bullet->SetRailCamera(this);
+		bullet->Initialize(Subtract(cameraObj_->GetPosition(), Vector3{ 0,0.2f,0 }), velocity * 0.05f);
 		bullets_.push_back(std::move(bullet));
 	}
 }
