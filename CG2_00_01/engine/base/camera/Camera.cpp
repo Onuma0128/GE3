@@ -26,9 +26,9 @@ void Camera::Initialize(DirectXEngine* dxEngine)
 	nearClip_ = 0.1f;
 	farClip_ = 100.0f;
 
-	worldMatrix_ = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	viewMatrix_ = Inverse(worldMatrix_);
-	projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
+	worldMatrix_ = Matrix4x4::Affine(transform_.scale, transform_.rotate, transform_.translate);
+	viewMatrix_ = Matrix4x4::Inverse(worldMatrix_);
+	projectionMatrix_ = Matrix4x4::PerspectiveFov(fovY_, aspectRatio_, nearClip_, farClip_);
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 
 	MakeCameraData();
@@ -56,12 +56,12 @@ void Camera::DebugCamera()
 	const float moveSpeed = 0.1f;
 
 	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
-	Matrix4x4 rotationMatrix = MakeRotateYMatrix(debugTransform_.rotate.y);
-	Vector3 forward = Transform_(defaultForward, rotationMatrix);
+	Matrix4x4 rotationMatrix = Matrix4x4::RotateY(debugTransform_.rotate.y);
+	Vector3 forward = defaultForward.Transform(rotationMatrix);
 
 	// 右方向ベクトルを計算
 	Vector3 defaultRight = { 1.0f, 0.0f, 0.0f };
-	Vector3 right = Transform_(defaultRight, rotationMatrix);
+	Vector3 right = defaultRight.Transform(rotationMatrix);
 
 	if (input_->PushKey(DIK_W)) {
 		debugTransform_.translate = debugTransform_.translate + forward * moveSpeed;
@@ -109,16 +109,16 @@ void Camera::NormalCamera()
 
 void Camera::UpdateMatrix(Transform transform)
 {
-	worldMatrix_ = MakeAfineMatrix(transform.scale, transform.rotate, transform.translate);
+	worldMatrix_ = Matrix4x4::Affine(transform.scale, transform.rotate, transform.translate);
 
 	Vector3 eye = transform.translate;
 	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
-	Matrix4x4 rotationMatrix = MakeRotateMatrix(transform.rotate);
-	Vector3 forward = Transform_(defaultForward, rotationMatrix);
+	Matrix4x4 rotationMatrix = Matrix4x4::Rotate(transform.rotate);
+	Vector3 forward = defaultForward.Transform(rotationMatrix);
 	Vector3 target = eye + forward;
-	viewMatrix_ = LookAt(eye, target, { 0.0f, 1.0f, 0.0f });
+	viewMatrix_ = Matrix4x4::LookAt(eye, target, { 0.0f, 1.0f, 0.0f });
 
-	projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
+	projectionMatrix_ = Matrix4x4::PerspectiveFov(fovY_, aspectRatio_, nearClip_, farClip_);
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 }
 

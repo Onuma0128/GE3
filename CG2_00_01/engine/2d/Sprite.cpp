@@ -75,15 +75,15 @@ void Sprite::MaterialDataInitialize()
 
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData_->enableLighting = false;
-	materialData_->uvTransform = MakeIdentity4x4();
+	materialData_->uvTransform = Matrix4x4::Identity();
 }
 
 void Sprite::TransformationMatrixDataInitialize()
 {
 	transformationMatrixResource_ = CreateBufferResource(spriteBase_->GetDxEngine()->GetDevice(), sizeof(Matrix4x4)).Get();
 	transformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
-	transformationMatrixData_->WVP = MakeIdentity4x4();
-	transformationMatrixData_->World = MakeIdentity4x4();
+	transformationMatrixData_->WVP = Matrix4x4::Identity();
+	transformationMatrixData_->World = Matrix4x4::Identity();
 }
 
 void Sprite::AccessorUpdate()
@@ -120,11 +120,11 @@ void Sprite::AccessorUpdate()
 
 void Sprite::UpdateMatrix()
 {
-	Matrix4x4 worldMatrix = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	Matrix4x4 viewMatrix = MakeIdentity4x4();
-	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
-	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+	Matrix4x4 worldMatrix = Matrix4x4::Affine(transform_.scale, transform_.rotate, transform_.translate);
+	Matrix4x4 viewMatrix = Matrix4x4::Identity();
+	Matrix4x4 projectionMatrix = Matrix4x4::Orthographic(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
+	Matrix4x4 worldViewProjectionMatrix = worldMatrix * (viewMatrix * projectionMatrix);
 	transformationMatrixData_->WVP = worldViewProjectionMatrix;
 	transformationMatrixData_->World = worldViewProjectionMatrix;
-	transformationMatrixData_->WorldInverseTranspose = Inverse(worldViewProjectionMatrix);
+	transformationMatrixData_->WorldInverseTranspose = Matrix4x4::Inverse(worldViewProjectionMatrix);
 }

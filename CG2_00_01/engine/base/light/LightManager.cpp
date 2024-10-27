@@ -24,9 +24,9 @@ void LightManager::Initialize(DirectXEngine* dxEngine)
 
 void LightManager::Update()
 {
-	directionalLightData_->direction = Normalize(directionalLightData_->direction);
+	directionalLightData_->direction = directionalLightData_->direction.Normalize();
 
-	spotLightData_->direction = Normalize(spotLightData_->direction);
+	spotLightData_->direction = spotLightData_->direction.Normalize();
 
 
 	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
@@ -104,7 +104,7 @@ void LightManager::MakeSpotLightData()
 	spotLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	spotLightData_->position = { 2.0f,1.25f,0.0f };
 	spotLightData_->distance = 7.0f;
-	spotLightData_->direction = Normalize(Vector3{ -1.0f,-1.0f,0.0f });
+	spotLightData_->direction = (Vector3{ -1.0f,-1.0f,0.0f }.Normalize());
 	spotLightData_->intensity = 4.0f;
 	spotLightData_->decay = 2.0f;
 	spotLightData_->cosAngle = std::cos(std::numbers::pi_v<float> / 3.0f);

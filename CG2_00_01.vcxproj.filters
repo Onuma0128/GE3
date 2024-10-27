@@ -112,6 +112,12 @@
     <Filter Include="ヘッダー ファイル\game\scene">
       <UniqueIdentifier>{e21b9a56-fa9a-4e9d-aece-1c4d88546533}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\math\structure">
+      <UniqueIdentifier>{df546c7e-6ada-4823-a014-322d1dfcd788}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\math\structure">
+      <UniqueIdentifier>{380b0d85-00be-4700-b3e4-d2a15f31d3d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CG2_00_01\main.cpp">
@@ -246,6 +252,12 @@
     <ClCompile Include="CG2_00_01\engine\base\model\PrimitiveDrawer.cpp">
       <Filter>ソース ファイル\engine\base\model</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\math\structure\Matrix4x4.cpp">
+      <Filter>ソース ファイル\engine\math\structure</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\math\structure\Vector3.cpp">
+      <Filter>ソース ファイル\engine\math\structure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -341,25 +353,7 @@
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\ResourceObject.h">
       <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\math\structure\Matrix3x3.h">
-      <Filter>ヘッダー ファイル\engine\math</Filter>
-    </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\math\structure\Matrix4x4.h">
-      <Filter>ヘッダー ファイル\engine\math</Filter>
-    </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\MT3.h">
-      <Filter>ヘッダー ファイル\engine\math</Filter>
-    </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\math\structure\Transform.h">
-      <Filter>ヘッダー ファイル\engine\math</Filter>
-    </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\math\structure\Vector2.h">
-      <Filter>ヘッダー ファイル\engine\math</Filter>
-    </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\math\structure\Vector3.h">
-      <Filter>ヘッダー ファイル\engine\math</Filter>
-    </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\math\structure\Vector4.h">
       <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\audio\LoadSound.h">
@@ -400,6 +394,24 @@
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\model\PrimitiveDrawer.h">
       <Filter>ヘッダー ファイル\engine\base\model</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\math\structure\Transform.h">
+      <Filter>ヘッダー ファイル\engine\math\structure</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\math\structure\Vector2.h">
+      <Filter>ヘッダー ファイル\engine\math\structure</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\math\structure\Vector3.h">
+      <Filter>ヘッダー ファイル\engine\math\structure</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\math\structure\Vector4.h">
+      <Filter>ヘッダー ファイル\engine\math\structure</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\math\structure\Matrix3x3.h">
+      <Filter>ヘッダー ファイル\engine\math\structure</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\math\structure\Matrix4x4.h">
+      <Filter>ヘッダー ファイル\engine\math\structure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

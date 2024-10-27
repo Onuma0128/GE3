@@ -22,15 +22,15 @@ void Object3d::Initialize()
 
 void Object3d::Update()
 {
-    worldMatrix_ = MakeAfineMatrix(transform_.scale, transform_.rotate, transform_.translate);
+    worldMatrix_ = Matrix4x4::Affine(transform_.scale, transform_.rotate, transform_.translate);
     if (parent_) {
         worldMatrix_ = worldMatrix_ * parent_->GetWorldMatrix();
     }
-    Matrix4x4 worldViewMatrixObject = Multiply(worldMatrix_, camera_->GetViewMatrix()); // カメラから見たワールド座標に変換
-    Matrix4x4 worldViewProjectionMatrixObject = Multiply(worldViewMatrixObject, camera_->GetProjectionMatrix()); // 射影行列を適用してワールドビュープロジェクション行列を計算
+    Matrix4x4 worldViewMatrixObject = worldMatrix_ * camera_->GetViewMatrix(); // カメラから見たワールド座標に変換
+    Matrix4x4 worldViewProjectionMatrixObject = worldViewMatrixObject * camera_->GetProjectionMatrix(); // 射影行列を適用してワールドビュープロジェクション行列を計算
     wvpData_->WVP = model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
     wvpData_->World = model_->GetModelData().rootNode.localMatrix * worldViewMatrixObject; // ワールド座標行列を更新
-    wvpData_->WorldInverseTranspose = model_->GetModelData().rootNode.localMatrix * Inverse(worldViewMatrixObject);
+    wvpData_->WorldInverseTranspose = model_->GetModelData().rootNode.localMatrix * Matrix4x4::Inverse(worldViewMatrixObject);
 }
 
 void Object3d::Draw()
@@ -51,8 +51,8 @@ void Object3d::MakeWvpData()
 {
     wvpResource_ = CreateBufferResource(object3dBase_->GetDxEngine()->GetDevice(), sizeof(Matrix4x4)).Get();
     wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
-    wvpData_->WVP = MakeIdentity4x4();
-    wvpData_->World = MakeIdentity4x4();
+    wvpData_->WVP = Matrix4x4::Identity();
+    wvpData_->World = Matrix4x4::Identity();
 }
 
 void Object3d::SetModel(const std::string& filePath)
