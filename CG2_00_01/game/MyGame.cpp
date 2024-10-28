@@ -33,7 +33,7 @@ void MyGame::Draw()
 	directXEngine_->PreDraw();
 
 	// 描画処理
-	//directXEngine_->Draw();
+	directXEngine_->Draw();
 
 	// カメラのImGui
 	Camera::GetInstance()->CameraImGui();
