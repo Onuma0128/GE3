@@ -22,6 +22,8 @@ public:
     // スカラー倍
     static Vector3 Multiply(float scalar, const Vector3& v);
 
+    float Length()const;
+
     // 内積
     static float Dot(const Vector3& v1, const Vector3& v2);
 

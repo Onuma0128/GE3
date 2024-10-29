@@ -5,7 +5,7 @@
 #include "Logger.h"
 #include "StringUtility.h"
 #include "WinApp.h"
-#include "VertexResource.h"
+//#include "VertexResource.h"
 #include "PipelineState.h"
 #include <dxcapi.h>
 #include <array>
@@ -46,7 +46,7 @@ public:
 	// ImGuiの初期化
 	void ImGuiInitialize();
 	// VertexResourceの初期化
-	void VertexResourceInitialize();
+	//void VertexResourceInitialize();
 	// InstancingSRVの初期化
 	void InstancingSrvInitialize();
 	// IncludeHandlerの初期化
@@ -69,14 +69,11 @@ public:
 
 	// デバイス
 	ID3D12Device* GetDevice()const { return device_.Get(); }
-	// SRVデスクリプター
-	//ID3D12DescriptorHeap* GetSRVDescriptorHeap() { return srvDescriptorHeap_.Get(); }
 	// コマンドリスト
 	ID3D12GraphicsCommandList* GetCommandList()const { return commandList_.Get(); }
-	//D3D12_GPU_DESCRIPTOR_HANDLE GetTexture()const { return textureSrvHandleGPU_[2]; }
 	// パイプラインのゲッター
 	PipelineState* GetPipelineState()const { return pipelineState_; }
-	VertexResource* GetVertexResource()const { return vertexResource_; }
+	//VertexResource* GetVertexResource()const { return vertexResource_; }
 
 
 	/*Matrix4x4 GetCameraView()const { return vertexResource_->GetCameraView(); }
@@ -91,7 +88,7 @@ private:
 	// WindowsAPI
 	WinApp* winApp_ = nullptr;
 	// VertexResource
-	VertexResource* vertexResource_ = nullptr;
+	//VertexResource* vertexResource_ = nullptr;
 	// PipelineState
 	PipelineState* pipelineState_ = nullptr;
 

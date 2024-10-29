@@ -29,6 +29,9 @@ public:
     // 移動行列の生成
     static Matrix4x4 Translate(const Vector3& translate);
 
+    // 正規化回転行列
+    static Matrix4x4 NormalizeRotation(const Matrix4x4& matrix);
+
     // 行列の積
     Matrix4x4 operator*(const Matrix4x4& other) const;
 

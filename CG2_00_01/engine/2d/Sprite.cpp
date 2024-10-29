@@ -1,8 +1,10 @@
 #include "Sprite.h"
+
 #include "SpriteBase.h"
 #include "WinApp.h"
 #include "TextureManager.h"
 #include "SrvManager.h"
+#include "CreateBufferResource.h"
 
 void Sprite::Initialize(std::string textureFilePath)
 {

@@ -1,7 +1,9 @@
 #include "Object3d.h"
+
 #include "Object3dBase.h"
 #include "LightManager.h"
 #include "ModelManager.h"
+#include "CreateBufferResource.h"
 
 Object3d::Object3d(const std::string& filePath)
 {

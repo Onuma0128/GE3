@@ -18,6 +18,11 @@ Vector3 Vector3::Multiply(float scalar, const Vector3& v) {
     return { v.x * scalar, v.y * scalar, v.z * scalar };
 }
 
+float Vector3::Length() const
+{
+    return std::sqrt(x * x + y * y + z * z);
+}
+
 // 内積
 float Vector3::Dot(const Vector3& v1, const Vector3& v2) {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
@@ -34,7 +39,7 @@ Vector3 Vector3::Cross(const Vector3& v1, const Vector3& v2) {
 
 // 正規化
 Vector3 Vector3::Normalize() const {
-    float length = std::sqrt(x * x + y * y + z * z);
+    float length = Length();
     assert(length != 0 && "正規化中にゼロ除算が発生しました。");
     return { x / length, y / length, z / length };
 }

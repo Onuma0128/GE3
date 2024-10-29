@@ -1,7 +1,13 @@
 #include "Model.h"
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include "ModelBase.h"
 #include "TextureManager.h"
 #include "SrvManager.h"
+#include "CreateBufferResource.h"
 
 
 void Model::Initialize(const std::string& filename)

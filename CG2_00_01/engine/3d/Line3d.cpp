@@ -1,5 +1,7 @@
 #include "Line3d.h"
+
 #include "Camera.h"
+#include "CreateBufferResource.h"
 
 void Line3d::Initialize(Vector3 startPos, Vector3 endPos)
 {

@@ -70,15 +70,16 @@ public:
 
 	const ModelData GetModelData()const { return modelData_; }
 
+	static Model::ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+
 private:
 
 	static std::wstring s2ws(const std::string& str);
 
-	static Model::ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
-
 	static Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 	static Model::Node ReadNode(aiNode* node);
+
 
 private:
 

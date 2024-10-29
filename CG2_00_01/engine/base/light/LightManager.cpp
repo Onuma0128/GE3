@@ -1,5 +1,9 @@
 #include "LightManager.h"
+
+#include <numbers>
 #include "imgui.h"
+
+#include "CreateBufferResource.h"
 
 LightManager* LightManager::instance_ = nullptr;
 
