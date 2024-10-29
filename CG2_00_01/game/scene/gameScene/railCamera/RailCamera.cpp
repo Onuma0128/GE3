@@ -11,23 +11,7 @@ void RailCamera::Initialize()
 	reticle3d_->SetRailCamera(this);
 	reticle3d_->Initialize();
 
-	controlPoints_ = {
-		{0,0,0},
-		{0,1,2},
-		{0,2,4},
-		{0,2,6},
-		{-2,2,8},
-		{-4,2,8},
-		{-6,2,8},
-		{-6,2,6},
-		{-6,2,4},
-		{-6,2,2},
-		{-6,2,0},
-		{-6,2,-2},
-		{-6,2,-4},
-		{-6,2,-6},
-		
-	};
+	controlPoints_ = GenerateSpiralControlPoints(3, 5, 10, 100);
 
 	// ラインの複数描画
 	CreateRail();
@@ -154,7 +138,7 @@ void RailCamera::CreateRail()
 			Matrix4x4 rotateMatrixY = MakeRotateYMatrix(-rotate.y);
 			Vector3 velocityZ = Transform_(velocity, rotateMatrixY);
 			rotate.x = std::atan2(-velocityZ.y, velocityZ.z);
-			if (i % (int)(lineNum / 20) == 0) {
+			if (i % (int)(lineNum / 50) == 0) {
 				std::unique_ptr<Object3d> rail = std::make_unique<Object3d>("rail.obj");
 				rail->SetRotation(rotate);
 				rail->SetPosition(position);
@@ -175,4 +159,26 @@ void RailCamera::CreateBullet()
 		bullet->Initialize(Subtract(cameraObj_->GetPosition(), Vector3{ 0,0.2f,0 }), velocity * 0.05f);
 		bullets_.push_back(std::move(bullet));
 	}
+}
+
+std::vector<Vector3> RailCamera::GenerateSpiralControlPoints(int numTurns, float radius, float height, int pointsPerTurn)
+{
+	std::vector<Vector3> controlPoints;
+
+	// らせんの生成
+	for (int i = 0; i < numTurns * pointsPerTurn; ++i) {
+		float angle = (2.0f * pi * i) / pointsPerTurn;  // 円周上の角度
+		float currentHeight = (height * i) / (numTurns * pointsPerTurn);  // Y軸方向に高さを増加
+
+		// コントロールポイントの座標を計算
+		Vector3 point = {
+			radius * std::cos(angle),  // X座標
+			currentHeight,             // Y座標（高さ）
+			radius * std::sin(angle)   // Z座標
+		};
+
+		controlPoints.push_back(point);
+	}
+
+	return controlPoints;
 }

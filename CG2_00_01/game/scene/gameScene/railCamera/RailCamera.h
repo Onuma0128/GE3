@@ -36,6 +36,8 @@ public:
 	// 弾を作る
 	void CreateBullet();
 
+	std::vector<Vector3> GenerateSpiralControlPoints(int numTurns, float radius, float height, int pointsPerTurn);
+
 	Object3d* GetCameraObj() { return cameraObj_.get(); }
 
 private:
