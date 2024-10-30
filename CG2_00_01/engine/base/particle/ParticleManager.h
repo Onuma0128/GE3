@@ -7,6 +7,7 @@
 #include <numbers>
 #include <memory>
 #include <list>
+#include <unordered_map>
 
 #include "DirectXEngine.h"
 #include "SrvManager.h"
@@ -67,6 +68,16 @@ public:
 		AABB area;
 	};
 
+	struct ParticleGroup {
+		std::string textureFilePath;
+		uint32_t srvIndex;
+		std::list<Particle> particles;
+		uint32_t instancingIndex;
+		ComPtr<ID3D12Resource> instancingResource;
+		uint32_t instanceCount;
+		ParticleForGPU* instancingData;
+	};
+
 private:
 	static ParticleManager* instance_;
 
@@ -85,6 +96,8 @@ public:
 	void Draw();
 
 	void Finalize();
+
+	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
 
 	ComPtr<ID3D12Resource> GetInstancingResource()const { return instancingResource_; }
 
@@ -119,6 +132,9 @@ private:
 	// モデル読み込み
 	Model::ModelData modelData_;
 
+	// パーティクルグループコンテナ
+	std::unordered_map<std::string, ParticleManager::ParticleGroup> particleGroups_;
+
 	// 頂点リソース,データを作成
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 	VertexData* vertexData_ = nullptr;
@@ -131,6 +147,7 @@ private:
 	Material* materialData_ = nullptr;
 
 	// Instancing用リソース,データを作成
+	// 消す予定
 	ComPtr<ID3D12Resource> instancingResource_ = nullptr;
 	ParticleForGPU* instancingData_ = nullptr;
 
@@ -140,6 +157,7 @@ private:
 	std::random_device seedGenerator_;
 
 	//Transform変数を作る
+	// 消す予定
 	std::list<Particle> particles_{};
 	AccelerationField accelerationField_{};
 	Emitter emitter_{};

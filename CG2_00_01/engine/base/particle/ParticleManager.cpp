@@ -108,6 +108,11 @@ void ParticleManager::Finalize()
     instance_ = nullptr;
 }
 
+void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath)
+{
+
+}
+
 std::list<ParticleManager::Particle> ParticleManager::Emit(const Emitter& emitter, std::mt19937& randomEngine)
 {
     std::list<Particle> particles;
