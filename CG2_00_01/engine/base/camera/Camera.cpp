@@ -2,6 +2,7 @@
 
 #include "WinApp.h"
 
+#include "Object3d.h"
 #include "MT3.h"
 
 Camera* Camera::instance_ = nullptr;
@@ -20,7 +21,9 @@ void Camera::Initialize(DirectXEngine* dxEngine)
 
 	input_ = Input::GetInstance();
 
+	debugTransform_ = { {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };
 	transform_ = { {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };
+
 	fovY_ = 0.45f;
 	aspectRatio_ = float(WinApp::kClientWidth) / float(WinApp::kClientHeight);
 	nearClip_ = 0.1f;
@@ -112,7 +115,7 @@ void Camera::UpdateMatrix(Transform transform)
 	worldMatrix_ = MakeAfineMatrix(transform.scale, transform.rotate, transform.translate);
 
 	Vector3 eye = transform.translate;
-	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
+	Vector3 defaultForward = { 0,0,1 };
 	Matrix4x4 rotationMatrix = MakeRotateMatrix(transform.rotate);
 	Vector3 forward = Transform_(defaultForward, rotationMatrix);
 	Vector3 target = eye + forward;

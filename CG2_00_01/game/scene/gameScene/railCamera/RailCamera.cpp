@@ -11,7 +11,17 @@ void RailCamera::Initialize()
 	reticle3d_->SetRailCamera(this);
 	reticle3d_->Initialize();
 
-	controlPoints_ = GenerateSpiralControlPoints(3, 5, 10, 100);
+	for (int i = 0; i < 40; ++i) {
+		controlPoints_.push_back(Vector3{ 4,(float)i / 8.0f,(float)i / 8.0f - 10.0f });
+	}
+	for (int i = 0; i < 40; ++i) {
+		controlPoints_.push_back(Vector3{ 4,(float)i / 8.0f,(float)i / 8.0f - 10.0f });
+	}
+	for (int i = 0; i < 20; ++i) {
+		controlPoints_.push_back(Vector3{ 4,5,(float)i / 4.0f - 5.0f });
+	}
+
+	GenerateSpiralControlPoints(2, 4, -5, 100);
 
 	// ラインの複数描画
 	CreateRail();
@@ -89,24 +99,33 @@ void RailCamera::Debug_ImGui()
 void RailCamera::RailCameraMove()
 {
 	// 時間の進行量
-	const float dt = 0.0003f;
+	const float rt = 0.05f;
+	float dt = 0.0003f;
 	if (!controlPoints_.empty()) {
 		// スプライン上の現在の位置を計算
 		Vector3 position = CatmullRomPosition(controlPoints_, t_);
 		// 少し先の位置を計算し、注視点を決定
-		float nextT = t_ + dt;
+		float nextT = t_ + dt * (rt / dt);
 		Vector3 lookAtPosition = CatmullRomPosition(controlPoints_, nextT);
 		// カメラの位置を更新
 		cameraObj_->SetPosition(position + offset_);
 		if (!camera_->GetIsDebug()) {
 			camera_->SetTranslate(position + offset_);
 		}
+		Vector3 velocity = Subtract(lookAtPosition - (offset_ * (dt * 5.0f)), position);
 		// 時間を進行
-		t_ += dt;
+		if (velocity.y < 0) {
+			t_ += dt * 2.0f;
+		}
+		else if (velocity.y > 0) {
+			t_ += dt * 0.75f;
+		}
+		else {
+			t_ += dt;
+		}
 		if (t_ > 1.0f) {
 			t_ = 0.0f; // ループさせる場合
 		}
-		Vector3 velocity = Subtract(lookAtPosition - (offset_ * (dt * 5.0f)), position);
 
 		Vector3 rotate{};
 		rotate.y = std::atan2(velocity.x, velocity.z);
@@ -161,10 +180,8 @@ void RailCamera::CreateBullet()
 	}
 }
 
-std::vector<Vector3> RailCamera::GenerateSpiralControlPoints(int numTurns, float radius, float height, int pointsPerTurn)
+void RailCamera::GenerateSpiralControlPoints(int numTurns, float radius, float height, int pointsPerTurn)
 {
-	std::vector<Vector3> controlPoints;
-
 	// らせんの生成
 	for (int i = 0; i < numTurns * pointsPerTurn; ++i) {
 		float angle = (2.0f * pi * i) / pointsPerTurn;  // 円周上の角度
@@ -173,12 +190,10 @@ std::vector<Vector3> RailCamera::GenerateSpiralControlPoints(int numTurns, float
 		// コントロールポイントの座標を計算
 		Vector3 point = {
 			radius * std::cos(angle),  // X座標
-			currentHeight,             // Y座標（高さ）
+			currentHeight + 5,             // Y座標（高さ）
 			radius * std::sin(angle)   // Z座標
 		};
 
-		controlPoints.push_back(point);
+		controlPoints_.push_back(point);
 	}
-
-	return controlPoints;
 }

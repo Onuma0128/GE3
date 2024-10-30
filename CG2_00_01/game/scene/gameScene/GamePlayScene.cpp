@@ -12,6 +12,8 @@ void GamePlayScene::Initialize()
 
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
+
+	
 }
 
 void GamePlayScene::Finalize()
@@ -31,7 +33,7 @@ void GamePlayScene::Draw()
 {
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
-	ground_->Draw();
+	//ground_->Draw();
 
 	railCamera_->Draw();
 

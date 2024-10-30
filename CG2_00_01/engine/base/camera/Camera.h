@@ -13,6 +13,8 @@
 
 using Microsoft::WRL::ComPtr;
 
+class Object3d;
+
 class Camera
 {
 public:

@@ -13,6 +13,7 @@
 
 #include "railCamera/RailCamera.h"
 #include "bullet/Bullet.h"
+#include "enemy/Enemy.h"
 
 
 using Microsoft::WRL::ComPtr;
