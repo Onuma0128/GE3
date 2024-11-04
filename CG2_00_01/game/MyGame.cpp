@@ -4,6 +4,8 @@
 #include "SceneManager.h"
 #include "SceneFactory.h"
 
+#include "globalVariables/GlobalVariables.h"
+
 void MyGame::Initialize()
 {
 	Framework::Initialize();
@@ -34,6 +36,8 @@ void MyGame::Draw()
 
 	// 描画処理
 	//directXEngine_->Draw();
+
+	GlobalVariables::GetInstance()->Update();
 
 	// カメラのImGui
 	Camera::GetInstance()->CameraImGui();
