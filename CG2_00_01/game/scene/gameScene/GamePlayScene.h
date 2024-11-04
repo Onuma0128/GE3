@@ -13,7 +13,8 @@
 
 #include "railCamera/RailCamera.h"
 #include "bullet/Bullet.h"
-#include "enemy/Enemy.h"
+#include "enemy/EnemyManager.h"
+#include "collider/CollisionManager.h"
 
 
 using Microsoft::WRL::ComPtr;
@@ -30,11 +31,16 @@ public:
 
 	void Draw() override;
 
+	void CheckAllCollisions();
+
 private:
 
 	std::unique_ptr<Object3d> ground_;
 
 	std::unique_ptr<RailCamera> railCamera_;
 
+	std::unique_ptr<EnemyManager> enemyManager_;
+
+	std::unique_ptr<CollisionManager> collisionManager_;
 };
 

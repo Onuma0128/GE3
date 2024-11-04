@@ -40,6 +40,11 @@ Vector3 Cross(const Vector3& v1, const Vector3& v2) {
 	return result;
 }
 
+float Length(const Vector3& v1)
+{
+	return std::sqrt(v1.x * v1.x + v1.y * v1.y + v1.z * v1.z);
+}
+
 Matrix4x4 MakeIdentity4x4()
 {
 	Matrix4x4 result{

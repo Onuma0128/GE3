@@ -13,7 +13,10 @@ void GamePlayScene::Initialize()
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 
-	
+	enemyManager_ = std::make_unique<EnemyManager>();
+	enemyManager_->Initialize();
+
+	collisionManager_ = std::make_unique<CollisionManager>();
 }
 
 void GamePlayScene::Finalize()
@@ -23,10 +26,13 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-
 	ground_->Update();
 
 	railCamera_->Update();
+
+	enemyManager_->Update();
+
+	CheckAllCollisions();
 }
 
 void GamePlayScene::Draw()
@@ -37,6 +43,8 @@ void GamePlayScene::Draw()
 
 	railCamera_->Draw();
 
+	enemyManager_->Draw();
+
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
 
@@ -45,4 +53,18 @@ void GamePlayScene::Draw()
 	PrimitiveDrawer::GetInstance()->DrawBase();
 
 	railCamera_->DrawLine();
+}
+
+void GamePlayScene::CheckAllCollisions()
+{
+	collisionManager_->Reset();
+
+	for (auto& bullet : railCamera_->GetBullets()) {
+		collisionManager_->AddCollider(bullet.get());
+	}
+	for (auto& enemy : enemyManager_->GetEnemys()) {
+		collisionManager_->AddCollider(enemy.get());
+	}
+
+	collisionManager_->CheckAllCollisions();
 }

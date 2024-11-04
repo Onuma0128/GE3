@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -8,11 +9,18 @@
 
 #include "Vector3.h"
 
+#include "collider/Collider.h"
+
 class RailCamera;
 
-class Bullet
+class Bullet : public Collider
 {
 public:
+
+	void OnCollision()override;
+	Vector3 GetCenterPosition() const override;
+	std::string GetColliderName() const override;
+	float GetRadius()const override;
 
 	void Initialize(const Vector3 position, const Vector3& velocity);
 
@@ -38,4 +46,5 @@ private:
 	bool isActive_;
 
 	std::unique_ptr<Line3d> line_;
+	Vector3 lineStartPos_;
 };

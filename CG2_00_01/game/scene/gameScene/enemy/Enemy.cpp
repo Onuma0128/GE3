@@ -1,8 +1,23 @@
 #include "Enemy.h"
 
-Enemy::Enemy(const std::string& filePath)
+Vector3 Enemy::GetCenterPosition() const
 {
-	filePath_ = filePath;
+	return enemy_->GetWorldPosition();
+}
+
+std::string Enemy::GetColliderName() const
+{
+	return "enemy";
+}
+
+float Enemy::GetRadius() const
+{
+	return 1.0f;
+}
+
+void Enemy::OnCollision()
+{
+	state_ = Enemy::State::Dead;
 }
 
 void Enemy::Initialize(const Vector3& position, const Vector3& velocity)
@@ -18,7 +33,7 @@ void Enemy::Update()
 	switch (state_)
 	{
 	case Enemy::State::Move:
-		Vector3 translate = enemy_->GetWorldPosition();
+		Vector3 translate = enemy_->GetPosition();
 		translate = translate + velocity_;
 		enemy_->SetPosition(translate);
 		break;
@@ -33,4 +48,9 @@ void Enemy::Update()
 void Enemy::Draw()
 {
 	enemy_->Draw();
+}
+
+void Enemy::SetFilePath(const std::string& filePath)
+{
+	filePath_ = filePath;
 }

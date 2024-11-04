@@ -14,9 +14,6 @@ void RailCamera::Initialize()
 	for (int i = 0; i < 40; ++i) {
 		controlPoints_.push_back(Vector3{ 4,(float)i / 8.0f,(float)i / 8.0f - 10.0f });
 	}
-	for (int i = 0; i < 40; ++i) {
-		controlPoints_.push_back(Vector3{ 4,(float)i / 8.0f,(float)i / 8.0f - 10.0f });
-	}
 	for (int i = 0; i < 20; ++i) {
 		controlPoints_.push_back(Vector3{ 4,5,(float)i / 4.0f - 5.0f });
 	}
@@ -124,7 +121,7 @@ void RailCamera::RailCameraMove()
 			t_ += dt;
 		}
 		if (t_ > 1.0f) {
-			t_ = 0.0f; // ループさせる場合
+			t_ = 0.0f;
 		}
 
 		Vector3 rotate{};
@@ -170,13 +167,16 @@ void RailCamera::CreateRail()
 void RailCamera::CreateBullet()
 {
 	if (input_->TriggerKey(DIK_SPACE)) {
-
-		Vector3 velocity = Subtract(reticle3d_->GetWorldPosition(), cameraObj_->GetWorldPosition());
-		// 弾を生成
-		std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>();
-		bullet->SetRailCamera(this);
-		bullet->Initialize(Subtract(cameraObj_->GetPosition(), Vector3{ 0,0.2f,0 }), velocity * 0.05f);
-		bullets_.push_back(std::move(bullet));
+		for (int i = 0; i < 2; ++i) {
+			// Velocityを計算
+			Vector3 cameraPos = { 0.3f + (float)i * -0.6f,-0.2f,0.0f };
+			Vector3 velocity = Normalize(Subtract(reticle3d_->GetPosition(), cameraPos));
+			// 弾を生成
+			std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>();
+			bullet->SetRailCamera(this);
+			bullet->Initialize(cameraPos, velocity);
+			bullets_.push_back(std::move(bullet));
+		}
 	}
 }
 

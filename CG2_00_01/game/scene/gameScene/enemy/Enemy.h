@@ -6,8 +6,9 @@
 #include "Object3d.h"
 
 #include "Vector3.h"
+#include "collider/Collider.h"
 
-class Enemy
+class Enemy : public Collider
 {
 public:
 
@@ -16,13 +17,20 @@ public:
 		Dead
 	};
 
-	Enemy(const std::string& filePath);
+	void OnCollision()override;
+	Vector3 GetCenterPosition() const override;
+	std::string GetColliderName() const override;
+	float GetRadius()const override;
 
 	void Initialize(const Vector3& position,const Vector3& velocity);
 
 	void Update();
 
 	void Draw();
+
+	void SetFilePath(const std::string& filePath);
+
+	State GetState()const { return state_; }
 
 private:
 

@@ -28,6 +28,8 @@ public:
 
 	void Debug_ImGui();
 
+	const std::vector<std::unique_ptr<Bullet>>& GetBullets() { return bullets_; }
+
 
 	// レールを動かす
 	void RailCameraMove();

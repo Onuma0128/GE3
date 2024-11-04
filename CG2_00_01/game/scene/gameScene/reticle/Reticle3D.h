@@ -24,6 +24,8 @@ public:
 
 	/*==================== アクセッサー ====================*/
 
+	const Vector3 GetPosition() { return reticle3d_->GetPosition(); }
+
 	const Vector3 GetWorldPosition() { return reticle3d_->GetWorldPosition(); }
 
 	void SetRailCamera(RailCamera* railCamera) { railCamera_ = railCamera; }
