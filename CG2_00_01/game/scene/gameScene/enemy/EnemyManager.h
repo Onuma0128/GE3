@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 
+#include "globalVariables/GlobalVariables.h"
+#include "Input.h"
 #include "Enemy.h"
 
 class EnemyManager
@@ -20,6 +22,10 @@ public:
 private:
 
 	std::vector<std::unique_ptr<Enemy>> enemys_;
+
+	GlobalVariables* global = GlobalVariables::GetInstance();
+
+	Input* input_ = Input::GetInstance();
 
 };
 

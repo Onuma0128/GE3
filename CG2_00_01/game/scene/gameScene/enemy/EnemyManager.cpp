@@ -1,7 +1,5 @@
 #include "EnemyManager.h"
 
-#include "globalVariables/GlobalVariables.h"
-
 void EnemyManager::Initialize()
 {
 	for (int i = 0; i < 5; ++i) {
@@ -11,10 +9,6 @@ void EnemyManager::Initialize()
 		enemys_.push_back(std::move(enemy));
 	}
 
-	GlobalVariables* global = GlobalVariables::GetInstance();
-	const char* groupName = "Enemy";
-	GlobalVariables::GetInstance()->CreateGroup(groupName);
-	global->SetValue(groupName, "Test", Vector3{ 0,0,0 });
 }
 
 void EnemyManager::Update()

@@ -10,6 +10,8 @@ void MyGame::Initialize()
 {
 	Framework::Initialize();
 
+	GlobalVariables::GetInstance()->LoadFiles();
+
 	sceneFactory_ = new SceneFactory();
 	SceneManager::GetInstance()->SetSceneFactory(sceneFactory_);
 	SceneManager::GetInstance()->ChangeScene("Title");
