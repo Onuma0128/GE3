@@ -12,7 +12,7 @@
 #include "bullet/Bullet.h"
 #include "reticle/Reticle3D.h"
 
-const float lineNum = 1000;
+const float lineNum = 10000;
 
 class RailCamera
 {
@@ -30,6 +30,8 @@ public:
 
 	const std::vector<std::unique_ptr<Bullet>>& GetBullets() { return bullets_; }
 
+	void LoadControlPoints();
+	void SaveControlPoints();
 
 	// レールを動かす
 	void RailCameraMove();
@@ -39,6 +41,8 @@ public:
 	void CreateBullet();
 
 	void GenerateSpiralControlPoints(int numTurns, float radius, float height, int pointsPerTurn);
+
+	void GenerateLoopControlPoints(int numPoints, float radius, float centerY, float length);
 
 	Object3d* GetCameraObj() { return cameraObj_.get(); }
 
@@ -55,6 +59,7 @@ private:
 
 	// カメラが通る点
 	std::vector<Vector3> controlPoints_;
+	std::unique_ptr<Object3d> controlObject_;
 	// レールの板ポリ
 	std::vector<std::unique_ptr<Object3d>> railObj_;
 	// ラインの座標格納

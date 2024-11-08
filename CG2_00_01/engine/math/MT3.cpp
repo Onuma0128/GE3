@@ -32,6 +32,11 @@ float Dot(const Vector3& v1, const Vector3& v2) {
 	return result;
 }
 
+float Distance(const Vector3& a, const Vector3& b) {
+	Vector3 diff = a - b;
+	return std::sqrt(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+}
+
 Vector3 Cross(const Vector3& v1, const Vector3& v2) {
 	Vector3 result{};
 	result.x = v1.y * v2.z - v1.z * v2.y;
@@ -79,6 +84,32 @@ Vector3 Normalize(const Vector4& v) {
 	return result;
 }
 
+Vector3 ToEulerAngles(const Matrix4x4& rotationMatrix)
+{
+	Vector3 euler{};
+
+	// Y軸の回転（ピッチ）を取得
+	if (rotationMatrix.m[2][0] < 1) {
+		if (rotationMatrix.m[2][0] > -1) {
+			euler.y = std::asin(rotationMatrix.m[2][0]);
+			euler.x = std::atan2(-rotationMatrix.m[2][1], rotationMatrix.m[2][2]);
+			euler.z = std::atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
+		}
+		else { // rotationMatrix.m[2][0] <= -1
+			euler.y = -pi / 2;
+			euler.x = -std::atan2(rotationMatrix.m[1][2], rotationMatrix.m[1][1]);
+			euler.z = 0;
+		}
+	}
+	else { // rotationMatrix.m[2][0] >= 1
+		euler.y = pi / 2;
+		euler.x = std::atan2(rotationMatrix.m[1][2], rotationMatrix.m[1][1]);
+		euler.z = 0;
+	}
+
+	return euler;
+}
+
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result{};
 	result.m[0][0] = m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] + m1.m[0][3] * m2.m[3][0];
@@ -124,6 +155,18 @@ Matrix4x4 LookAt(const Vector3& eye, const Vector3& target, const Vector3& up) {
 
 	Matrix4x4 result = { xaxis.x, yaxis.x, zaxis.x, 0, xaxis.y, yaxis.y, zaxis.y, 0, xaxis.z, yaxis.z, zaxis.z, 0, -Dot(xaxis, eye), -Dot(yaxis, eye), -Dot(zaxis, eye), 1 };
 
+	return result;
+}
+
+Matrix4x4 SetColumn(int index, const Matrix4x4& m, const Vector3& vec)
+{
+	Matrix4x4 result = m;
+	if (index < 0 || index > 2) {
+		return result;  // 範囲外を防止
+	}
+	result.m[0][index] = vec.x;
+	result.m[1][index] = vec.y;
+	result.m[2][index] = vec.z;
 	return result;
 }
 

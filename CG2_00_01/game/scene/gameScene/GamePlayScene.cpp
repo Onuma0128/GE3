@@ -41,6 +41,7 @@ void GamePlayScene::Draw()
 	Object3dBase::GetInstance()->DrawBase();
 	//ground_->Draw();
 
+	railCamera_->Debug_ImGui();
 	railCamera_->Draw();
 
 	enemyManager_->Draw();

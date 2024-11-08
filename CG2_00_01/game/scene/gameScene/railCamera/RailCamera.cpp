@@ -1,6 +1,9 @@
 #include "RailCamera.h"
+
 #include "imgui.h"
 #include "cmath"
+
+#include "globalVariables/GlobalVariables.h"
 
 void RailCamera::Initialize()
 {
@@ -11,14 +14,12 @@ void RailCamera::Initialize()
 	reticle3d_->SetRailCamera(this);
 	reticle3d_->Initialize();
 
-	for (int i = 0; i < 40; ++i) {
-		controlPoints_.push_back(Vector3{ 4,(float)i / 8.0f,(float)i / 8.0f - 10.0f });
-	}
-	for (int i = 0; i < 20; ++i) {
-		controlPoints_.push_back(Vector3{ 4,5,(float)i / 4.0f - 5.0f });
-	}
+	// 保存済みのコントロールポイントをロード
+	LoadControlPoints();
 
-	GenerateSpiralControlPoints(2, 4, -5, 100);
+	controlObject_ = std::make_unique<Object3d>("Box.obj");
+	controlObject_->SetScale(Vector3{ 0.1f,0.1f,0.1f });
+	controlObject_->SetPosition(controlPoints_[controlPoints_.size() - 1]);
 
 	// ラインの複数描画
 	CreateRail();
@@ -37,6 +38,7 @@ void RailCamera::Update()
 
 	// ラインの複数オブジェクト
 	line3d_->Update();
+	controlObject_->Update();
 
 	// レールの板ポリ
 	for (auto& rail : railObj_) {
@@ -70,6 +72,7 @@ void RailCamera::Draw()
 	}
 
 	reticle3d_->Draw();
+	controlObject_->Draw();
 
 	for (auto& bullet : bullets_) {
 		bullet->Draw();
@@ -89,8 +92,97 @@ void RailCamera::DrawLine()
 
 void RailCamera::Debug_ImGui()
 {
-	/*ImGui::Begin("RailCamera");
-	ImGui::End();*/
+#ifdef _DEBUG
+	ImGui::Begin("RailCamera Control Points");
+
+	// controlPoints_の各ポイントを編集可能にする
+	for (size_t i = 0; i < controlPoints_.size(); ++i) {
+		Vector3& point = controlPoints_[i];
+		std::string label = "Point " + std::to_string(i);
+
+		// Vector3の各成分を調整
+		ImGui::DragFloat3(label.c_str(), reinterpret_cast<float*>(&point),0.01f);
+	}
+
+	// 次に置くコントロールポジション
+	Vector3 translate = controlObject_->GetPosition();
+	ImGui::DragFloat3("Box", &translate.x, 0.05f);
+	controlObject_->SetPosition(translate);
+
+	// ラインを生成
+	if (ImGui::Button("CreateRail")) {
+		// コントロールポジションの読み込み
+		LoadControlPoints();
+		Vector3 lineEndPos = controlPoints_.back();
+		Vector3 targetPos = controlObject_->GetPosition();  // 新しい位置
+		// 自動補間点の追加
+		const int numNewPoints = 19; 
+		for (int i = 1; i <= numNewPoints; ++i) {
+			float t = static_cast<float>(i) / (numNewPoints + 1);  // 補間の進行度
+			Vector3 newControlPos = (1 - t) * lineEndPos + t * targetPos;  // 線形補間
+			controlPoints_.push_back(newControlPos);  // 中間点を追加
+		}
+
+		// 最終目標位置もコントロールポイントに追加
+		controlPoints_.push_back(targetPos);
+
+		t_ = 0.0f;
+		CreateRail();
+		line3d_->Initialize(lines);
+	}
+	// 最後に追加したラインを削除
+	if (ImGui::Button("DeleteRail")) {
+		for (int i = 0; i < 20; ++i) {
+			controlPoints_.erase(controlPoints_.end() - 1);
+		}
+		t_ = 0.0f;
+		CreateRail();
+		line3d_->Initialize(lines);
+	}
+	// ラインのセーブ
+	if (ImGui::Button("Save Control Points")) {
+		SaveControlPoints();
+	}
+	if (ImGui::Button("t move")) {
+		t_ = 0.8f;
+	}
+
+	ImGui::End();
+#endif // _DEBUG
+}
+
+void RailCamera::LoadControlPoints()
+{
+	auto globalVars = GlobalVariables::GetInstance();
+
+	try {
+		controlPoints_.clear();
+		int i = 0;
+		while (true) {
+			std::string key = "ControlPoint_" + std::to_string(i);
+			Vector3 point = globalVars->GetValue<Vector3>("RailCamera", key);
+			controlPoints_.push_back(point);
+			++i;
+		}
+	}
+	catch (const std::runtime_error&) {
+		// すべてのコントロールポイントが読み込まれると例外が発生するので終了
+	}
+}
+
+void RailCamera::SaveControlPoints()
+{
+	auto globalVars = GlobalVariables::GetInstance();
+	globalVars->CreateGroup("RailCamera");
+
+	// controlPoints_ を GlobalVariables に保存
+	for (size_t i = 0; i < controlPoints_.size(); ++i) {
+		std::string key = "ControlPoint_" + std::to_string(i);
+		globalVars->SetValue("RailCamera", key, controlPoints_[i]);
+	}
+
+	// ファイルに保存
+	globalVars->SaveFile("RailCamera");
 }
 
 void RailCamera::RailCameraMove()
@@ -99,27 +191,40 @@ void RailCamera::RailCameraMove()
 	const float rt = 0.05f;
 	float dt = 0.0003f;
 	if (!controlPoints_.empty()) {
+		// スプラインの全体の長さを取得
+		float length = 0.0f;
+		for (size_t i = 0; i < controlPoints_.size() - 1; ++i) {
+			length += Distance(controlPoints_[i], controlPoints_[i + 1]);
+		}
+
+		// 正規化された進行量を計算（制御点の数に依存せず一定の速度で進むようにスケール）
+		float normalizedDt = dt * (100.0f / length);  // 100は速度の調整用の定数
+
 		// スプライン上の現在の位置を計算
 		Vector3 position = CatmullRomPosition(controlPoints_, t_);
 		// 少し先の位置を計算し、注視点を決定
-		float nextT = t_ + dt * (rt / dt);
+		float nextT = t_ + normalizedDt * (rt / dt);
 		Vector3 lookAtPosition = CatmullRomPosition(controlPoints_, nextT);
+
 		// カメラの位置を更新
 		cameraObj_->SetPosition(position + offset_);
 		if (!camera_->GetIsDebug()) {
 			camera_->SetTranslate(position + offset_);
 		}
+
 		Vector3 velocity = Subtract(lookAtPosition - (offset_ * (dt * 5.0f)), position);
+
 		// 時間を進行
 		if (velocity.y < 0) {
-			t_ += dt * 2.0f;
+			t_ += normalizedDt * 2.5f;
 		}
 		else if (velocity.y > 0) {
-			t_ += dt * 0.75f;
+			t_ += normalizedDt;
 		}
 		else {
-			t_ += dt;
+			t_ += normalizedDt;
 		}
+
 		if (t_ > 1.0f) {
 			t_ = 0.0f;
 		}
@@ -129,6 +234,7 @@ void RailCamera::RailCameraMove()
 		Matrix4x4 rotateMatrixY = MakeRotateYMatrix(-rotate.y);
 		Vector3 velocityZ = Transform_(velocity, rotateMatrixY);
 		rotate.x = std::atan2(-velocityZ.y, velocityZ.z);
+
 		cameraObj_->SetRotation(rotate);
 		if (!camera_->GetIsDebug()) {
 			camera_->SetRotate(rotate);
@@ -138,6 +244,8 @@ void RailCamera::RailCameraMove()
 
 void RailCamera::CreateRail()
 {
+	lines.clear();
+	railObj_.clear();
 	for (int i = 0; i < (int)lineNum; ++i) {
 		if (!controlPoints_.empty()) {
 			// スプライン上の現在の位置を計算
@@ -154,7 +262,7 @@ void RailCamera::CreateRail()
 			Matrix4x4 rotateMatrixY = MakeRotateYMatrix(-rotate.y);
 			Vector3 velocityZ = Transform_(velocity, rotateMatrixY);
 			rotate.x = std::atan2(-velocityZ.y, velocityZ.z);
-			if (i % (int)(lineNum / 50) == 0) {
+			if (i % (int)(lineNum / 60) == 0) {
 				std::unique_ptr<Object3d> rail = std::make_unique<Object3d>("rail.obj");
 				rail->SetRotation(rotate);
 				rail->SetPosition(position);
@@ -184,7 +292,7 @@ void RailCamera::GenerateSpiralControlPoints(int numTurns, float radius, float h
 {
 	// らせんの生成
 	for (int i = 0; i < numTurns * pointsPerTurn; ++i) {
-		float angle = (2.0f * pi * i) / pointsPerTurn;  // 円周上の角度
+		float angle = -(2.0f * pi * i) / pointsPerTurn;  // 円周上の角度
 		float currentHeight = (height * i) / (numTurns * pointsPerTurn);  // Y軸方向に高さを増加
 
 		// コントロールポイントの座標を計算
@@ -195,5 +303,27 @@ void RailCamera::GenerateSpiralControlPoints(int numTurns, float radius, float h
 		};
 
 		controlPoints_.push_back(point);
+	}
+}
+
+void RailCamera::GenerateLoopControlPoints(int numPoints, float radius, float centerY, float length)
+{
+	// 一回転ループの生成
+	for (int i = 0; i < numPoints; ++i) {
+		// 進行方向を調整するためにX軸に沿って少しずつ進める
+		float progress = (static_cast<float>(i) / numPoints) * length;
+
+		// 円周上の角度を計算
+		float angle = (2.0f * pi * i) / numPoints;
+
+		// コントロールポイントの座標を計算
+		Vector3 point = {
+			progress,                  // X軸方向に進む（進行方向）
+			centerY + radius * -std::cos(angle),  // 一回転の高さ
+			radius * -std::sin(angle)             // Z軸での回転
+		};
+		Vector3 linePos = { 5,0,-6 };
+
+		controlPoints_.push_back(point + linePos);
 	}
 }

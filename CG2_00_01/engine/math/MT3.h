@@ -75,6 +75,8 @@ Vector3 Multiply(float scalar, const Vector3& v);
 
 float Dot(const Vector3& v1, const Vector3& v2);
 
+float Distance(const Vector3& a, const Vector3& b);
+
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
 
 float Length(const Vector3& v1);
@@ -85,6 +87,8 @@ Matrix4x4 MakeIdentity4x4();
 Vector3 Normalize(const Vector3& v);
 // 正規化
 Vector3 Normalize(const Vector4& v);
+// オイラー角を抽出
+Vector3 ToEulerAngles(const Matrix4x4& rotationMatrix);
 
 //拡縮行列
 Matrix4x4 MakeScaleMatrix(const Vector3& scale);
@@ -103,6 +107,7 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 //
 Matrix4x4 LookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
+Matrix4x4 SetColumn(int index, const Matrix4x4& m, const Vector3& vec);
 // 3次元アフィン変換
 Matrix4x4 MakeAfineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 Vector3 Transform_(const Vector3& vector, const Matrix4x4& matrix);
