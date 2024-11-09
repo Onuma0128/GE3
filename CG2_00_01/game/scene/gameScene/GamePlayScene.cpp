@@ -14,6 +14,7 @@ void GamePlayScene::Initialize()
 	railCamera_->Initialize();
 
 	enemyManager_ = std::make_unique<EnemyManager>();
+	enemyManager_->SetRailCamera(railCamera_.get());
 	enemyManager_->Initialize();
 
 	collisionManager_ = std::make_unique<CollisionManager>();
@@ -48,7 +49,7 @@ void GamePlayScene::Draw()
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
-
+	railCamera_->DrawSprite();
 
 	// Line描画準備
 	PrimitiveDrawer::GetInstance()->DrawBase();

@@ -24,6 +24,8 @@ public:
 
 	void Draw();
 
+	void DrawSprite();
+
 	void DrawLine();
 
 	void Debug_ImGui();
@@ -45,6 +47,8 @@ public:
 	void GenerateLoopControlPoints(int numPoints, float radius, float centerY, float length);
 
 	Object3d* GetCameraObj() { return cameraObj_.get(); }
+
+	float GetCameraTime() { return t_; }
 
 private:
 	// カメラ

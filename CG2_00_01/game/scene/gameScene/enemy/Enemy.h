@@ -32,6 +32,10 @@ public:
 
 	State GetState()const { return state_; }
 
+	bool GetIsActive()const { return isActive_; }
+
+	Object3d* GetEnemyObject()const { return enemy_.get(); }
+
 private:
 
 	std::string filePath_;
@@ -40,5 +44,8 @@ private:
 	Vector3 velocity_;
 
 	State state_;
+
+	bool isActive_ = true;
+	float activeFrame_ = 0;
 
 };

@@ -67,9 +67,6 @@ void RailCamera::Draw()
 	if (camera_->GetIsDebug()) {
 		cameraObj_->Draw();
 	}
-	for (auto& rail : railObj_) {
-		rail->Draw();
-	}
 
 	reticle3d_->Draw();
 	controlObject_->Draw();
@@ -78,6 +75,13 @@ void RailCamera::Draw()
 		bullet->Draw();
 	}
 
+}
+
+void RailCamera::DrawSprite()
+{
+	for (auto& rail : railObj_) {
+		rail->Draw();
+	}
 }
 
 void RailCamera::DrawLine()
@@ -143,10 +147,14 @@ void RailCamera::Debug_ImGui()
 	if (ImGui::Button("Save Control Points")) {
 		SaveControlPoints();
 	}
-	if (ImGui::Button("t move")) {
-		t_ = 0.8f;
+	if (ImGui::Button("t reset")) {
+		t_ = 0.0f;
 	}
 
+	ImGui::End();
+
+	ImGui::Begin("t");
+	ImGui::Text("%f", t_);
 	ImGui::End();
 #endif // _DEBUG
 }
@@ -189,7 +197,7 @@ void RailCamera::RailCameraMove()
 {
 	// 時間の進行量
 	const float rt = 0.05f;
-	float dt = 0.0003f;
+	float dt = 0.0002f;
 	if (!controlPoints_.empty()) {
 		// スプラインの全体の長さを取得
 		float length = 0.0f;
@@ -216,10 +224,7 @@ void RailCamera::RailCameraMove()
 
 		// 時間を進行
 		if (velocity.y < 0) {
-			t_ += normalizedDt * 2.5f;
-		}
-		else if (velocity.y > 0) {
-			t_ += normalizedDt;
+			t_ += normalizedDt * 2.0f;
 		}
 		else {
 			t_ += normalizedDt;
@@ -262,7 +267,7 @@ void RailCamera::CreateRail()
 			Matrix4x4 rotateMatrixY = MakeRotateYMatrix(-rotate.y);
 			Vector3 velocityZ = Transform_(velocity, rotateMatrixY);
 			rotate.x = std::atan2(-velocityZ.y, velocityZ.z);
-			if (i % (int)(lineNum / 60) == 0) {
+			if (i % (int)(lineNum / 200) == 0) {
 				std::unique_ptr<Object3d> rail = std::make_unique<Object3d>("rail.obj");
 				rail->SetRotation(rotate);
 				rail->SetPosition(position);
@@ -290,16 +295,19 @@ void RailCamera::CreateBullet()
 
 void RailCamera::GenerateSpiralControlPoints(int numTurns, float radius, float height, int pointsPerTurn)
 {
+	// らせんの開始座標
+	Vector3 startOffset = { -29, -2, 11 };
+
 	// らせんの生成
 	for (int i = 0; i < numTurns * pointsPerTurn; ++i) {
-		float angle = -(2.0f * pi * i) / pointsPerTurn;  // 円周上の角度
-		float currentHeight = (height * i) / (numTurns * pointsPerTurn);  // Y軸方向に高さを増加
+		float angle = -(2.0f * pi * i) / pointsPerTurn;  // 円周上の角度（最初は0度）
+		float currentHeight = (height * i) / (numTurns * pointsPerTurn);  // Y軸方向の高さ（最初は0）
 
 		// コントロールポイントの座標を計算
 		Vector3 point = {
-			radius * std::cos(angle),  // X座標
-			currentHeight + 5,             // Y座標（高さ）
-			radius * std::sin(angle)   // Z座標
+			radius * std::cos(angle) + startOffset.x,  // X座標（startOffsetから始まる）
+			currentHeight + startOffset.y,             // Y座標（高さ）（startOffsetから始まる）
+			radius * std::sin(angle) + startOffset.z   // Z座標（startOffsetから始まる）
 		};
 
 		controlPoints_.push_back(point);
