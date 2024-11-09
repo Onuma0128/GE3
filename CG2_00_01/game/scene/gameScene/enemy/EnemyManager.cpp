@@ -1,61 +1,22 @@
 #include "EnemyManager.h"
 
+#include "ModelManager.h"
+
 #include "railCamera/RailCamera.h"
 
 void EnemyManager::Initialize()
 {
-	box_ = std::make_unique<Object3d>("Box.obj");
-	box_->SetScale({ 0.5f, 0.5f, 0.5f });
-
 	popEnemy_ = { false,false,false,false,false };
 	popEnemyTriggered_ = { false,false,false,false,false };
 
-	PopEnemyInitialize();
-}
-
-void EnemyManager::PopEnemyInitialize()
-{
-	/*global->SetValue<int32_t>("EnemyPop0", "popCount", 2);
-	global->SetValue<Vector3>("EnemyPop0", "position0", Vector3{ 2,5,-25 });
-	global->SetValue<Vector3>("EnemyPop0", "velocity0", Vector3{ 0,0,0.01f });
-	global->SetValue<Vector3>("EnemyPop0", "position1", Vector3{ -2,5,-25 });
-	global->SetValue<Vector3>("EnemyPop0", "velocity1", Vector3{ 0,0,0.01f });*/
-
-	/*global->SetValue<int32_t>("EnemyPop1", "popCount", 3);
-	global->SetValue<Vector3>("EnemyPop1", "position0", Vector3{});
-	global->SetValue<Vector3>("EnemyPop1", "velocity0", Vector3{});
-	global->SetValue<Vector3>("EnemyPop1", "position1", Vector3{});
-	global->SetValue<Vector3>("EnemyPop1", "velocity1", Vector3{});
-	global->SetValue<Vector3>("EnemyPop1", "position2", Vector3{});
-	global->SetValue<Vector3>("EnemyPop1", "velocity2", Vector3{});*/
-
-	/*global->SetValue<int32_t>("EnemyPop2", "popCount", 3);
-	global->SetValue<Vector3>("EnemyPop2", "position0", Vector3{});
-	global->SetValue<Vector3>("EnemyPop2", "velocity0", Vector3{});
-	global->SetValue<Vector3>("EnemyPop2", "position1", Vector3{});
-	global->SetValue<Vector3>("EnemyPop2", "velocity1", Vector3{});
-	global->SetValue<Vector3>("EnemyPop2", "position2", Vector3{});
-	global->SetValue<Vector3>("EnemyPop2", "velocity2", Vector3{});*/
-
-	/*global->SetValue<int32_t>("EnemyPop3", "popCount", 5);
-	global->SetValue<Vector3>("EnemyPop3", "position0", Vector3{ -3.32f,1.64f,-13.06f });
-	global->SetValue<Vector3>("EnemyPop3", "velocity0", Vector3{});
-	global->SetValue<Vector3>("EnemyPop3", "position1", Vector3{ -11.02f,2.44f,-3.22f });
-	global->SetValue<Vector3>("EnemyPop3", "velocity1", Vector3{});
-	global->SetValue<Vector3>("EnemyPop3", "position2", Vector3{ -3.32f,5.44f,-13.06f });
-	global->SetValue<Vector3>("EnemyPop3", "velocity2", Vector3{});
-	global->SetValue<Vector3>("EnemyPop3", "position3", Vector3{ -11.02f,6.24f,-3.22f });
-	global->SetValue<Vector3>("EnemyPop3", "velocity3", Vector3{});
-	global->SetValue<Vector3>("EnemyPop3", "position4", Vector3{ 3.18f,8.44f,-8.72f });
-	global->SetValue<Vector3>("EnemyPop3", "velocity4", Vector3{ 0,0,0.001f });*/
-
-	global->SetValue<int32_t>("EnemyPop4", "popCount", 3);
-	global->SetValue<Vector3>("EnemyPop4", "position0", Vector3{});
-	global->SetValue<Vector3>("EnemyPop4", "velocity0", Vector3{});
-	global->SetValue<Vector3>("EnemyPop4", "position1", Vector3{});
-	global->SetValue<Vector3>("EnemyPop4", "velocity1", Vector3{});
-	global->SetValue<Vector3>("EnemyPop4", "position2", Vector3{});
-	global->SetValue<Vector3>("EnemyPop4", "velocity2", Vector3{});
+	for (int i = 0; i < 3; ++i) {
+		std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
+		sprite->Initialize("number/0.png");
+		sprite->SetSize(Vector2{ 64,64 });
+		sprite->SetAnchorPoint({ 0.5f,0.5f });
+		sprite->SetPosition(Vector2{ 1088 + (float)i * 64,656 });
+		sprites_.push_back(std::move(sprite));
+	}
 }
 
 void EnemyManager::Update()
@@ -70,13 +31,28 @@ void EnemyManager::Update()
 		}
 		if ((*it)->GetState() == Enemy::State::Dead) {
 			it = enemys_.erase(it);
+			gameScore_ += 50;
 		}
 		else {
 			++it;
 		}
 	}
 
-	box_->Update();
+	SpriteUpdate();
+}
+
+void EnemyManager::SpriteUpdate()
+{
+	int score = gameScore_;
+	for (int i = 3 - 1; i >= 0; --i) {
+		int digit = score % 10; // 各桁の数値を取得
+		score /= 10; // スコアを1桁下げる
+
+		// 数値に応じた画像を設定
+		sprites_[i]->SetTexture("number/" + std::to_string(digit) + ".png");
+
+		sprites_[i]->Update();
+	}
 }
 
 void EnemyManager::Draw()
@@ -85,8 +61,6 @@ void EnemyManager::Draw()
 		enemy->Draw();
 	}
 
-	box_->Draw();
-
 #ifdef _DEBUG
 
 	ImGui::Begin("EnemyManager");
@@ -94,13 +68,16 @@ void EnemyManager::Draw()
 		popEnemy_ = { false,false,false,false,false };
 		popEnemyTriggered_ = { false,false,false,false,false };
 	}
-
-	Vector3 translate = box_->GetPosition();
-	ImGui::DragFloat3("position", &translate.x, 0.01f);
-	box_->SetPosition(translate);
 	ImGui::End();
 
 #endif // _DEBUG
+}
+
+void EnemyManager::DrawSprite()
+{
+	for (auto& sprite : sprites_) {
+		sprite->Draw();
+	}
 }
 
 void EnemyManager::CreateEnemy()

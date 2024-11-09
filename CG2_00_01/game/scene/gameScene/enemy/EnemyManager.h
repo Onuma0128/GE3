@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "Enemy.h"
 #include "Object3d.h"
+#include "Sprite.h"
 
 class RailCamera;
 
@@ -17,11 +18,13 @@ public:
 
 	void Initialize();
 
-	void PopEnemyInitialize();
-
 	void Update();
 
+	void SpriteUpdate();
+
 	void Draw();
+
+	void DrawSprite();
 
 	void CreateEnemy();
 
@@ -41,7 +44,8 @@ private:
 
 	RailCamera* camera_ = nullptr;
 
-	std::unique_ptr<Object3d> box_;
+	std::vector<std::unique_ptr<Sprite>> sprites_;
+	int gameScore_ = 0;
 
 };
 

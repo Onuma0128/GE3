@@ -38,6 +38,12 @@ void Sprite::Draw()
 	spriteBase_->GetDxEngine()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
+void Sprite::SetTexture(std::string textureFilePath)
+{
+	TextureManager::GetInstance()->LoadTexture("resources/" + textureFilePath);
+	textureIndex_ = TextureManager::GetInstance()->GetSrvIndex("resources/" + textureFilePath);
+}
+
 void Sprite::VertexDataInitialize()
 {
 	vertexResource_ = CreateBufferResource(spriteBase_->GetDxEngine()->GetDevice(), sizeof(VertexData) * 4).Get();

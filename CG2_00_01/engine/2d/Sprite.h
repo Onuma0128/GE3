@@ -76,6 +76,8 @@ public:
 	const bool& GetFlipY()const { return isFlipY_; }
 	void SetFlipY(const bool& isFlipY) { this->isFlipY_ = isFlipY; }
 
+	void SetTexture(std::string textureFilePath);
+
 private:
 
 	void VertexDataInitialize();

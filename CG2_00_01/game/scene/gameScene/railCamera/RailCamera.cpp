@@ -69,7 +69,9 @@ void RailCamera::Draw()
 	}
 
 	reticle3d_->Draw();
+#ifdef _DEBUG
 	controlObject_->Draw();
+#endif // _DEBUG
 
 	for (auto& bullet : bullets_) {
 		bullet->Draw();
@@ -86,12 +88,14 @@ void RailCamera::DrawSprite()
 
 void RailCamera::DrawLine()
 {
+#ifdef _DEBUG
 	// ラインの複数描画
 	line3d_->Draws();
 
 	for (auto& bullet : bullets_) {
 		bullet->LineDraw();
 	}
+#endif // _DEBUG
 }
 
 void RailCamera::Debug_ImGui()

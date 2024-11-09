@@ -51,6 +51,8 @@ void GamePlayScene::Draw()
 	SpriteBase::GetInstance()->DrawBase();
 	railCamera_->DrawSprite();
 
+	enemyManager_->DrawSprite();
+
 	// Line描画準備
 	PrimitiveDrawer::GetInstance()->DrawBase();
 
