@@ -35,7 +35,7 @@ public:
 
 private:
 
-	std::unique_ptr<Object3d> ground_;
+	std::unique_ptr<Object3d> skydome_;
 
 	std::unique_ptr<RailCamera> railCamera_;
 

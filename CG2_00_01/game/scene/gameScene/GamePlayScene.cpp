@@ -8,7 +8,9 @@
 
 void GamePlayScene::Initialize()
 {
-	ground_ = std::make_unique<Object3d>("terrain.obj");
+	skydome_ = std::make_unique<Object3d>("skydome.obj");
+	skydome_->SetScale(Vector3{ 100,100,100 });
+	skydome_->SetEnableLighting(false);
 
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
@@ -27,7 +29,7 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	ground_->Update();
+	skydome_->Update();
 
 	railCamera_->Update();
 
@@ -40,7 +42,7 @@ void GamePlayScene::Draw()
 {
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
-	//ground_->Draw();
+	skydome_->Draw();
 
 	railCamera_->Debug_ImGui();
 	railCamera_->Draw();

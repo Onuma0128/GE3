@@ -70,6 +70,8 @@ public:
 
 	const ModelData GetModelData()const { return modelData_; }
 
+	void SetEnableLighting(bool flag) { materialData_->enableLighting = flag; }
+
 private:
 
 	static std::wstring s2ws(const std::string& str);

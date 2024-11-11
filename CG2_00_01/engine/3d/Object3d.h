@@ -48,6 +48,8 @@ public:
 
 	void SetModel(const std::string& filePath);
 
+	void SetEnableLighting(bool flag) { model_->SetEnableLighting(flag); }
+
 	void SetCamera(Camera* camera) { camera_ = camera; }
 
 	// サイズ
