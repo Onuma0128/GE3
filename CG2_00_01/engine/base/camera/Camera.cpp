@@ -20,6 +20,7 @@ void Camera::Initialize(DirectXEngine* dxEngine)
 
 	input_ = Input::GetInstance();
 
+	debugTransform_ = { {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };
 	transform_ = { {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };
 	fovY_ = 0.45f;
 	aspectRatio_ = float(WinApp::kClientWidth) / float(WinApp::kClientHeight);

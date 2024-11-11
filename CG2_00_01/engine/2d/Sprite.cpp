@@ -8,6 +8,8 @@ void Sprite::Initialize(std::string textureFilePath)
 {
 	this->spriteBase_ = SpriteBase::GetInstance();
 
+	textureFilePath_ = "resources/" + textureFilePath;
+
 	TextureManager::GetInstance()->LoadTexture("resources/" + textureFilePath);
 
 	textureIndex_ = TextureManager::GetInstance()->GetSrvIndex("resources/" + textureFilePath);
@@ -17,6 +19,8 @@ void Sprite::Initialize(std::string textureFilePath)
 	MaterialDataInitialize();
 
 	TransformationMatrixDataInitialize();
+
+	AdjustTextureSize();
 }
 
 void Sprite::Update()
@@ -116,6 +120,18 @@ void Sprite::AccessorUpdate()
 	vertexData_[1].position = { left,top,0.0f,1.0f };
 	vertexData_[2].position = { right,bottom,0.0f,1.0f };
 	vertexData_[3].position = { right,top,0.0f,1.0f };
+
+	const DirectX::TexMetadata& metadata = 
+		TextureManager::GetInstance()->GetMetaData(textureFilePath_);
+	float tex_left = textureLeftTop_.x / metadata.width;
+	float tex_right = (textureLeftTop_.x + textureSize_.x) / metadata.width;
+	float tex_top = textureLeftTop_.y / metadata.height;
+	float tex_bottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
+
+	vertexData_[0].texcoord = { tex_left,tex_bottom };
+	vertexData_[1].texcoord = { tex_left,tex_top };
+	vertexData_[2].texcoord = { tex_right,tex_bottom };
+	vertexData_[3].texcoord = { tex_right,tex_top };
 }
 
 void Sprite::UpdateMatrix()
@@ -127,4 +143,15 @@ void Sprite::UpdateMatrix()
 	transformationMatrixData_->WVP = worldViewProjectionMatrix;
 	transformationMatrixData_->World = worldViewProjectionMatrix;
 	transformationMatrixData_->WorldInverseTranspose = Matrix4x4::Inverse(worldViewProjectionMatrix);
+}
+
+void Sprite::AdjustTextureSize()
+{
+	const DirectX::TexMetadata& metadata =
+		TextureManager::GetInstance()->GetMetaData(textureFilePath_);
+	textureSize_ = {
+		.x = static_cast<float>(metadata.width),
+		.y = static_cast<float>(metadata.height)
+	};
+	size_ = textureSize_;
 }

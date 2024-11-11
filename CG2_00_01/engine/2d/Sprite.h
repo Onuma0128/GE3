@@ -76,6 +76,13 @@ public:
 	const bool& GetFlipY()const { return isFlipY_; }
 	void SetFlipY(const bool& isFlipY) { this->isFlipY_ = isFlipY; }
 
+	// テクスチャ左上座標
+	const Vector2& GetTextureLeftTop()const { return textureLeftTop_; }
+	void SetTextureLeftTop(const Vector2& leftTop) { textureLeftTop_ = leftTop; }
+	// テクスチャ切り出しサイズ
+	const Vector2& GetTextureSize()const { return textureSize_; }
+	void SetTextureSize(const Vector2& size) { textureSize_ = size; }
+
 private:
 
 	void VertexDataInitialize();
@@ -88,11 +95,15 @@ private:
 
 	void UpdateMatrix();
 
+	void AdjustTextureSize();
+
 private:
 
 	SpriteBase* spriteBase_ = nullptr;
 	// テクスチャ番号　
 	uint32_t textureIndex_ = 0;
+	// ファイルパス
+	std::string textureFilePath_;
 
 	// バッファリソース
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
@@ -130,5 +141,9 @@ private:
 	bool isFlipX_ = false;
 	// 上下フリップ
 	bool isFlipY_ = false;
+	// テクスチャ左上座標
+	Vector2 textureLeftTop_ = { 0.0f,0.0f };
+	// テクスチャ切り出しサイズ
+	Vector2 textureSize_ = { 64.0f,64.0f };
 };
 
