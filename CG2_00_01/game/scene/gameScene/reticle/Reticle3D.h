@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "Object3d.h"
+#include "Sprite.h"
 #include "Input.h"
 #include "Camera.h"
 
@@ -20,6 +21,8 @@ public:
 
 	void Draw();
 
+	void DrawSprite();
+
 	void ScreenToWorld();
 
 	/*==================== アクセッサー ====================*/
@@ -33,6 +36,7 @@ public:
 private:
 
 	std::unique_ptr<Object3d> reticle3d_;
+	std::unique_ptr<Sprite> reticleSprite_;
 
 	Camera* camera_ = Camera::GetInstance();
 	Input* input_ = Input::GetInstance();

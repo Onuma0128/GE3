@@ -96,6 +96,7 @@ void RailCamera::DrawSprite()
 	if (fadeMove_) {
 		fade_->Draw();
 	}
+	reticle3d_->DrawSprite();
 }
 
 void RailCamera::DrawLine()
@@ -164,7 +165,7 @@ void RailCamera::Debug_ImGui()
 		SaveControlPoints();
 	}
 	if (ImGui::Button("t reset")) {
-		t_ = 0.9f;
+		t_ = 0.8f;
 	}
 
 	ImGui::End();
@@ -248,6 +249,7 @@ void RailCamera::RailCameraMove()
 
 		if (t_ >= 0.99f) {
 			fadeMove_ = true;
+			//t_ = 0.0f;
 		}
 
 		Vector3 rotate{};
