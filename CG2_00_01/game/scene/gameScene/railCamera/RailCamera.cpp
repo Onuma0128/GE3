@@ -26,12 +26,17 @@ void RailCamera::Initialize()
 	line3d_ = std::make_unique<Line3d>();
 	line3d_->Initialize(lines);
 	t_ = 0.0f;
+
+	fade_ = std::make_unique<Fade>();
+	fade_->Initialize();
 }
 
 void RailCamera::Update() 
 {
 	// レールカメラの動き
-	RailCameraMove();
+	if (!fadeMove_) {
+		RailCameraMove();
+	}
 
 	// カメラのオブジェクト
 	cameraObj_->Update();
@@ -60,6 +65,10 @@ void RailCamera::Update()
 			++it;
 		}
 	}
+
+	if (fadeMove_) {
+		fade_->Update();
+	}
 }
 
 void RailCamera::Draw()
@@ -83,6 +92,9 @@ void RailCamera::DrawSprite()
 {
 	for (auto& rail : railObj_) {
 		rail->Draw();
+	}
+	if (fadeMove_) {
+		fade_->Draw();
 	}
 }
 
@@ -152,7 +164,7 @@ void RailCamera::Debug_ImGui()
 		SaveControlPoints();
 	}
 	if (ImGui::Button("t reset")) {
-		t_ = 0.0f;
+		t_ = 0.9f;
 	}
 
 	ImGui::End();
@@ -234,8 +246,8 @@ void RailCamera::RailCameraMove()
 			t_ += normalizedDt;
 		}
 
-		if (t_ > 1.0f) {
-			t_ = 0.0f;
+		if (t_ >= 0.99f) {
+			fadeMove_ = true;
 		}
 
 		Vector3 rotate{};

@@ -155,6 +155,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\3d\Line3d.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\gameScene\reticle\Reticle3D.cpp" />
     <ClCompile Include="CG2_00_01\game\globalVariables\GlobalVariables.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\fade\Fade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\game\scene\gameScene\bullet\Bullet.h" />
@@ -216,6 +217,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\3d\Line3d.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameScene\reticle\Reticle3D.h" />
     <ClInclude Include="CG2_00_01\game\globalVariables\GlobalVariables.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\fade\Fade.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

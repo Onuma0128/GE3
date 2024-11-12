@@ -8,8 +8,6 @@
 #include "Object3d.h"
 #include "BaseScene.h"
 
-using Microsoft::WRL::ComPtr;
-
 class TitleScene : public BaseScene
 {
 public:
@@ -25,9 +23,7 @@ public:
 private:
 
 	std::vector<std::unique_ptr<Sprite>> sprites_;
-	std::vector <std::unique_ptr<Object3d>> obj_;
 
-	ComPtr<IXAudio2> xAudio2;
-	SoundData soundData1;
+	std::unique_ptr<Object3d> obj_ = nullptr;
 };
 

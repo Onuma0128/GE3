@@ -55,10 +55,6 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	ImGui::Begin("enemy");
-	ImGui::Text("%f", activeFrame_);
-	ImGui::End();
-
 	enemy_->Draw();
 }
 

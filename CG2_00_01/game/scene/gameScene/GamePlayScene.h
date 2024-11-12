@@ -17,8 +17,6 @@
 #include "collider/CollisionManager.h"
 
 
-using Microsoft::WRL::ComPtr;
-
 class GamePlayScene : public BaseScene
 {
 public:

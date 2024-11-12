@@ -11,6 +11,7 @@
 
 #include "bullet/Bullet.h"
 #include "reticle/Reticle3D.h"
+#include "fade/Fade.h"
 
 const float lineNum = 10000;
 
@@ -74,5 +75,8 @@ private:
 	std::unique_ptr<Reticle3D> reticle3d_;
 	// 弾
 	std::vector<std::unique_ptr<Bullet>> bullets_;
+	// フェード
+	std::unique_ptr<Fade> fade_;
+	bool fadeMove_ = false;
 };
 
