@@ -8,7 +8,7 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	D3DResourceLeakChecker leakCheck;
+	/*D3DResourceLeakChecker leakCheck;*/
 
 	std::unique_ptr<Framework> game = std::make_unique<MyGame>();
 
