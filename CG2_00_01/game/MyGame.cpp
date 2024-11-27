@@ -1,7 +1,9 @@
 #include "MyGame.h"
+
 #include "Camera.h"
 #include "LightManager.h"
 #include "SceneManager.h"
+#include "ParticleManager.h"
 #include "SceneFactory.h"
 
 void MyGame::Initialize()
@@ -25,6 +27,9 @@ void MyGame::Update()
 	Framework::Update();
 
 	SceneManager::GetInstance()->Update();
+
+	// パーティクルの更新
+	ParticleManager::GetInstance()->Update();
 }
 
 void MyGame::Draw()
@@ -32,8 +37,8 @@ void MyGame::Draw()
 	// 描画前の処理
 	directXEngine_->PreDraw();
 
-	// 描画処理
-	directXEngine_->Draw();
+	// パーティクルの描画
+	ParticleManager::GetInstance()->Draw();
 
 	// カメラのImGui
 	Camera::GetInstance()->CameraImGui();

@@ -3,7 +3,6 @@
 #pragma comment(lib,"d3d12.lib")
 #include "wrl.h"
 #include <iostream>
-#include <random>
 #include <numbers>
 #include <memory>
 #include <list>
@@ -22,7 +21,9 @@
 using Microsoft::WRL::ComPtr;
 
 // パーティクルのMAX値(上げすぎ注意!!)
-const uint32_t kNumMaxInstance = 10;
+const uint32_t kNumMaxInstance = 100;
+
+class ParticleEmitter;
 
 class ParticleManager
 {
@@ -53,29 +54,17 @@ public:
 		Matrix4x4 World;
 		Vector4 color;
 	};
-	struct Emitter {
-		Transform transform;
-		uint32_t count;
-		float frequency;
-		float frequencyTime;
-	};
-	struct AABB {
-		Vector3 min;
-		Vector3 max;
-	};
-	struct AccelerationField {
-		Vector3 acceleration;
-		AABB area;
-	};
 
 	struct ParticleGroup {
 		std::string textureFilePath;
 		uint32_t srvIndex;
+		uint32_t textureIndex;
 		std::list<Particle> particles;
 		uint32_t instancingIndex;
 		ComPtr<ID3D12Resource> instancingResource;
 		uint32_t instanceCount;
 		ParticleForGPU* instancingData;
+		std::unique_ptr<ParticleEmitter> emitter;
 	};
 
 private:
@@ -99,23 +88,13 @@ public:
 
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
 
-	ComPtr<ID3D12Resource> GetInstancingResource()const { return instancingResource_; }
+	void Emit(const std::string name, const Vector3& position, uint32_t count);
 
 private:
-
-	static std::list<ParticleManager::Particle> Emit(const Emitter& emitter, std::mt19937& randomEngine);
 
 	void CreateVertexResource();
 
 	void CreateMatrialResource();
-
-	void CreateInstancingResource();
-
-	void CreateEmit();
-
-	static Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& translate);
-
-	bool IsCollision(const AABB& aabb, const Vector3& point);
 
 private:
 
@@ -133,7 +112,7 @@ private:
 	Model::ModelData modelData_;
 
 	// パーティクルグループコンテナ
-	std::unordered_map<std::string, ParticleManager::ParticleGroup> particleGroups_;
+	std::unordered_map<std::string, ParticleGroup> particleGroups_;
 
 	// 頂点リソース,データを作成
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
@@ -145,24 +124,5 @@ private:
 	//マテリアル用のリソース,データを作成
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
 	Material* materialData_ = nullptr;
-
-	// Instancing用リソース,データを作成
-	// 消す予定
-	ComPtr<ID3D12Resource> instancingResource_ = nullptr;
-	ParticleForGPU* instancingData_ = nullptr;
-
-	/*==================== エミッター ====================*/
-
-	//乱数生成器の初期化
-	std::random_device seedGenerator_;
-
-	//Transform変数を作る
-	// 消す予定
-	std::list<Particle> particles_{};
-	AccelerationField accelerationField_{};
-	Emitter emitter_{};
-	const float kDeltaTime = 1.0f / 60.0f;
-	bool moveStart_ = false;
-	bool isFieldStart_ = false;
 
 };

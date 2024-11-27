@@ -30,10 +30,8 @@ public:
 public:
 	/*==================== メンバ関数 ====================*/
 
-	Object3d(const std::string& filePath);
-
 	// 初期化
-	void Initialize();
+	void Initialize(const std::string& filePath);
 
 	// 更新
 	void Update();

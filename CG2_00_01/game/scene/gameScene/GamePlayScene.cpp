@@ -22,13 +22,16 @@ void GamePlayScene::Initialize()
 	sprite1_->SetAnchorPoint({ 0.5f,0.5f });
 	sprites_.push_back(std::move(sprite1_));
 
-	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>("teapot.obj");
+	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
+	object3d_->Initialize("teapot.obj");
 	obj_.push_back(std::move(object3d_));
 
-	std::unique_ptr<Object3d> object3d1_ = std::make_unique<Object3d>("terrain.obj");
+	std::unique_ptr<Object3d> object3d1_ = std::make_unique<Object3d>();
+	object3d1_->Initialize("terrain.obj");
 	obj_.push_back(std::move(object3d1_));
 
-	std::unique_ptr<Object3d> object3dTest_ = std::make_unique<Object3d>("plane.gltf");
+	std::unique_ptr<Object3d> object3dTest_ = std::make_unique<Object3d>();
+	object3dTest_->Initialize("plane.gltf");
 	object3dTest_->SetRotation({ 0,3.14f,0 });
 	obj_.push_back(std::move(object3dTest_));
 

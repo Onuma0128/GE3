@@ -80,6 +80,28 @@ Vector3 Vector3::operator*(float scalar) const {
     return { x * scalar, y * scalar, z * scalar };
 }
 
+// 複合代入演算子オーバーロード
+Vector3& Vector3::operator+=(const Vector3& v) {
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    return *this;
+}
+
+Vector3& Vector3::operator-=(const Vector3& v) {
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    return *this;
+}
+
+Vector3& Vector3::operator*=(float scalar) {
+    x *= scalar;
+    y *= scalar;
+    z *= scalar;
+    return *this;
+}
+
 // フレンド関数：スカラー倍の演算子オーバーロード
 Vector3 operator*(float scalar, const Vector3& v) {
     return v * scalar;

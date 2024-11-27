@@ -81,7 +81,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\camera;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\camera;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;$(ProjectDir)CG2_00_01\engine\base\particle;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,6 +151,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\model\PrimitiveDrawer.cpp" />
     <ClCompile Include="CG2_00_01\engine\3d\Line3d.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\particle\ParticleManager.cpp" />
+    <ClCompile Include="CG2_00_01\engine\base\particle\ParticleEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\game\sceneFactory\AbstractSceneFactory.h" />
@@ -206,6 +207,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\base\model\PrimitiveDrawer.h" />
     <ClInclude Include="CG2_00_01\engine\3d\Line3d.h" />
     <ClInclude Include="CG2_00_01\engine\base\particle\ParticleManager.h" />
+    <ClInclude Include="CG2_00_01\engine\base\particle\ParticleEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

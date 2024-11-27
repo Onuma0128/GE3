@@ -5,7 +5,7 @@
 #include "Logger.h"
 #include "StringUtility.h"
 #include "WinApp.h"
-//#include "VertexResource.h"
+
 #include "PipelineState.h"
 #include <dxcapi.h>
 #include <array>
@@ -16,8 +16,6 @@ using Microsoft::WRL::ComPtr;
 class DirectXEngine
 {
 public:
-	// 最大SRV数
-	//static const uint32_t kMaxSRVCount;
 
 	~DirectXEngine();
 
@@ -45,8 +43,6 @@ public:
 	void DxcCompilerInitialize();
 	// ImGuiの初期化
 	void ImGuiInitialize();
-	// VertexResourceの初期化
-	//void VertexResourceInitialize();
 	// InstancingSRVの初期化
 	void InstancingSrvInitialize();
 	// IncludeHandlerの初期化
@@ -60,8 +56,6 @@ public:
 
 	// 描画前の処理
 	void PreDraw();
-	// 描画処理
-	void Draw();
 	// 描画後の処理
 	void PostDraw();
 
@@ -73,12 +67,6 @@ public:
 	ID3D12GraphicsCommandList* GetCommandList()const { return commandList_.Get(); }
 	// パイプラインのゲッター
 	PipelineState* GetPipelineState()const { return pipelineState_; }
-	//VertexResource* GetVertexResource()const { return vertexResource_; }
-
-
-	/*Matrix4x4 GetCameraView()const { return vertexResource_->GetCameraView(); }
-
-	ID3D12Resource* GetCameraResource()const { return vertexResource_->GetCameraResource().Get(); }*/
 
 private:
 	// Logger
@@ -87,8 +75,6 @@ private:
 	StringUtility* stringUtility_ = nullptr;
 	// WindowsAPI
 	WinApp* winApp_ = nullptr;
-	// VertexResource
-	//VertexResource* vertexResource_ = nullptr;
 	// PipelineState
 	PipelineState* pipelineState_ = nullptr;
 

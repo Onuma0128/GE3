@@ -352,12 +352,12 @@ void DirectXEngine::ImGuiInitialize()
 
 void DirectXEngine::InstancingSrvInitialize()
 {
-	SrvManager::GetInstance()->CreateSRVforStructuredBuffer(
+	/*SrvManager::GetInstance()->CreateSRVforStructuredBuffer(
 		1,
 		ParticleManager::GetInstance()->GetInstancingResource().Get(),
 		kNumMaxInstance,
 		sizeof(ParticleManager::ParticleForGPU)
-	);
+	);*/
 }
 
 void DirectXEngine::IncludeHandlerInitialize()
@@ -444,33 +444,6 @@ void DirectXEngine::PreDraw()
 	commandList_->RSSetScissorRects(1, &scissorRect_);
 	//開発用UIの処理.
 	ImGui::ShowDemoWindow();
-}
-
-void DirectXEngine::Draw()
-{
-
-	ParticleManager::GetInstance()->Update();
-	ParticleManager::GetInstance()->Draw();
-
-	//// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えて置けばいい
-	//commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	/////==============================================================================================
-	//// RootSignatureを設定。PSOに設定しているけど別途設定が必要(Particle.hlsl)
-	//commandList_->SetGraphicsRootSignature(ParticleRootSignature_.Get());
-	//commandList_->SetPipelineState(ParticlePipelineState_.Get());
-	/////==============================================================================================
-	//// Particle
-	//TextureManager::GetInstance()->LoadTexture("resources/circle.png");
-	//uint32_t textIndex = TextureManager::GetInstance()->GetSrvIndex("resources/circle.png");
-	//commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
-	//commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResource()->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetInstancingResource()->GetGPUVirtualAddress());
-	//SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textIndex);
-	//commandList_->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	//SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(4, 1);
-	//// 描画
-	//commandList_->DrawInstanced(UINT(vertexResource_->GetModelData().vertices.size()), vertexResource_->GetNumInstance(), 0, 0);
-	/////==============================================================================================
 }
 
 void DirectXEngine::PostDraw()

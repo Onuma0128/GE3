@@ -1,10 +1,12 @@
 #include "ParticleManager.h"
 
+#include "PrimitiveDrawer.h"
 #include "LightManager.h"
 #include "TextureManager.h"
 #include "Camera.h"
 
 #include "CreateBufferResource.h"
+#include "ParticleEmitter.h"
 
 ParticleManager* ParticleManager::instance_ = nullptr;
 
@@ -23,62 +25,50 @@ void ParticleManager::Initialize(DirectXEngine* dxEngine)
 
     rootSignature_ = dxEngine_->GetPipelineState()->CreateParticleRootSignature();
     pipelineState_ = dxEngine_->GetPipelineState()->CreateParticlePipelineState();
-
     
     modelData_ = Model::LoadObjFile("resources", "plane.obj");
 
     CreateVertexResource();
 
     CreateMatrialResource();
-
-    CreateInstancingResource();
-
-    CreateEmit();
 }
 
 void ParticleManager::Update()
 {
-    // エミッターによるパーティクルの発生
-    if (moveStart_) {
-        emitter_.frequencyTime += kDeltaTime;
-    }
-    if (emitter_.frequency <= emitter_.frequencyTime) {
-        std::mt19937 randomEngine_(seedGenerator_());
-        particles_.splice(particles_.end(), Emit(emitter_, randomEngine_));
-        emitter_.frequencyTime -= emitter_.frequency;
-    }
+    // 各パーティクルグループに対して処理
+    for (auto& [name, group] : particleGroups_) {
+        // 新しいパーティクルを追加する
+        particleGroups_[name].emitter->Update();
 
-    // パーティクルの更新
-    uint32_t numInstance = 0;
-    for (std::list<Particle>::iterator particleIterator = particles_.begin();
-        particleIterator != particles_.end();) {
-        if ((*particleIterator).lifeTime <= (*particleIterator).currentTime) {
-            particleIterator = particles_.erase(particleIterator);
-            continue;
-        }
-        Matrix4x4 backToFrontMatrix = Matrix4x4::RotateY(std::numbers::pi_v<float>);
-        Matrix4x4 billboardMatrix = backToFrontMatrix * Camera::GetInstance()->GetWorldMatrix();
-        billboardMatrix.m[3][0] = 0.0f; billboardMatrix.m[3][1] = 0.0f; billboardMatrix.m[3][2] = 0.0f;
-        Matrix4x4 worldMatrix = Matrix4x4::Scale(particleIterator->transform.scale) * billboardMatrix * Matrix4x4::Translate(particleIterator->transform.translate);
-        Matrix4x4 worldViewMatrix = worldMatrix * Camera::GetInstance()->GetViewMatrix();
-        Matrix4x4 worldViewProjectionMatrix = worldViewMatrix * Camera::GetInstance()->GetProjectionMatrix();
-        //パーティクルの動き
-        if (moveStart_) {
-            if (IsCollision(accelerationField_.area, particleIterator->transform.translate) && isFieldStart_) {
-                particleIterator->velocity = accelerationField_.acceleration * kDeltaTime + particleIterator->velocity;
+        uint32_t numInstance = 0;
+        // 各パーティクルを更新
+        for (auto it = group.particles.begin(); it != group.particles.end();) {
+            if (it->lifeTime <= it->currentTime) {
+                it = group.particles.erase(it);
+                continue;
             }
-            particleIterator->transform.translate = particleIterator->velocity * kDeltaTime + particleIterator->transform.translate;
-            particleIterator->currentTime += kDeltaTime;
+
+            // パーティクルの位置やカラーの更新
+            Matrix4x4 backToFrontMatrix = Matrix4x4::RotateY(std::numbers::pi_v<float>);
+            Matrix4x4 billboardMatrix = backToFrontMatrix * Camera::GetInstance()->GetWorldMatrix();
+            billboardMatrix.m[3][0] = billboardMatrix.m[3][1] = billboardMatrix.m[3][2] = 0.0f;
+            Matrix4x4 worldMatrix = Matrix4x4::Scale(it->transform.scale) * billboardMatrix * Matrix4x4::Translate(it->transform.translate);
+            Matrix4x4 worldViewMatrix = worldMatrix * Camera::GetInstance()->GetViewMatrix();
+            Matrix4x4 worldViewProjectionMatrix = worldViewMatrix * Camera::GetInstance()->GetProjectionMatrix();
+
+            // パーティクルエミッタの更新
+            group.emitter->UpdateParticle(it);
+
+            float alpha = 1.0f - (it->currentTime / it->lifeTime);
+            if (numInstance < kNumMaxInstance) {
+                group.instancingData[numInstance].WVP = worldViewProjectionMatrix;
+                group.instancingData[numInstance].World = worldViewMatrix;
+                group.instancingData[numInstance].color = it->color;
+                group.instancingData[numInstance].color.w = alpha;
+                ++numInstance;
+            }
+            ++it;
         }
-        float alpha = 1.0f - (particleIterator->currentTime / particleIterator->lifeTime);
-        if (numInstance < kNumMaxInstance) {
-            instancingData_[numInstance].WVP = worldViewProjectionMatrix;
-            instancingData_[numInstance].World = worldViewMatrix;
-            instancingData_[numInstance].color = particleIterator->color;
-            instancingData_[numInstance].color.w = alpha;
-            ++numInstance;
-        }
-        ++particleIterator;
     }
 }
 
@@ -89,17 +79,22 @@ void ParticleManager::Draw()
     dxEngine_->GetCommandList()->SetPipelineState(pipelineState_.Get());
     dxEngine_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    // Particle
-    TextureManager::GetInstance()->LoadTexture("resources/circle.png");
-    uint32_t textIndex = TextureManager::GetInstance()->GetSrvIndex("resources/uvChecker.png");
-    dxEngine_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-    dxEngine_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-    dxEngine_->GetCommandList()->SetGraphicsRootConstantBufferView(1, instancingResource_->GetGPUVirtualAddress());
-    SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textIndex);
-    dxEngine_->GetCommandList()->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
-    SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(4, 1);
-    // 描画
-    dxEngine_->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), kNumMaxInstance, 0, 0);
+    /*==================== パーティクルの描画 ====================*/
+    for (const auto& [name, group] : particleGroups_) {
+        uint32_t textIndex = group.textureIndex;
+        dxEngine_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+        dxEngine_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+        dxEngine_->GetCommandList()->SetGraphicsRootConstantBufferView(1, group.instancingResource->GetGPUVirtualAddress());
+        SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textIndex);
+        SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(3, group.srvIndex);
+
+        // 各パーティクルグループのインスタンスを描画
+        dxEngine_->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), group.instanceCount, 0, 0);
+    }
+
+    for (const auto& [name, group] : particleGroups_) {
+        group.emitter->Draw();
+    }
 }
 
 void ParticleManager::Finalize()
@@ -110,16 +105,48 @@ void ParticleManager::Finalize()
 
 void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath)
 {
+    ParticleGroup group;
+    group.textureFilePath = textureFilePath;
+    TextureManager::GetInstance()->LoadTexture("resources/" + group.textureFilePath);
+    group.textureIndex = TextureManager::GetInstance()->GetSrvIndex("resources/" + group.textureFilePath);
 
+    // パーティクルグループのインスタンス数とリソースを初期化
+    group.instanceCount = kNumMaxInstance;
+    group.instancingData = nullptr;
+
+    // インスタンスデータ用のバッファリソースを作成
+    group.instancingResource = CreateBufferResource(
+        dxEngine_->GetDevice(),
+        sizeof(ParticleForGPU) * group.instanceCount).Get();
+
+    // リソースをマッピングして、インスタンスデータを初期化
+    group.instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&group.instancingData));
+    for (uint32_t i = 0; i < group.instanceCount; ++i) {
+        group.instancingData[i].WVP = Matrix4x4::Identity();
+        group.instancingData[i].World = Matrix4x4::Identity();
+        group.instancingData[i].color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+    }
+    group.emitter = std::make_unique<ParticleEmitter>(name);
+
+    group.srvIndex = srvManager_->Allocate() + TextureManager::kSRVIndexTop;
+
+    srvManager_->CreateSRVforStructuredBuffer(
+        group.srvIndex,
+        group.instancingResource.Get(),
+        group.instanceCount,
+        sizeof(ParticleManager::ParticleForGPU)
+    );
+
+    // 新しいパーティクルグループを particleGroups_ マップに追加
+    particleGroups_[name] = std::move(group);
 }
 
-std::list<ParticleManager::Particle> ParticleManager::Emit(const Emitter& emitter, std::mt19937& randomEngine)
+void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count)
 {
-    std::list<Particle> particles;
-    for (uint32_t count = 0; count < emitter.count; ++count) {
-        particles.push_back(MakeNewParticle(randomEngine, emitter.transform.translate));
-    }
-    return particles;
+    // 新しいパーティクルを追加する
+    particleGroups_[name].emitter->CreateParticles(particleGroups_[name]);
+    particleGroups_[name].emitter->SetEmitPosition(position);
+    particleGroups_[name].emitter->SetEmitCount(count);
 }
 
 void ParticleManager::CreateVertexResource()
@@ -144,60 +171,4 @@ void ParticleManager::CreateMatrialResource()
     materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     materialData_->enableLighting = false;
     materialData_->uvTransform = Matrix4x4::Identity();
-}
-
-void ParticleManager::CreateInstancingResource()
-{
-    // Instancing用
-    instancingResource_ = CreateBufferResource(dxEngine_->GetDevice(), sizeof(ParticleForGPU) * kNumMaxInstance).Get();
-    instancingResource_->Map(0, nullptr, reinterpret_cast<void**>(&instancingData_));
-    for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
-        instancingData_[index].WVP = Matrix4x4::Identity();
-        instancingData_[index].World = Matrix4x4::Identity();
-        instancingData_[index].color = Vector4{ 1.0f,1.0f,1.0f,1.0f };
-    }
-}
-
-void ParticleManager::CreateEmit()
-{
-    std::mt19937 randomEngine_(seedGenerator_());
-
-    emitter_.transform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-    emitter_.frequency = 0.5f;
-    emitter_.frequencyTime = 0.0f;
-    accelerationField_.acceleration = { 0.0f,10.0f,0.0f };
-    accelerationField_.area.min = { -1.0f,-1.0f,-1.0f };
-    accelerationField_.area.max = { 1.0f,1.0f,1.0f };
-    // emitter_.frequencyごとに出すパーティクルの個数
-    emitter_.count = 3;
-    particles_.splice(particles_.end(), Emit(emitter_, randomEngine_));
-    moveStart_ = true;
-    isFieldStart_ = false;
-}
-
-ParticleManager::Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const Vector3& translate)
-{
-    std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
-    std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
-    std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
-    Particle particle{};
-    particle.transform.scale = { 1.0f,1.0f,1.0f };
-    particle.transform.rotate = { 0.0f,0.0f,0.0f };
-    Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
-    particle.transform.translate = translate + randomTranslate;
-    particle.velocity = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
-    particle.color = { distColor(randomEngine),distColor(randomEngine) ,distColor(randomEngine) ,1.0f };
-    particle.lifeTime = distTime(randomEngine);
-    particle.currentTime = 0.0f;
-    return particle;
-}
-
-bool ParticleManager::IsCollision(const AABB& aabb, const Vector3& point)
-{
-    if (aabb.min.x < point.x && aabb.max.x > point.x &&
-        aabb.min.y < point.y && aabb.max.y > point.y &&
-        aabb.min.z < point.z && aabb.max.z > point.z) {
-        return true;
-    }
-    return false;
 }

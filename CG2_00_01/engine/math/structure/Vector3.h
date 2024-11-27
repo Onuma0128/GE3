@@ -45,6 +45,11 @@ public:
     Vector3 operator-(const Vector3& v) const;
     Vector3 operator*(float scalar) const;
 
+    // 複合代入演算子オーバーロード
+    Vector3& operator+=(const Vector3& v);
+    Vector3& operator-=(const Vector3& v);
+    Vector3& operator*=(float scalar);
+
     // フレンド関数：スカラー倍の演算子オーバーロード
     friend Vector3 operator*(float scalar, const Vector3& v);
 };
