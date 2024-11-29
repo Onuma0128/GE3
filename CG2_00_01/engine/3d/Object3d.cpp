@@ -54,7 +54,6 @@ void Object3d::MakeWvpData()
 
 void Object3d::SetModel(const std::string& filePath)
 {
-    ModelManager::GetInstance()->LoadModel(filePath);
     model_ = ModelManager::GetInstance()->FindModel(filePath);
 }
 

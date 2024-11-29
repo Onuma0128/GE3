@@ -48,15 +48,20 @@ void ParticleManager::Update()
                 continue;
             }
 
-            // パーティクルの位置やカラーの更新
-            Matrix4x4 backToFrontMatrix = Matrix4x4::RotateY(std::numbers::pi_v<float>);
+            // ビルボード前にパーティクルの回転を決める
+            Matrix4x4 rotateX = Matrix4x4::RotateX(0);
+            Matrix4x4 rotateY = Matrix4x4::RotateY(std::numbers::pi_v<float>);
+            Matrix4x4 rotateZ = Matrix4x4::RotateZ(0);
+            Matrix4x4 backToFrontMatrix = rotateX * rotateY * rotateZ;
+
+            // パーティクルのビルボード化
             Matrix4x4 billboardMatrix = backToFrontMatrix * Camera::GetInstance()->GetWorldMatrix();
             billboardMatrix.m[3][0] = billboardMatrix.m[3][1] = billboardMatrix.m[3][2] = 0.0f;
             Matrix4x4 worldMatrix = Matrix4x4::Scale(it->transform.scale) * billboardMatrix * Matrix4x4::Translate(it->transform.translate);
             Matrix4x4 worldViewMatrix = worldMatrix * Camera::GetInstance()->GetViewMatrix();
             Matrix4x4 worldViewProjectionMatrix = worldViewMatrix * Camera::GetInstance()->GetProjectionMatrix();
 
-            // パーティクルエミッタの更新
+            // パーティクルの更新
             group.emitter->UpdateParticle(it);
 
             float alpha = 1.0f - (it->currentTime / it->lifeTime);

@@ -27,11 +27,9 @@ private:
 
 	std::vector<std::unique_ptr<Sprite>> sprites_;
 	std::vector <std::unique_ptr<Object3d>> obj_;
+	ParticleManager* particleManager_ = ParticleManager::GetInstance();
 
-	std::vector<std::unique_ptr<ParticleEmitter>> emitters_;
-
-	float t = 0;
-
+	// 今後消す
 	ComPtr<IXAudio2> xAudio2;
 	SoundData soundData1;
 };

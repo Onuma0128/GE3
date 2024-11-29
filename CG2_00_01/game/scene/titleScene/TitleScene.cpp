@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "SpriteBase.h"
 #include "Object3dBase.h"
+#include "ModelManager.h"
 #include "ParticleManager.h"
 
 #include "SceneManager.h"
@@ -22,14 +23,15 @@ void TitleScene::Initialize()
 	sprite1_->SetAnchorPoint({ 0.5f,0.5f });
 	sprites_.push_back(std::move(sprite1_));
 
+	ModelManager::GetInstance()->LoadModel("resources", "suzanne.obj");
 	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize("suzanne.obj");
 	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
 	obj_.push_back(std::move(object3d_));
 
-	ParticleManager::GetInstance()->CreateParticleGroup("player", "circle.png");
-	ParticleManager::GetInstance()->CreateParticleGroup("enemy", "circle.png");
-	ParticleManager::GetInstance()->CreateParticleGroup("obj", "Apple.png");
+	particleManager_->CreateParticleGroup("player", "circle.png");
+	particleManager_->CreateParticleGroup("enemy", "circle.png");
+	particleManager_->CreateParticleGroup("obj", "Apple.png");
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
@@ -53,19 +55,20 @@ void TitleScene::Update()
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Game");
 	}
-	t += 1.0f / 100.0f;
 
 	for (auto& obj : obj_) {
-		obj->SetRotation(Vector3{ 0,t,0 });
 		obj->Update();
 	}
 	for (auto& sprite : sprites_) {
 		sprite->Update();
 	}
 
-	ParticleManager::GetInstance()->Emit("player", Vector3{ 0,0,0 }, 1);
-	ParticleManager::GetInstance()->Emit("enemy", Vector3{ -3,0,0 }, 1);
-	ParticleManager::GetInstance()->Emit("obj", Vector3{ 3,0,0 }, 1);
+	particleManager_->Emit("player", Vector3{ 0,0,0 }, 1);
+	particleManager_->Emit("enemy", Vector3{ -3,0,0 }, 1);
+	particleManager_->Emit("obj", Vector3{ 3,0,0 }, 1);
+
+	// Particleの更新
+	particleManager_->Update();
 }
 
 void TitleScene::Draw()
@@ -81,4 +84,7 @@ void TitleScene::Draw()
 	for (auto& sprite : sprites_) {
 		sprite->Draw();
 	}
+
+	// Particleの描画
+	particleManager_->Draw();
 }

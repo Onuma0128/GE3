@@ -23,7 +23,7 @@ void ModelManager::Finalize()
     instance_ = nullptr;
 }
 
-void ModelManager::LoadModel(const std::string& filePath)
+void ModelManager::LoadModel(const std::string& directoryPath, const std::string& filePath)
 {
     if (models_.contains(filePath)) {
         // 読み込み済みなら早期return
@@ -31,7 +31,7 @@ void ModelManager::LoadModel(const std::string& filePath)
     }
     // モデルの生成とファイル読み込み、初期化
     std::unique_ptr<Model> model = std::make_unique<Model>();
-    model->Initialize(filePath);
+    model->Initialize(directoryPath, filePath);
 
     // モデルをmapコンテナに格納する
     models_.insert(std::make_pair(filePath, std::move(model)));

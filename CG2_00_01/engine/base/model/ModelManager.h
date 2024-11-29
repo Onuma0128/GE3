@@ -25,7 +25,7 @@ public:
 	void Finalize();
 
 
-	void LoadModel(const std::string& filePath);
+	void LoadModel(const std::string& directoryPath, const std::string& filePath);
 
 	Model* FindModel(const std::string& filePath);
 

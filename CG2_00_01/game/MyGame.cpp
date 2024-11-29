@@ -27,18 +27,12 @@ void MyGame::Update()
 	Framework::Update();
 
 	SceneManager::GetInstance()->Update();
-
-	// パーティクルの更新
-	ParticleManager::GetInstance()->Update();
 }
 
 void MyGame::Draw()
 {
 	// 描画前の処理
 	directXEngine_->PreDraw();
-
-	// パーティクルの描画
-	ParticleManager::GetInstance()->Draw();
 
 	// カメラのImGui
 	Camera::GetInstance()->CameraImGui();

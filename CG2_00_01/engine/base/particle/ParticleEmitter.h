@@ -68,12 +68,14 @@ private:
 
 	/*==================== エミッター ====================*/
 
-	//乱数生成器の初期化
+	// 乱数生成器の初期化
 	std::random_device seedGenerator_;
 
-	//Transform変数を作る
+	// エミッタの範囲を可視化
 	std::vector<Vector3> linePosition_;
 	std::vector<std::unique_ptr<Line3d>> lines_;
+
+	// Transform変数を作る
 	AccelerationField accelerationField_{};
 	Emitter emitter_{};
 	const float kDeltaTime = 1.0f / 60.0f;

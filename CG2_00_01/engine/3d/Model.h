@@ -57,7 +57,7 @@ public:
 	/*==================== メンバ関数 ====================*/
 
 		// 初期化
-	void Initialize(const std::string& filename);
+	void Initialize(const std::string& directoryPath, const std::string& filename);
 
 	// 描画
 	void Draw();
