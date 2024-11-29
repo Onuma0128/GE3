@@ -22,6 +22,8 @@ public:
     // スカラー倍
     static Vector3 Multiply(float scalar, const Vector3& v);
 
+    float Length()const;
+
     // 内積
     static float Dot(const Vector3& v1, const Vector3& v2);
 
@@ -42,6 +44,11 @@ public:
     Vector3 operator+(const Vector3& v) const;
     Vector3 operator-(const Vector3& v) const;
     Vector3 operator*(float scalar) const;
+
+    // 複合代入演算子オーバーロード
+    Vector3& operator+=(const Vector3& v);
+    Vector3& operator-=(const Vector3& v);
+    Vector3& operator*=(float scalar);
 
     // フレンド関数：スカラー倍の演算子オーバーロード
     friend Vector3 operator*(float scalar, const Vector3& v);

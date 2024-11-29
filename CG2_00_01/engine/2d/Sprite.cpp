@@ -1,8 +1,13 @@
 #include "Sprite.h"
+
+#include "Camera.h"
 #include "SpriteBase.h"
 #include "WinApp.h"
 #include "TextureManager.h"
 #include "SrvManager.h"
+#include "LightManager.h"
+
+#include "CreateBufferResource.h"
 
 void Sprite::Initialize(std::string textureFilePath)
 {
@@ -38,7 +43,12 @@ void Sprite::Draw()
 	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textureIndex_);
-	//spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex_));
+
+	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
+	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(4, LightManager::GetInstance()->GetPointLightResource()->GetGPUVirtualAddress());
+	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(5, LightManager::GetInstance()->GetSpotLightResource()->GetGPUVirtualAddress());
+	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, Camera::GetInstance()->GetCameraResource()->GetGPUVirtualAddress());
+	
 	spriteBase_->GetDxEngine()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 

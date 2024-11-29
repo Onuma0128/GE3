@@ -3,7 +3,7 @@
 #include "SrvManager.h"
 
 TextureManager* TextureManager::instance_ = nullptr;
-uint32_t TextureManager::kSRVIndexTop = 2;
+uint32_t TextureManager::kSRVIndexTop = 1;
 
 TextureManager* TextureManager::GetInstance()
 {

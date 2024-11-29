@@ -1,19 +1,16 @@
 #include "Object3d.h"
+
 #include "Object3dBase.h"
 #include "LightManager.h"
 #include "ModelManager.h"
+#include "CreateBufferResource.h"
 
-Object3d::Object3d(const std::string& filePath)
-{
-    Initialize();
-
-    SetModel(filePath);
-}
-
-void Object3d::Initialize()
+void Object3d::Initialize(const std::string& filePath)
 {
     this->object3dBase_ = Object3dBase::GetInstance();
     this->camera_ = Object3dBase::GetInstance()->GetDefaultCamera();
+
+    SetModel(filePath);
 
     MakeWvpData();
 
@@ -57,7 +54,6 @@ void Object3d::MakeWvpData()
 
 void Object3d::SetModel(const std::string& filePath)
 {
-    ModelManager::GetInstance()->LoadModel(filePath);
     model_ = ModelManager::GetInstance()->FindModel(filePath);
 }
 

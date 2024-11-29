@@ -19,10 +19,12 @@ public:
 
 	// ルートシグネチャ
 	ComPtr<ID3D12RootSignature> CreateObject3dRootSignature();
+	ComPtr<ID3D12RootSignature> CreateSpriteRootSignature();
 	ComPtr<ID3D12RootSignature> CreateLine3dRootSignature();
 	ComPtr<ID3D12RootSignature> CreateParticleRootSignature();
 	// インプットレイアウト
 	void Object3dInputLayout(D3D12_INPUT_ELEMENT_DESC* inputElementDescs, D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc);
+	void SpriteInputLayout(D3D12_INPUT_ELEMENT_DESC* inputElementDescs, D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc);
 	void Line3dInputLayout(D3D12_INPUT_ELEMENT_DESC* inputElementDescs, D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc);
 	void ParticleInputLayout(D3D12_INPUT_ELEMENT_DESC* inputElementDescs, D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc);
 	// ブレンド
@@ -36,12 +38,14 @@ public:
 	void ParticleShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& pixelShader);
 	// デスクリプターステンシル
 	void Object3dDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
+	void SpriteDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
 	void ParticleDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
 
 	///==============================================================================================================
 
 	// パイプラインの生成
-	ComPtr<ID3D12PipelineState> CreateObject3dPipelineState(bool enableCulling);
+	ComPtr<ID3D12PipelineState> CreateObject3dPipelineState();
+	ComPtr<ID3D12PipelineState> CreateSpritePipelineState();
 	ComPtr<ID3D12PipelineState> CreateLine3dPipelineState();
 	ComPtr<ID3D12PipelineState> CreateParticlePipelineState();
 

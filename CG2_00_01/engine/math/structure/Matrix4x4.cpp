@@ -106,6 +106,15 @@ Matrix4x4 Matrix4x4::Translate(const Vector3& translate) {
     return result;
 }
 
+Matrix4x4 Matrix4x4::NormalizeRotation(const Matrix4x4& matrix)
+{
+    Matrix4x4 result = matrix;
+    result.m[0][0] = Vector3(matrix.m[0][0], matrix.m[1][0], matrix.m[2][0]).Length();
+    result.m[1][1] = Vector3(matrix.m[0][1], matrix.m[1][1], matrix.m[2][1]).Length();
+    result.m[2][2] = Vector3(matrix.m[0][2], matrix.m[1][2], matrix.m[2][2]).Length();
+    return result;
+}
+
 // 行列の積
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& other) const {
     Matrix4x4 result;

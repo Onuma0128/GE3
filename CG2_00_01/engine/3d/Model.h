@@ -57,7 +57,7 @@ public:
 	/*==================== メンバ関数 ====================*/
 
 		// 初期化
-	void Initialize(const std::string& filename);
+	void Initialize(const std::string& directoryPath, const std::string& filename);
 
 	// 描画
 	void Draw();
@@ -70,15 +70,16 @@ public:
 
 	const ModelData GetModelData()const { return modelData_; }
 
+	static Model::ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+
 private:
 
 	static std::wstring s2ws(const std::string& str);
 
-	static Model::ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
-
 	static Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 	static Model::Node ReadNode(aiNode* node);
+
 
 private:
 

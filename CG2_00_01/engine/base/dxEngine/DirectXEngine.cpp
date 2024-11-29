@@ -17,6 +17,7 @@
 #include "ModelManager.h"
 #include "SrvManager.h"
 #include "PrimitiveDrawer.h"
+#include "ParticleManager.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -32,10 +33,11 @@ DirectXEngine::~DirectXEngine()
 	LightManager::GetInstance()->Finalize();
 	ModelManager::GetInstance()->Finalize();
 	PrimitiveDrawer::GetInstance()->Finalize();
+	ParticleManager::GetInstance()->Finalize();
 
 	delete logger_;
 	delete stringUtility_;
-	delete vertexResource_;
+	//delete vertexResource_;
 	delete pipelineState_;
 
 	//解放の処理
@@ -69,18 +71,14 @@ void DirectXEngine::Initialize(WinApp* winApp)
 	RectInitialize();
 	// DXCコンパイラの初期化
 	DxcCompilerInitialize();
-	// VertexResourceの初期化
-	VertexResourceInitialize();
-	// SRVの初期化
-	SrvManager::GetInstance()->Initialize(this);
-	// ImGuiの初期化
-	ImGuiInitialize();
-	// InstancingSRVの初期化
-	InstancingSrvInitialize();
 	// IncludeHandlerの初期化
 	IncludeHandlerInitialize();
 	// PipelineStateの初期化
 	PipelineStateInitialize();
+
+	/*==================== SRV ====================*/
+
+	SrvManager::GetInstance()->Initialize(this);
 
 	/*==================== カメラ準備用 ====================*/
 
@@ -109,6 +107,13 @@ void DirectXEngine::Initialize(WinApp* winApp)
 
 	PrimitiveDrawer::GetInstance()->SetPipelineState(pipelineState_);
 	PrimitiveDrawer::GetInstance()->Initialize(this);
+
+	ParticleManager::GetInstance()->Initialize(this);
+
+	// ImGuiの初期化
+	ImGuiInitialize();
+	// InstancingSRVの初期化
+	InstancingSrvInitialize();
 }
 
 void DirectXEngine::DeviceInitialize()
@@ -339,20 +344,20 @@ void DirectXEngine::ImGuiInitialize()
 	);
 }
 
-void DirectXEngine::VertexResourceInitialize()
-{
-	vertexResource_ = new VertexResource();
-	vertexResource_->Initialize(device_);
-}
+//void DirectXEngine::VertexResourceInitialize()
+//{
+//	vertexResource_ = new VertexResource();
+//	vertexResource_->Initialize(device_);
+//}
 
 void DirectXEngine::InstancingSrvInitialize()
 {
-	SrvManager::GetInstance()->CreateSRVforStructuredBuffer(
+	/*SrvManager::GetInstance()->CreateSRVforStructuredBuffer(
 		1,
-		vertexResource_->GetInstancingResource().Get(),
+		ParticleManager::GetInstance()->GetInstancingResource().Get(),
 		kNumMaxInstance,
-		sizeof(ParticleForGPU)
-	);
+		sizeof(ParticleManager::ParticleForGPU)
+	);*/
 }
 
 void DirectXEngine::IncludeHandlerInitialize()
@@ -439,32 +444,6 @@ void DirectXEngine::PreDraw()
 	commandList_->RSSetScissorRects(1, &scissorRect_);
 	//開発用UIの処理.
 	ImGui::ShowDemoWindow();
-}
-
-void DirectXEngine::Draw()
-{
-	vertexResource_->ImGui();
-	vertexResource_->Update();
-
-	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えて置けばいい
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	///==============================================================================================
-	// RootSignatureを設定。PSOに設定しているけど別途設定が必要(Particle.hlsl)
-	commandList_->SetGraphicsRootSignature(ParticleRootSignature_.Get());
-	commandList_->SetPipelineState(ParticlePipelineState_.Get());
-	///==============================================================================================
-	// Particle
-	TextureManager::GetInstance()->LoadTexture("resources/circle.png");
-	uint32_t textIndex = TextureManager::GetInstance()->GetSrvIndex("resources/circle.png");
-	commandList_->IASetVertexBuffers(0, 1, &vertexResource_->GetVertexBufferView());
-	commandList_->SetGraphicsRootConstantBufferView(0, vertexResource_->GetMaterialResource()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(1, vertexResource_->GetInstancingResource()->GetGPUVirtualAddress());
-	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textIndex);
-	commandList_->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(4, 1);
-	// 描画
-	commandList_->DrawInstanced(UINT(vertexResource_->GetModelData().vertices.size()), vertexResource_->GetNumInstance(), 0, 0);
-	///==============================================================================================
 }
 
 void DirectXEngine::PostDraw()

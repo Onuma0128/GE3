@@ -1,14 +1,20 @@
 #include "Model.h"
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include "ModelBase.h"
 #include "TextureManager.h"
 #include "SrvManager.h"
+#include "CreateBufferResource.h"
 
 
-void Model::Initialize(const std::string& filename)
+void Model::Initialize(const std::string& directoryPath, const std::string& filename)
 {
     this->modelBase_ = ModelBase::GetInstance();
 
-    modelData_ = LoadObjFile("resources", filename);
+    modelData_ = LoadObjFile(directoryPath, filename);
 
     TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
 
@@ -122,7 +128,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
 
         // いずれのテクスチャも見つからなければデフォルトのwhite1x1.pngを割り当てる
         if (!textureFound) {
-            modelData.material.textureFilePath = directoryPath + "/white1x1.png";
+            modelData.material.textureFilePath = "resources/white1x1.png";
         }
     }
 

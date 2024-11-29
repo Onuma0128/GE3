@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <string>
 
+#include "ResourceObject.h"
+
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"

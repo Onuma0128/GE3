@@ -94,6 +94,8 @@ private:
 	/*==================== カメラの変数 ====================*/
 
 	Transform transform_;
+	Vector3 rotate_;
+	Vector3 translate_;
 	Transform debugTransform_;
 
 	Matrix4x4 worldMatrix_;

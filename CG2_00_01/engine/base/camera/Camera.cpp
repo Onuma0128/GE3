@@ -1,8 +1,9 @@
 #include "Camera.h"
 
 #include "WinApp.h"
+#include "imgui.h"
 
-#include "MT3.h"
+#include "CreateBufferResource.h"
 
 Camera* Camera::instance_ = nullptr;
 
@@ -110,14 +111,14 @@ void Camera::NormalCamera()
 
 void Camera::UpdateMatrix(Transform transform)
 {
+	Matrix4x4 rotationMatrix = Matrix4x4::Rotate(transform.rotate);
 	worldMatrix_ = Matrix4x4::Affine(transform.scale, transform.rotate, transform.translate);
 
 	Vector3 eye = transform.translate;
-	Vector3 defaultForward = { 0.0f, 0.0f, 1.0f };
-	Matrix4x4 rotationMatrix = Matrix4x4::Rotate(transform.rotate);
-	Vector3 forward = defaultForward.Transform(rotationMatrix);
-	Vector3 target = eye + forward;
+	Vector3 target = eye + Vector3{ 0.0f, 0.0f, 1.0f }.Transform(rotationMatrix);
 	viewMatrix_ = Matrix4x4::LookAt(eye, target, { 0.0f, 1.0f, 0.0f });
+
+	//viewMatrix_ = Matrix4x4::Inverse(worldMatrix_);
 
 	projectionMatrix_ = Matrix4x4::PerspectiveFov(fovY_, aspectRatio_, nearClip_, farClip_);
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
@@ -128,6 +129,14 @@ void Camera::CameraImGui()
 #ifdef _DEBUG
 	ImGui::Begin("Camera");
 	ImGui::Checkbox("debug", &isDebug_);
+
+	rotate_ = transform_.rotate;
+	translate_ = transform_.translate;
+	ImGui::DragFloat3("rotate", &rotate_.x,0.01f);
+	ImGui::DragFloat3("translate", &translate_.x,0.01f);
+	transform_.rotate = rotate_;
+	transform_.translate = translate_;
+
 	ImGui::End();
 #endif // _DEBUG
 }
