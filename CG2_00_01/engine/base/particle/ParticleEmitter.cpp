@@ -53,17 +53,19 @@ void ParticleEmitter::Draw()
 #ifdef _DEBUG
     std::string minSize = emitter_.name + "SizeMin";
     std::string maxSize = emitter_.name + "SizeMax";
-    //std::string translate = emitter_.name + "Translate";
+    std::string isMove = emitter_.name + "Move";
+    std::string isFieldStart = emitter_.name + "Field";
     AABB emitterSize = emitter_.size;
-    //Vector3 emitterTranslate = emitter_.transform.translate;
     ImGui::Begin("Emitter");
     ImGui::DragFloat3(minSize.c_str(), &emitterSize.min.x, 0.01f);
     ImGui::DragFloat3(maxSize.c_str(), &emitterSize.max.x, 0.01f);
-    //ImGui::DragFloat3(translate.c_str(), &emitterTranslate.x, 0.01f);
+    ImGui::Checkbox(isMove.c_str(), &moveStart_);
+    ImGui::SameLine();
+    ImGui::Checkbox(isFieldStart.c_str(), &isFieldStart_);
     ImGui::Text("\n");
     ImGui::End();
     emitter_.size = emitterSize;
-    //emitter_.transform.translate = emitterTranslate;
+    accelerationField_.area = emitterSize;
 
     /*==================== パーティクルの範囲描画 ====================*/
     PrimitiveDrawer::GetInstance()->DrawBase();

@@ -63,8 +63,8 @@ void TitleScene::Update()
 		sprite->Update();
 	}
 
-	particleManager_->Emit("player", Vector3{ 0,0,0 }, 1);
-	particleManager_->Emit("enemy", Vector3{ -3,0,0 }, 1);
+	particleManager_->Emit("player", Vector3{ 0,0,0 }, 10);
+	particleManager_->Emit("enemy", Vector3{ -3,0,0 }, 5);
 	particleManager_->Emit("obj", Vector3{ 3,0,0 }, 1);
 
 	// Particleの更新

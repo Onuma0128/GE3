@@ -56,7 +56,9 @@ void ParticleManager::Update()
 
             // パーティクルのビルボード化
             Matrix4x4 billboardMatrix = backToFrontMatrix * Camera::GetInstance()->GetWorldMatrix();
-            billboardMatrix.m[3][0] = billboardMatrix.m[3][1] = billboardMatrix.m[3][2] = 0.0f;
+            billboardMatrix.m[3][0] = 0.0f;
+            billboardMatrix.m[3][1] = 0.0f;
+            billboardMatrix.m[3][2] = 0.0f;
             Matrix4x4 worldMatrix = Matrix4x4::Scale(it->transform.scale) * billboardMatrix * Matrix4x4::Translate(it->transform.translate);
             Matrix4x4 worldViewMatrix = worldMatrix * Camera::GetInstance()->GetViewMatrix();
             Matrix4x4 worldViewProjectionMatrix = worldViewMatrix * Camera::GetInstance()->GetProjectionMatrix();
@@ -74,6 +76,9 @@ void ParticleManager::Update()
             }
             ++it;
         }
+
+        group.instanceCount = numInstance;
+        std::memcpy(group.instancingData, group.instancingData, sizeof(ParticleForGPU) * numInstance);
     }
 }
 
@@ -116,17 +121,17 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
     group.textureIndex = TextureManager::GetInstance()->GetSrvIndex("resources/" + group.textureFilePath);
 
     // パーティクルグループのインスタンス数とリソースを初期化
-    group.instanceCount = kNumMaxInstance;
+    group.instanceCount = 0;
     group.instancingData = nullptr;
 
     // インスタンスデータ用のバッファリソースを作成
     group.instancingResource = CreateBufferResource(
         dxEngine_->GetDevice(),
-        sizeof(ParticleForGPU) * group.instanceCount).Get();
+        sizeof(ParticleForGPU) * kNumMaxInstance).Get();
 
     // リソースをマッピングして、インスタンスデータを初期化
     group.instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&group.instancingData));
-    for (uint32_t i = 0; i < group.instanceCount; ++i) {
+    for (uint32_t i = 0; i < kNumMaxInstance; ++i) {
         group.instancingData[i].WVP = Matrix4x4::Identity();
         group.instancingData[i].World = Matrix4x4::Identity();
         group.instancingData[i].color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
@@ -138,7 +143,7 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
     srvManager_->CreateSRVforStructuredBuffer(
         group.srvIndex,
         group.instancingResource.Get(),
-        group.instanceCount,
+        kNumMaxInstance,
         sizeof(ParticleManager::ParticleForGPU)
     );
 

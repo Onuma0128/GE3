@@ -51,8 +51,6 @@ public:
 	void SetEmitPosition(const Vector3& position) { emitter_.transform.translate = position; }
 
 	void SetEmitCount(uint32_t count) { emitter_.count = count; }
-	
-	float GetDeltaTime()const { return kDeltaTime; }
 
 private:
 
