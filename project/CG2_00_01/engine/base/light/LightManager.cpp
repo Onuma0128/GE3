@@ -1,7 +1,9 @@
 #include "LightManager.h"
 
 #include <numbers>
+#ifdef _DEBUG
 #include "imgui.h"
+#endif // _DEBUG
 
 #include "CreateBufferResource.h"
 
@@ -32,7 +34,7 @@ void LightManager::Update()
 
 	spotLightData_->direction = spotLightData_->direction.Normalize();
 
-
+#ifdef _DEBUG
 	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
 	if (ImGui::TreeNodeEx("Light", flag)) {
 		if (ImGui::TreeNodeEx("Directional Light", flag)) {
@@ -60,6 +62,7 @@ void LightManager::Update()
 		}
 		ImGui::TreePop();
 	}
+#endif // _DEBUG
 
 }
 

@@ -1,7 +1,9 @@
 #include "Camera.h"
 
 #include "WinApp.h"
+#ifdef _DEBUG
 #include "imgui.h"
+#endif // _DEBUG
 
 #include "CreateBufferResource.h"
 

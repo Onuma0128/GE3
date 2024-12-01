@@ -1,6 +1,8 @@
 #include "ParticleEmitter.h"
 
+#ifdef _DEBUG
 #include "imgui.h"
+#endif // _DEBUG
 
 ParticleEmitter::ParticleEmitter(const std::string name)
 {

@@ -118,6 +118,12 @@
     <Filter Include="ヘッダー ファイル\engine\math\structure">
       <UniqueIdentifier>{380b0d85-00be-4700-b3e4-d2a15f31d3d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\base\particle">
+      <UniqueIdentifier>{13c3719c-a287-4c40-8bc5-8a884fa08f9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\particle">
+      <UniqueIdentifier>{cfddd608-0b60-4773-8c10-6a84f43c5a98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CG2_00_01\main.cpp">
@@ -222,28 +228,28 @@
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\SrvManager.cpp">
       <Filter>ソース ファイル\engine\base\dxEngine</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\game\MyGame.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\framework\MyGame.cpp">
       <Filter>ソース ファイル\game</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\game\Framework.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\framework\Framework.cpp">
       <Filter>ソース ファイル\game</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\game\scene\gameScene\GamePlayScene.cpp">
       <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\game\scene\BaseScene.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\scene\BaseScene.cpp">
       <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\game\scene\titleScene\TitleScene.cpp">
       <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\game\scene\SceneManager.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\scene\SceneManager.cpp">
       <Filter>ソース ファイル\game\scene</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\game\sceneFactory\SceneFactory.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\scene\sceneFactory\SceneFactory.cpp">
       <Filter>ソース ファイル\game</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\game\sceneFactory\AbstractSceneFactory.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.cpp">
       <Filter>ソース ファイル\game</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\3d\Line3d.cpp">
@@ -258,14 +264,14 @@
     <ClCompile Include="CG2_00_01\engine\math\structure\Vector3.cpp">
       <Filter>ソース ファイル\engine\math\structure</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\base\particle\ParticleEmitter.cpp">
+      <Filter>ソース ファイル\engine\base\particle</Filter>
+    </ClCompile>
     <ClCompile Include="CG2_00_01\engine\base\particle\ParticleManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\engine\base\particle</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\math\structure\CreateBufferResource.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\particle\ParticleEmitter.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\engine\base\dxEngine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -374,31 +380,31 @@
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\SrvManager.h">
       <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\game\MyGame.h">
+    <ClInclude Include="CG2_00_01\engine\base\framework\MyGame.h">
       <Filter>ヘッダー ファイル\game</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\game\Framework.h">
+    <ClInclude Include="CG2_00_01\engine\base\framework\Framework.h">
       <Filter>ヘッダー ファイル\game</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\scene\gameScene\GamePlayScene.h">
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\game\scene\BaseScene.h">
+    <ClInclude Include="CG2_00_01\engine\base\scene\BaseScene.h">
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\scene\titleScene\TitleScene.h">
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\game\scene\SceneManager.h">
+    <ClInclude Include="CG2_00_01\engine\base\scene\SceneManager.h">
       <Filter>ヘッダー ファイル\game\scene</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\game\sceneFactory\AbstractSceneFactory.h">
+    <ClInclude Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.h">
       <Filter>ヘッダー ファイル\game</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\3d\Line3d.h">
       <Filter>ヘッダー ファイル\engine\3d</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\game\sceneFactory\SceneFactory.h">
+    <ClInclude Include="CG2_00_01\engine\base\scene\sceneFactory\SceneFactory.h">
       <Filter>ヘッダー ファイル\game</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\model\PrimitiveDrawer.h">
@@ -422,14 +428,14 @@
     <ClInclude Include="CG2_00_01\engine\math\structure\Matrix4x4.h">
       <Filter>ヘッダー ファイル\engine\math\structure</Filter>
     </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\base\particle\ParticleEmitter.h">
+      <Filter>ヘッダー ファイル\engine\base\particle</Filter>
+    </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\particle\ParticleManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\engine\base\particle</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\CreateBufferResource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\particle\ParticleEmitter.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
