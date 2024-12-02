@@ -64,7 +64,7 @@ public:
 		ComPtr<ID3D12Resource> instancingResource;
 		uint32_t instanceCount;
 		ParticleForGPU* instancingData;
-		std::unique_ptr<ParticleEmitter> emitter;
+		ParticleEmitter* emitter;
 	};
 
 private:
@@ -86,9 +86,9 @@ public:
 
 	void Finalize();
 
-	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
+	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleEmitter* emitter);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count);
+	void Emit(const std::string name, uint32_t count);
 
 private:
 

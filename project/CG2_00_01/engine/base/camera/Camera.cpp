@@ -116,11 +116,7 @@ void Camera::UpdateMatrix(Transform transform)
 	Matrix4x4 rotationMatrix = Matrix4x4::Rotate(transform.rotate);
 	worldMatrix_ = Matrix4x4::Affine(transform.scale, transform.rotate, transform.translate);
 
-	Vector3 eye = transform.translate;
-	Vector3 target = eye + Vector3{ 0.0f, 0.0f, 1.0f }.Transform(rotationMatrix);
-	viewMatrix_ = Matrix4x4::LookAt(eye, target, { 0.0f, 1.0f, 0.0f });
-
-	//viewMatrix_ = Matrix4x4::Inverse(worldMatrix_);
+	viewMatrix_ = Matrix4x4::Inverse(worldMatrix_);
 
 	projectionMatrix_ = Matrix4x4::PerspectiveFov(fovY_, aspectRatio_, nearClip_, farClip_);
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;

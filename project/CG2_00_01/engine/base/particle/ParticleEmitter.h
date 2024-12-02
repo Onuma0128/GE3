@@ -14,6 +14,8 @@
 
 #include "ParticleManager.h"
 
+class ParitcleManager;
+
 class ParticleEmitter
 {
 public:
@@ -22,6 +24,7 @@ public:
 		Vector3 min;
 		Vector3 max;
 	};
+
 	struct Emitter {
 		std::string name;
 		Transform transform;
@@ -30,6 +33,7 @@ public:
 		float frequency;
 		float frequencyTime;
 	};
+
 	struct AccelerationField {
 		Vector3 acceleration;
 		AABB area;
@@ -43,14 +47,28 @@ public:
 
 	void Draw();
 
-	// パーティクルの生成
+	/*==================== パーティクルの生成 ====================*/
+
 	void CreateParticles(ParticleManager::ParticleGroup& group);
 
 	void UpdateParticle(std::list<ParticleManager::Particle>::iterator& paritcle);
 
-	void SetEmitPosition(const Vector3& position) { emitter_.transform.translate = position; }
+	/*==================== アクセッサー ====================*/
 
-	void SetEmitCount(uint32_t count) { emitter_.count = count; }
+	void SetPosition(const Vector3& position) { emitter_.transform.translate = position; }
+
+	void SetAcceleration(const Vector3& acceleration) { accelerationField_.acceleration = acceleration; }
+
+	void SetSize(const Vector3& min, const Vector3& max) {
+		emitter_.size.min = min;
+		emitter_.size.max = max;
+	}
+
+	void SetCount(uint32_t count) { emitter_.count = count; }
+
+	void SetIsMove(bool move) { moveStart_ = move; }
+
+	void SetIsField(bool field) { isFieldStart_ = field; }
 
 private:
 
