@@ -53,24 +53,40 @@ void ParticleEmitter::Update()
 void ParticleEmitter::Draw()
 {
 #ifdef _DEBUG
-    std::string minSize = emitter_.name + "SizeMin";
-    std::string maxSize = emitter_.name + "SizeMax";
-    std::string isMove = emitter_.name + "Move";
-    std::string isFieldStart = emitter_.name + "Field";
-    AABB emitterSize = emitter_.size;
-    ImGui::Begin("Emitter");
-    ImGui::DragFloat3(minSize.c_str(), &emitterSize.min.x, 0.01f);
-    ImGui::DragFloat3(maxSize.c_str(), &emitterSize.max.x, 0.01f);
-    ImGui::Checkbox(isMove.c_str(), &moveStart_);
-    ImGui::SameLine();
-    ImGui::Checkbox(isFieldStart.c_str(), &isFieldStart_);
-    ImGui::Text("\n");
-    ImGui::End();
-    emitter_.size = emitterSize;
-    accelerationField_.area = {
-        .min = emitterSize.min + emitter_.transform.translate,
-        .max = emitterSize.max + emitter_.transform.translate,
-    };
+    //// ImGui_Name
+    //std::string emitterName = emitter_.name + "Emitter";
+    //std::string minSize = emitter_.name + "SizeMin";
+    //std::string maxSize = emitter_.name + "SizeMax";
+    //std::string position = emitter_.name + "Position";
+    //std::string accele = emitter_.name + "Acceleration";
+    //std::string isMove = emitter_.name + "Move";
+    //std::string isFieldStart = emitter_.name + "Field";
+    //// 元の数値を代入
+    //AABB emitterSize = emitter_.size;
+    //Vector3 emitterPos = emitter_.transform.translate;
+    //Vector3 acceleration = accelerationField_.acceleration;
+    ////
+    //ImGui::Begin("Emitter");
+    //if (ImGui::TreeNode(emitterName.c_str())) {
+    //    ImGui::DragFloat3(position.c_str(), &emitterPos.x, 0.01f);
+    //    ImGui::DragFloat3(accele.c_str(), &acceleration.x, 0.01f);
+    //    ImGui::DragFloat3(minSize.c_str(), &emitterSize.min.x, 0.01f);
+    //    ImGui::DragFloat3(maxSize.c_str(), &emitterSize.max.x, 0.01f);
+    //    ImGui::Checkbox(isMove.c_str(), &moveStart_);
+    //    ImGui::SameLine();
+    //    ImGui::Checkbox(isFieldStart.c_str(), &isFieldStart_);
+    //    ImGui::Text("\n");
+    //    ImGui::TreePop();
+    //}
+    //ImGui::End();
+    //// 新たな数値を代入
+    //emitter_.size = emitterSize;
+    //accelerationField_.area = {
+    //    .min = emitterSize.min + emitter_.transform.translate,
+    //    .max = emitterSize.max + emitter_.transform.translate,
+    //};
+    //emitter_.transform.translate = emitterPos;
+    //accelerationField_.acceleration = acceleration;
 
     /*==================== パーティクルの範囲描画 ====================*/
     PrimitiveDrawer::GetInstance()->DrawBase();

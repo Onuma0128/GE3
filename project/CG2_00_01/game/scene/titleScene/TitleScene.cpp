@@ -29,9 +29,15 @@ void TitleScene::Initialize()
 	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
 	obj_.push_back(std::move(object3d_));
 
-	particleManager_->CreateParticleGroup("player", "circle.png");
-	particleManager_->CreateParticleGroup("enemy", "circle.png");
-	particleManager_->CreateParticleGroup("obj", "Apple.png");
+	// Emitterを作成
+	emitter_ = std::make_unique<ParticleEmitter>("player");
+	emitter_->SetPosition(Vector3{ -3,0,0 });
+	// Emitterを作成
+	emitter1_ = std::make_unique<ParticleEmitter>("enemy");
+	emitter1_->SetPosition(Vector3{ -3,0,0 });
+	// Particleを作成
+	particleManager_->CreateParticleGroup("player", "circle.png", emitter_.get());
+	particleManager_->CreateParticleGroup("enemy", "uvChecker.png", emitter1_.get());
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
@@ -63,9 +69,9 @@ void TitleScene::Update()
 		sprite->Update();
 	}
 
-	particleManager_->Emit("player", Vector3{ 0,0,0 }, 10);
-	particleManager_->Emit("enemy", Vector3{ -3,0,0 }, 5);
-	particleManager_->Emit("obj", Vector3{ 3,0,0 }, 1);
+	// ParitcleEmitのUpdate
+	particleManager_->Emit("player", 3);
+	particleManager_->Emit("enemy", 10);
 
 	// Particleの更新
 	particleManager_->Update();

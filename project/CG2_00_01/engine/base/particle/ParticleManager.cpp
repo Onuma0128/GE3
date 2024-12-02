@@ -113,7 +113,7 @@ void ParticleManager::Finalize()
     instance_ = nullptr;
 }
 
-void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath)
+void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleEmitter* emitter)
 {
     ParticleGroup group;
     group.textureFilePath = textureFilePath;
@@ -136,7 +136,7 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
         group.instancingData[i].World = Matrix4x4::Identity();
         group.instancingData[i].color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
     }
-    group.emitter = std::make_unique<ParticleEmitter>(name);
+    group.emitter = emitter;
 
     group.srvIndex = srvManager_->Allocate() + TextureManager::kSRVIndexTop;
 
@@ -151,12 +151,11 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
     particleGroups_[name] = std::move(group);
 }
 
-void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count)
+void ParticleManager::Emit(const std::string name, uint32_t count)
 {
     // 新しいパーティクルを追加する
     particleGroups_[name].emitter->CreateParticles(particleGroups_[name]);
-    particleGroups_[name].emitter->SetEmitPosition(position);
-    particleGroups_[name].emitter->SetEmitCount(count);
+    particleGroups_[name].emitter->SetCount(count);
 }
 
 void ParticleManager::CreateVertexResource()
