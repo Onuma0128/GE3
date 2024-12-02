@@ -11,6 +11,7 @@
 
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
+#include "GlobalVariables.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -28,12 +29,13 @@ public:
 
 private:
 
+	GlobalVariables* global_ = GlobalVariables::GetInstance();
+
 	std::vector<std::unique_ptr<Sprite>> sprites_;
 	std::vector <std::unique_ptr<Object3d>> obj_;
 
 	ParticleManager* particleManager_ = ParticleManager::GetInstance();
 	std::unique_ptr<ParticleEmitter> emitter_;
-	std::unique_ptr<ParticleEmitter> emitter1_;
 
 	// 今後消す
 	ComPtr<IXAudio2> xAudio2;

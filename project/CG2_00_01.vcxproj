@@ -46,10 +46,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)externals\nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)externals\nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -62,7 +64,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\camera;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\framework;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\particle;$(ProjectDir)CG2_00_01\engine\base\scene;$(ProjectDir)CG2_00_01\engine\base\scene\sceneFactory;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;$(ProjectDir)CG2_00_01\game;$(ProjectDir)CG2_00_01\game\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\camera;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\framework;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\particle;$(ProjectDir)CG2_00_01\engine\base\scene;$(ProjectDir)CG2_00_01\engine\base\scene\sceneFactory;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;$(ProjectDir)CG2_00_01\game;$(ProjectDir)CG2_00_01\game\scene;$(ProjectDir)CG2_00_01\engine\globalVariables;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -89,7 +91,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\camera;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\framework;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\particle;$(ProjectDir)CG2_00_01\engine\base\scene;$(ProjectDir)CG2_00_01\engine\base\scene\sceneFactory;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;$(ProjectDir)CG2_00_01\game;$(ProjectDir)CG2_00_01\game\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CG2_00_01\engine\2d;$(ProjectDir)CG2_00_01\engine\3d;$(ProjectDir)CG2_00_01\engine\audio;$(ProjectDir)CG2_00_01\engine\base\camera;$(ProjectDir)CG2_00_01\engine\base\dxEngine;$(ProjectDir)CG2_00_01\engine\base\framework;$(ProjectDir)CG2_00_01\engine\base\light;$(ProjectDir)CG2_00_01\engine\base\model;$(ProjectDir)CG2_00_01\engine\base\particle;$(ProjectDir)CG2_00_01\engine\base\scene;$(ProjectDir)CG2_00_01\engine\base\scene\sceneFactory;$(ProjectDir)CG2_00_01\engine\base\sprite;$(ProjectDir)CG2_00_01\engine\base\texture;$(ProjectDir)CG2_00_01\engine\input;$(ProjectDir)CG2_00_01\engine\math;$(ProjectDir)CG2_00_01\engine\math\structure;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\assimp\include;$(ProjectDir)CG2_00_01\game;$(ProjectDir)CG2_00_01\game\scene;$(ProjectDir)CG2_00_01\engine\globalVariables;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,6 +162,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\3d\Line3d.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\particle\ParticleManager.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\particle\ParticleEmitter.cpp" />
+    <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.h" />
@@ -216,6 +219,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\3d\Line3d.h" />
     <ClInclude Include="CG2_00_01\engine\base\particle\ParticleManager.h" />
     <ClInclude Include="CG2_00_01\engine\base\particle\ParticleEmitter.h" />
+    <ClInclude Include="CG2_00_01\engine\globalVariables\GlobalVariables.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

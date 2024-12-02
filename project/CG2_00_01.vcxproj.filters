@@ -291,6 +291,9 @@
     <ClCompile Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.cpp">
       <Filter>ソース ファイル\engine\base\scene\sceneFactory</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -454,6 +457,9 @@
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\scene\sceneFactory\SceneFactory.h">
       <Filter>ヘッダー ファイル\engine\base\scene\sceneFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\globalVariables\GlobalVariables.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

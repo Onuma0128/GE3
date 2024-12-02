@@ -9,6 +9,10 @@
 
 void TitleScene::Initialize()
 {
+	global_->AddValue<Vector3>("ParticleEmit", "Position", Vector3{});
+	global_->AddValue<Vector3>("ParticleEmit", "Acceleration", Vector3{ 0,10,0 });
+	global_->AddValue<int>("ParticleEmit", "Count", 3);
+
 	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize("uvChecker.png");
 	sprite_->SetPosition({ 64,64 });
@@ -32,12 +36,8 @@ void TitleScene::Initialize()
 	// Emitterを作成
 	emitter_ = std::make_unique<ParticleEmitter>("player");
 	emitter_->SetPosition(Vector3{ -3,0,0 });
-	// Emitterを作成
-	emitter1_ = std::make_unique<ParticleEmitter>("enemy");
-	emitter1_->SetPosition(Vector3{ -3,0,0 });
 	// Particleを作成
 	particleManager_->CreateParticleGroup("player", "circle.png", emitter_.get());
-	particleManager_->CreateParticleGroup("enemy", "uvChecker.png", emitter1_.get());
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
@@ -69,9 +69,12 @@ void TitleScene::Update()
 		sprite->Update();
 	}
 
+	emitter_->SetPosition(global_->GetValue<Vector3>("ParticleEmit", "Position"));
+	emitter_->SetAcceleration(global_->GetValue<Vector3>("ParticleEmit", "Acceleration"));
+	emitter_->SetCount(global_->GetValue<int>("ParticleEmit", "Count"));
+
 	// ParitcleEmitのUpdate
 	particleManager_->Emit("player", 3);
-	particleManager_->Emit("enemy", 10);
 
 	// Particleの更新
 	particleManager_->Update();

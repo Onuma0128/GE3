@@ -2,9 +2,11 @@
 
 #include "Camera.h"
 #include "Input.h"
-#include "titleScene/TitleScene.h"
 #include "SceneManager.h"
 #include "PrimitiveDrawer.h"
+#include "ModelManager.h"
+
+#include "titleScene/TitleScene.h"
 
 void GamePlayScene::Initialize()
 {
@@ -22,7 +24,10 @@ void GamePlayScene::Initialize()
 	sprite1_->SetAnchorPoint({ 0.5f,0.5f });
 	sprites_.push_back(std::move(sprite1_));
 
-	/*std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
+	ModelManager::GetInstance()->LoadModel("resources", "teapot.obj");
+	ModelManager::GetInstance()->LoadModel("resources", "terrain.obj");
+
+	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize("teapot.obj");
 	obj_.push_back(std::move(object3d_));
 
@@ -30,7 +35,7 @@ void GamePlayScene::Initialize()
 	object3d1_->Initialize("terrain.obj");
 	obj_.push_back(std::move(object3d1_));
 
-	std::unique_ptr<Object3d> object3dTest_ = std::make_unique<Object3d>();
+	/*std::unique_ptr<Object3d> object3dTest_ = std::make_unique<Object3d>();
 	object3dTest_->Initialize("plane.gltf");
 	object3dTest_->SetRotation({ 0,3.14f,0 });
 	obj_.push_back(std::move(object3dTest_));*/
