@@ -94,7 +94,7 @@ void LightManager::MakePointLightData()
 	pointLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
 	// デフォルト値
 	pointLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
-	pointLightData_->position = { 0.0f,2.0f,0.0f };
+	pointLightData_->position = { 0.0f,2.0f,2.0f };
 	pointLightData_->intensity = 0.0f;
 	pointLightData_->radius = 6.0f;
 	pointLightData_->decay = 2.0f;
