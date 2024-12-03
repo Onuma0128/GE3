@@ -60,17 +60,17 @@ PixelShaderOutput main(GSOutput input)
     // DirectionalLight
     float3 lightDirectionalLight = normalize(gDirectionalLight.direction);
     float3 reflectLight = reflect(-lightDirectionalLight, normal);
-    float RdotE = max(dot(reflectLight, toEye), 0.0);
+    float RdotE = max(dot(reflectLight, toEye), 0.0f);
     float specularPow = pow(RdotE, gMaterial.shininess);
     // PointLight
     float3 pointLightDirecion = normalize(gPointLight.position - input.worldPosition);
     reflectLight = reflect(-pointLightDirecion, normal);
-    RdotE = max(dot(reflectLight, toEye), 0.0);
+    RdotE = max(dot(reflectLight, toEye), 0.0f);
     float pointPow = pow(RdotE, gMaterial.shininess);
     // SpotLight
     float3 spotLightDirecionOnSurface = normalize(gSpotLight.position - input.worldPosition);
     reflectLight = reflect(-spotLightDirecionOnSurface, normal);
-    RdotE = max(dot(reflectLight, toEye), 0.0);
+    RdotE = max(dot(reflectLight, toEye), 0.0f);
     float spotPow = pow(RdotE, gMaterial.shininess);
     
     
@@ -79,8 +79,8 @@ PixelShaderOutput main(GSOutput input)
         // DirectionalLightの処理
         float NdotL = (dot(normal, lightDirectionalLight));
         float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-        float3 diffuseDirectionalLIght = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
-        float3 specularDirectionalLIght = gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow;
+        float3 diffuseDirectionalLight = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
+        float3 specularDirectionalLight = gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow;
         // PointLightの処理
         NdotL = (dot(normal, pointLightDirecion));
         cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
@@ -99,7 +99,7 @@ PixelShaderOutput main(GSOutput input)
         float3 specularSpotLight = gSpotLight.color.rgb * gSpotLight.intensity * spotPow * spotDistanceFactor * falloffFactor;
         // ライトの処理を合算
         output.color.rgb = 
-        diffuseDirectionalLIght + specularDirectionalLIght +
+        diffuseDirectionalLight + specularDirectionalLight +
         diffusePointLight + specularPointLight +
         diffuseSpotLight + specularSpotLight;
         output.color.a = gMaterial.color.a * textureColor.a;

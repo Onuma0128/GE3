@@ -100,7 +100,7 @@ void Camera::DebugCamera()
 	UpdateMatrix(debugTransform_);
 
 	// カメラのデータを更新
-	cameraData_->worldPosition = debugTransform_.translate;
+	cameraData_->worldPosition = Vector3{}.Transform(worldMatrix_);
 }
 
 void Camera::NormalCamera()
@@ -108,7 +108,7 @@ void Camera::NormalCamera()
 	UpdateMatrix(transform_);
 
 	// カメラのデータを更新
-	cameraData_->worldPosition = transform_.translate;
+	cameraData_->worldPosition = Vector3{}.Transform(worldMatrix_);
 }
 
 void Camera::UpdateMatrix(Transform transform)
@@ -148,5 +148,5 @@ void Camera::MakeCameraData()
 	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
 
 	// 単位行列を書き込んでおく
-	cameraData_->worldPosition = transform_.translate;
+	cameraData_->worldPosition = Vector3{}.Transform(worldMatrix_);
 }
