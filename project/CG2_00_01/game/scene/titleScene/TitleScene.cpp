@@ -9,10 +9,6 @@
 
 void TitleScene::Initialize()
 {
-	global_->AddValue<Vector3>("ParticleEmit", "Position", Vector3{});
-	global_->AddValue<Vector3>("ParticleEmit", "Acceleration", Vector3{ 0,10,0 });
-	global_->AddValue<int>("ParticleEmit", "Count", 3);
-
 	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize("uvChecker.png");
 	sprite_->SetPosition({ 64,64 });
@@ -33,11 +29,14 @@ void TitleScene::Initialize()
 	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
 	obj_.push_back(std::move(object3d_));
 
-	// Emitterを作成
-	emitter_ = std::make_unique<ParticleEmitter>("player");
-	emitter_->SetPosition(Vector3{ -3,0,0 });
+	emitter0_ = std::make_unique<ParticleEmitter>("player");
+	emitter1_ = std::make_unique<ParticleEmitter>("enemy");
+	emitter2_ = std::make_unique<ParticleEmitter>("obj");
+
 	// Particleを作成
-	particleManager_->CreateParticleGroup("player", "circle.png", emitter_.get());
+	particleManager_->CreateParticleGroup("player", "circle.png", emitter0_.get());
+	particleManager_->CreateParticleGroup("enemy", "uvChecker.png", emitter1_.get());
+	particleManager_->CreateParticleGroup("obj", "Apple.png", emitter2_.get());
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
@@ -68,13 +67,6 @@ void TitleScene::Update()
 	for (auto& sprite : sprites_) {
 		sprite->Update();
 	}
-
-	emitter_->SetPosition(global_->GetValue<Vector3>("ParticleEmit", "Position"));
-	emitter_->SetAcceleration(global_->GetValue<Vector3>("ParticleEmit", "Acceleration"));
-	emitter_->SetCount(global_->GetValue<int>("ParticleEmit", "Count"));
-
-	// ParitcleEmitのUpdate
-	particleManager_->Emit("player", 3);
 
 	// Particleの更新
 	particleManager_->Update();

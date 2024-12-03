@@ -11,6 +11,7 @@
 #include "DirectXEngine.h"
 #include "SrvManager.h"
 #include "Model.h"
+#include "ModelManager.h"
 
 #include "Vector2.h"
 #include "Vector3.h"
@@ -88,7 +89,7 @@ public:
 
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleEmitter* emitter);
 
-	void Emit(const std::string name, uint32_t count);
+	void Emit(const std::string name);
 
 private:
 

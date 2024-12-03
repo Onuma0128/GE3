@@ -13,6 +13,7 @@
 #include "Vector3.h"
 
 #include "ParticleManager.h"
+#include "GlobalVariables.h"
 
 class ParitcleManager;
 
@@ -43,6 +44,8 @@ public:
 
 	ParticleEmitter(const std::string name);
 
+	void GlobalInitialize(const std::string name);
+
 	void Update();
 
 	void Draw();
@@ -51,24 +54,11 @@ public:
 
 	void CreateParticles(ParticleManager::ParticleGroup& group);
 
-	void UpdateParticle(std::list<ParticleManager::Particle>::iterator& paritcle);
+	void UpdateParticle(std::list<ParticleManager::Particle>::iterator& particle);
 
 	/*==================== アクセッサー ====================*/
 
 	void SetPosition(const Vector3& position) { emitter_.transform.translate = position; }
-
-	void SetAcceleration(const Vector3& acceleration) { accelerationField_.acceleration = acceleration; }
-
-	void SetSize(const Vector3& min, const Vector3& max) {
-		emitter_.size.min = min;
-		emitter_.size.max = max;
-	}
-
-	void SetCount(uint32_t count) { emitter_.count = count; }
-
-	void SetIsMove(bool move) { moveStart_ = move; }
-
-	void SetIsField(bool field) { isFieldStart_ = field; }
 
 private:
 
@@ -81,6 +71,8 @@ private:
 	bool IsCollision(const AABB& aabb, const Vector3& point);
 
 private:
+
+	GlobalVariables* global_ = GlobalVariables::GetInstance();
 
 	/*==================== エミッター ====================*/
 

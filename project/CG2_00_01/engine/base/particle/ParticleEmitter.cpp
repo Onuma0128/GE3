@@ -6,9 +6,11 @@
 
 ParticleEmitter::ParticleEmitter(const std::string name)
 {
+    GlobalInitialize(name);
+
     emitter_.name = name;
     emitter_.transform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-    emitter_.frequency = 0.5f;
+    emitter_.frequency = 0.1f;
     emitter_.frequencyTime = 0.0f;
     accelerationField_.acceleration = { 0.0f,10.0f,0.0f };
     accelerationField_.area.min = { -1.0f,-1.0f,-1.0f };
@@ -35,10 +37,56 @@ ParticleEmitter::ParticleEmitter(const std::string name)
     }
 }
 
+void ParticleEmitter::GlobalInitialize(const std::string name)
+{
+    std::string globalName = name + "Emitter";
+
+    global_->AddValue<Vector3>(globalName, "position", Vector3{});
+    global_->AddValue<bool>(globalName, "lockPosition", false);
+    global_->AddValue<Vector3>(globalName, "min", Vector3{ -1.0f,-1.0f,-1.0f });
+    global_->AddValue<Vector3>(globalName, "max", Vector3{ 1.0f,1.0f,1.0f });
+    global_->AddValue<Vector3>(globalName, "acceleration", Vector3{ 0.0f,10.0f,0.0f });
+    global_->AddValue<Vector3>(globalName, "color", Vector3{ 1.0f,1.0f,1.0f });
+    global_->AddValue<float>(globalName, "frequency", 0.5f);
+    global_->AddValue<int>(globalName, "count", 3);
+    global_->AddValue<bool>(globalName, "move", false);
+    global_->AddValue<bool>(globalName, "field", false);
+
+}
+
 void ParticleEmitter::Update()
 {
-#ifdef _DEBUG
     /*==================== パーティクルの範囲更新 ====================*/
+
+    std::string globalName = emitter_.name + "Emitter";
+
+    // 新たな数値を代入
+    if (!global_->GetValue<bool>(globalName, "lockPosition")) {
+        emitter_.transform.translate = global_->GetValue<Vector3>(globalName, "position");
+    }
+    Vector3 min = global_->GetValue<Vector3>(globalName, "min");
+    Vector3 max = global_->GetValue<Vector3>(globalName, "max");
+    // min,maxが最大値を超えていないかclamp
+    emitter_.size.min = {
+        std::clamp(min.x,-256.0f,0.0f),std::clamp(min.y,-256.0f,0.0f),std::clamp(min.z,-256.0f,0.0f),
+    };
+    emitter_.size.max = {
+        std::clamp(max.x,0.0f,256.0f),std::clamp(max.y,0.0f,256.0f),std::clamp(max.z,0.0f,256.0f),
+    };
+
+    emitter_.frequency = global_->GetValue<float>(globalName, "frequency");
+    emitter_.count = global_->GetValue<int>(globalName, "count");
+
+    accelerationField_.area = {
+        .min = emitter_.size.min + emitter_.transform.translate - Vector3{0.5f,0.5f,0.5f},
+        .max = emitter_.size.max + emitter_.transform.translate + Vector3{0.5f,0.5f,0.5f}
+    };
+    accelerationField_.acceleration = global_->GetValue<Vector3>(globalName, "acceleration");
+
+    moveStart_ = global_->GetValue<bool>(globalName, "move");
+    isFieldStart_ = global_->GetValue<bool>(globalName, "field");
+
+#ifdef _DEBUG
     int i = 0;
     linePosition_ = CreateLineBox(emitter_.size);
     for (auto& line : lines_) {
@@ -53,40 +101,6 @@ void ParticleEmitter::Update()
 void ParticleEmitter::Draw()
 {
 #ifdef _DEBUG
-    //// ImGui_Name
-    //std::string emitterName = emitter_.name + "Emitter";
-    //std::string minSize = emitter_.name + "SizeMin";
-    //std::string maxSize = emitter_.name + "SizeMax";
-    //std::string position = emitter_.name + "Position";
-    //std::string accele = emitter_.name + "Acceleration";
-    //std::string isMove = emitter_.name + "Move";
-    //std::string isFieldStart = emitter_.name + "Field";
-    //// 元の数値を代入
-    //AABB emitterSize = emitter_.size;
-    //Vector3 emitterPos = emitter_.transform.translate;
-    //Vector3 acceleration = accelerationField_.acceleration;
-    ////
-    //ImGui::Begin("Emitter");
-    //if (ImGui::TreeNode(emitterName.c_str())) {
-    //    ImGui::DragFloat3(position.c_str(), &emitterPos.x, 0.01f);
-    //    ImGui::DragFloat3(accele.c_str(), &acceleration.x, 0.01f);
-    //    ImGui::DragFloat3(minSize.c_str(), &emitterSize.min.x, 0.01f);
-    //    ImGui::DragFloat3(maxSize.c_str(), &emitterSize.max.x, 0.01f);
-    //    ImGui::Checkbox(isMove.c_str(), &moveStart_);
-    //    ImGui::SameLine();
-    //    ImGui::Checkbox(isFieldStart.c_str(), &isFieldStart_);
-    //    ImGui::Text("\n");
-    //    ImGui::TreePop();
-    //}
-    //ImGui::End();
-    //// 新たな数値を代入
-    //emitter_.size = emitterSize;
-    //accelerationField_.area = {
-    //    .min = emitterSize.min + emitter_.transform.translate,
-    //    .max = emitterSize.max + emitter_.transform.translate,
-    //};
-    //emitter_.transform.translate = emitterPos;
-    //accelerationField_.acceleration = acceleration;
 
     /*==================== パーティクルの範囲描画 ====================*/
     PrimitiveDrawer::GetInstance()->DrawBase();
@@ -108,14 +122,19 @@ void ParticleEmitter::CreateParticles(ParticleManager::ParticleGroup& group)
     }
 }
 
-void ParticleEmitter::UpdateParticle(std::list<ParticleManager::Particle>::iterator& paritcle)
+void ParticleEmitter::UpdateParticle(std::list<ParticleManager::Particle>::iterator& particle)
 {
     if (moveStart_) {
-        if (IsCollision(accelerationField_.area, paritcle->transform.translate) && isFieldStart_) {
-            paritcle->velocity += accelerationField_.acceleration * kDeltaTime;
+        if (IsCollision(accelerationField_.area, particle->transform.translate) && isFieldStart_) {
+            particle->velocity += accelerationField_.acceleration * kDeltaTime;
         }
-        paritcle->transform.translate += paritcle->velocity * kDeltaTime;
-        paritcle->currentTime += kDeltaTime;
+        particle->transform.translate += particle->velocity * kDeltaTime;
+        particle->currentTime += kDeltaTime;
+
+        std::string globalName = emitter_.name + "Emitter";
+        particle->color.x = global_->GetValue<Vector3>(globalName, "color").x;
+        particle->color.y = global_->GetValue<Vector3>(globalName, "color").y;
+        particle->color.z = global_->GetValue<Vector3>(globalName, "color").z;
     }
 }
 
@@ -135,7 +154,7 @@ ParticleManager::Particle ParticleEmitter::MakeNewParticle(std::mt19937& randomE
     std::uniform_real_distribution<float> distPosZ(emitter.size.min.z, emitter.size.max.z);
 
     std::uniform_real_distribution<float> distVelocity(-1.0f, 1.0f);
-    std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
+    //std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
     std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
     ParticleManager::Particle particle{};
     particle.transform.scale = { 1.0f,1.0f,1.0f };
@@ -143,7 +162,7 @@ ParticleManager::Particle ParticleEmitter::MakeNewParticle(std::mt19937& randomE
     Vector3 randomTranslate = { distPosX(randomEngine),distPosY(randomEngine) ,distPosZ(randomEngine) };
     particle.transform.translate = emitter.transform.translate + randomTranslate;
     particle.velocity = { distVelocity(randomEngine),distVelocity(randomEngine) ,distVelocity(randomEngine) };
-    particle.color = { distColor(randomEngine),distColor(randomEngine) ,distColor(randomEngine) ,1.0f };
+    particle.color = { 1.0f,1.0f,1.0f,1.0f };
     particle.lifeTime = distTime(randomEngine);
     particle.currentTime = 0.0f;
     return particle;

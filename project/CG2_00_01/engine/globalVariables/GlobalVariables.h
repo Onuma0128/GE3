@@ -3,6 +3,7 @@
 #include <variant>
 #include <map>
 #include <string>
+#include <vector>
 #include <json.hpp>
 
 #include "Vector3.h"
@@ -18,9 +19,9 @@ private:
 	GlobalVariables& operator=(GlobalVariables&) = delete;
 
 	// 項目
-	using Item = std::variant<int32_t, float, Vector3>;
+	using Item = std::variant<int32_t, float, Vector3, bool>;
 	// グループ
-	using Group = std::map<std::string, Item>;
+	using Group = std::vector<std::pair<std::string, Item>>;
 public:
 	// シングルトンインスタンスの取得
 	static GlobalVariables* GetInstance();
@@ -49,7 +50,7 @@ private:
 	// using宣言
 	using json = nlohmann::json;
 	// 全データ
-	std::map<std::string, Group> datas_;
+	std::vector<std::pair<std::string, Group>> datas_;
 	// 保存先ファイルパス
 	const std::string kDirectoryPath = "resources/globalVariables/";
 	// ファイル書き出し
@@ -59,27 +60,48 @@ private:
 template<typename T>
 inline void GlobalVariables::SetValue(const std::string& groupName, const std::string& key, T value)
 {
-	// グループの参照を取得
-	Group& group = datas_[groupName];
-	// 新しい項目のデータを追加
-	Item newItem{};
-	newItem = value;
-	// 設定した項目をstd::mapに追加
-	group[key] = newItem;
+	// std::find_ifを使ってグループを検索
+	auto groupIt = std::find_if(datas_.begin(), datas_.end(), [&groupName](const auto& pair) {
+		return pair.first == groupName;
+		});
+
+	// グループが見つからない場合エラーをスロー
+	if (groupIt == datas_.end()) {
+		throw std::runtime_error("Group not found: " + groupName);
+	}
+
+	// グループ内のアイテムを検索
+	Group& group = groupIt->second;
+	auto itemIt = std::find_if(group.begin(), group.end(), [&key](const auto& pair) {
+		return pair.first == key;
+		});
+
+	if (itemIt == group.end()) {
+		// アイテムが見つからない場合、新しいアイテムを追加
+		group.emplace_back(key, value);
+	}
+	else {
+		// 既存アイテムの値を更新
+		itemIt->second = value;
+	}
 }
 
 template<typename T>
 inline T GlobalVariables::GetValue(const std::string& groupName, const std::string& key) const
 {
 	// グループの存在確認
-	auto groupIt = datas_.find(groupName);
+	auto groupIt = std::find_if(datas_.begin(), datas_.end(), [&groupName](const auto& pair) {
+		return pair.first == groupName;
+		});
 	if (groupIt == datas_.end()) {
 		throw std::runtime_error("Group not found: " + groupName);
 	}
 
 	// 項目の存在確認
 	const Group& group = groupIt->second;
-	auto itemIt = group.find(key);
+	auto itemIt = std::find_if(group.begin(), group.end(), [&key](const auto& pair) {
+		return pair.first == key;
+		});
 	if (itemIt == group.end()) {
 		throw std::runtime_error("Item not found in group '" + groupName + "': " + key);
 	}
@@ -98,13 +120,24 @@ template<typename T>
 inline void GlobalVariables::AddValue(const std::string& groupName, const std::string& key, T value)
 {
 	// グループが存在しない場合は作成
-	if (datas_.find(groupName) == datas_.end()) {
+	auto groupIt = std::find_if(datas_.begin(), datas_.end(), [&groupName](const auto& pair) {
+		return pair.first == groupName;
+		});
+	if (groupIt == datas_.end()) {
 		CreateGroup(groupName);
+		groupIt = std::find_if(datas_.begin(), datas_.end(), [&groupName](const auto& pair) {
+			return pair.first == groupName;
+			});
 	}
+
 	// グループの参照を取得
-	Group& group = datas_[groupName];
+	Group& group = groupIt->second;
+
 	// 項目が存在しない場合のみ、SetValueを使用して追加
-	if (group.find(key) == group.end()) {
+	auto itemIt = std::find_if(group.begin(), group.end(), [&key](const auto& pair) {
+		return pair.first == key;
+		});
+	if (itemIt == group.end()) {
 		SetValue(groupName, key, value);
 	}
 }

@@ -39,6 +39,7 @@ void ParticleManager::Update()
     for (auto& [name, group] : particleGroups_) {
         // 新しいパーティクルを追加する
         particleGroups_[name].emitter->Update();
+        Emit(name);
 
         uint32_t numInstance = 0;
         // 各パーティクルを更新
@@ -151,11 +152,10 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
     particleGroups_[name] = std::move(group);
 }
 
-void ParticleManager::Emit(const std::string name, uint32_t count)
+void ParticleManager::Emit(const std::string name)
 {
     // 新しいパーティクルを追加する
     particleGroups_[name].emitter->CreateParticles(particleGroups_[name]);
-    particleGroups_[name].emitter->SetCount(count);
 }
 
 void ParticleManager::CreateVertexResource()

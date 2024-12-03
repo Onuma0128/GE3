@@ -11,39 +11,47 @@ GlobalVariables* GlobalVariables::instance_ = nullptr;
 void GlobalVariables::SaveFile(const std::string& groupName)
 {
     // グループを検索
-    std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
-    // 未登録チェック
-    assert(itGroup != datas_.end());
+    auto itGroup = std::find_if(datas_.begin(), datas_.end(), [&groupName](const auto& pair) {
+        return pair.first == groupName;
+        });
 
-    // グループの登録確認
-    json root;
-    root = json::object();
-    // jsonオブジェクトの登録
-    root[groupName] = json::object();
+    // グループが見つからない場合エラーをスロー
+    if (itGroup == datas_.end()) {
+        throw std::runtime_error("Group not found: " + groupName);
+    }
 
-    // 各項目
-    for (std::map<std::string, Item>::iterator itItem = itGroup->second.begin();
-        itItem != itGroup->second.end(); ++itItem) {
-        // 項目名の取得
-        const std::string& itemName = itItem->first;
-        // 項目の参照を取得
-        Item& item = itItem->second;
+    // JSONオブジェクトを作成
+    nlohmann::json root = nlohmann::json::object();
+    nlohmann::json groupJson = nlohmann::json::array(); // 配列で順序を明示
 
-        // int32_t
+    // グループ内のアイテムを順序通りに追加
+    for (const auto& itItem : itGroup->second) {
+        nlohmann::json itemJson = nlohmann::json::object();
+        const std::string& itemName = itItem.first;
+        const Item& item = itItem.second;
+
         if (std::holds_alternative<int32_t>(item)) {
-            root[groupName][itemName] = std::get<int32_t>(item);
+            itemJson[itemName] = std::get<int32_t>(item);
         }
-        // float
         else if (std::holds_alternative<float>(item)) {
-            root[groupName][itemName] = std::get<float>(item);
+            itemJson[itemName] = std::get<float>(item);
         }
-        // Vector3
         else if (std::holds_alternative<Vector3>(item)) {
             Vector3 value = std::get<Vector3>(item);
-            root[groupName][itemName] = json::array({ value.x,value.y,value.z });
+            itemJson[itemName] = { value.x, value.y, value.z };
         }
+        else if (std::holds_alternative<bool>(item)) {
+            itemJson[itemName] = std::get<bool>(item);
+        }
+
+        // 順序を守るために配列に追加
+        groupJson.push_back(itemJson);
     }
-    // ファイル書き出し
+
+    // グループデータをルートに追加
+    root[groupName] = groupJson;
+
+    // ファイル出力処理
     OutputToFile(groupName, root);
 }
 
@@ -100,50 +108,64 @@ void GlobalVariables::LoadFiles()
 
 void GlobalVariables::LoadFile(const std::string& groupName)
 {
-    // 読み込むjsonファイルのフルパスを作成
+    // 読み込むJSONファイルのパスを作成
     std::string filePath = kDirectoryPath + groupName + ".json";
-    // 読み込み用ファイルストリーム
-    std::ifstream ifs;
-    // ファイルを読み込み用に開く
-    ifs.open(filePath);
+    std::ifstream ifs(filePath);
 
-    // ファイルオープンに失敗
     if (ifs.fail()) {
-        std::string message = "Failed to open file for writing.";
-        MessageBoxA(nullptr, message.c_str(), "GrobalVariables", 0);
-        assert(0);
-        return;
+        throw std::runtime_error("Failed to open file: " + filePath);
     }
 
-    json root;
-    // json文字列からjsonのデータ構造に展開
+    nlohmann::json root;
     ifs >> root;
-    // ファイルを閉じる
     ifs.close();
 
-    // グループを検索
-    json::iterator itGroup = root.find(groupName);
-    // 未登録チェック
-    assert(itGroup != root.end());
+    // グループの存在確認
+    if (root.find(groupName) == root.end()) {
+        throw std::runtime_error("Group not found in JSON file: " + groupName);
+    }
 
-    // 各アイテム
-    for (json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); ++itItem) {
-        // アイテム名を取得
-        const std::string& itemName = itItem.key();
-        // int32_t
-        if (itItem->is_number_integer()) {
-            int32_t value = itItem->get<int32_t>();
-            SetValue(groupName, itemName, value);
+    // JSONデータを取得
+    const auto& groupData = root[groupName];
+
+    // グループを作成
+    CreateGroup(groupName);
+    auto groupIt = std::find_if(datas_.begin(), datas_.end(), [&groupName](const auto& pair) {
+        return pair.first == groupName;
+        });
+
+    if (groupIt == datas_.end()) {
+        throw std::runtime_error("Failed to create group: " + groupName);
+    }
+
+    Group& group = groupIt->second;
+
+    // JSON配列を順序通りに解析
+    for (const auto& item : groupData) {
+        if (!item.is_object()) {
+            throw std::runtime_error("Invalid item format in JSON file: " + groupName);
         }
-        // float
-        else if (itItem->is_number_float()) {
-            double value = itItem->get<double>();
-            SetValue(groupName, itemName, static_cast<float>(value));
-        }
-        // Vector3
-        else if (itItem->is_array() && itItem->size() == 3) {
-            Vector3 value = { itItem->at(0),itItem->at(1), itItem->at(2) };
-            SetValue(groupName, itemName, value);
+
+        // 各オブジェクトのキーと値を取得
+        for (auto it = item.begin(); it != item.end(); ++it) {
+            const std::string& key = it.key();
+
+            if (it.value().is_number_integer()) {
+                AddValue(groupName, key, it.value().get<int32_t>());
+            }
+            else if (it.value().is_number_float()) {
+                AddValue(groupName, key, static_cast<float>(it.value().get<double>()));
+            }
+            else if (it.value().is_array() && it.value().size() == 3) {
+                Vector3 value{ it.value()[0], it.value()[1], it.value()[2] };
+                AddValue(groupName, key, value);
+            }
+            else if (it.value().is_boolean()) {
+                AddValue(groupName, key, it.value().get<bool>());
+            }
+            else {
+                throw std::runtime_error("Unsupported value type for key: " + key);
+            }
         }
     }
 }
@@ -160,65 +182,78 @@ void GlobalVariables::Update()
 {
 #ifdef _DEBUG
 
+    static char searchBuffer[128] = ""; // 検索文字列用バッファ
+
     if (!ImGui::Begin("Global Variables", nullptr, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
         return;
     }
-    if (!ImGui::BeginMenuBar()) return;
+
+    // 検索バーを追加
+    ImGui::InputText("Search Groups", searchBuffer, sizeof(searchBuffer));
 
     // 各グループ
-    for (std::map<std::string, Group>::iterator itGroup = datas_.begin();
-        itGroup != datas_.end(); ++itGroup) {
-        // グループ名を取得
-        const std::string& groupName = itGroup->first;
-        // グループの参照を取得
-        Group& group = itGroup->second;
-        // グループのメニューを追加
-        if (!ImGui::BeginMenu(groupName.c_str()))
+    for (auto& groupPair : datas_) {
+        const std::string& groupName = groupPair.first;
+        Group& group = groupPair.second;
+
+        // TreeNode（グループ名）だけを検索
+        if (strlen(searchBuffer) > 0 && groupName.find(searchBuffer) == std::string::npos) {
             continue;
-        // 各項目
-        for (std::map<std::string, Item>::iterator itItem = group.begin();
-            itItem != group.end(); ++itItem) {
-            // 項目名を取得
-            const std::string& itemName = itItem->first;
-            // 項目の参照を取得
-            Item& item = itItem->second;
-
-            // int32_t
-            if (std::holds_alternative<int32_t>(item)) {
-                int32_t* ptr = std::get_if<int32_t>(&item);
-                ImGui::SliderInt(itemName.c_str(), ptr, 0, 100);
-            }
-            // float
-            if (std::holds_alternative<float>(item)) {
-                float* ptr = std::get_if<float>(&item);
-                ImGui::DragFloat(itemName.c_str(), ptr, 0.01f);
-            }
-            // Vector3
-            if (std::holds_alternative<Vector3>(item)) {
-                Vector3* ptr = std::get_if<Vector3>(&item);
-                ImGui::DragFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
-            }
         }
 
-        ImGui::Text("\n");
-        // 調整項目をセーブ
-        if (ImGui::Button("Export")) {
-            SaveFile(groupName);
-            std::string message = std::format("{}.json saved.", groupName);
-            MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
-        }
+        if (ImGui::TreeNode(groupName.c_str())) {
+            for (auto& itemPair : group) {
+                const std::string& itemName = itemPair.first;
+                Item& item = itemPair.second;
 
-        ImGui::EndMenu();
+                // int32_t
+                if (std::holds_alternative<int32_t>(item)) {
+                    int32_t* ptr = std::get_if<int32_t>(&item);
+                    ImGui::SliderInt(itemName.c_str(), ptr, 0, 100);
+                }
+                // float
+                if (std::holds_alternative<float>(item)) {
+                    float* ptr = std::get_if<float>(&item);
+                    ImGui::DragFloat(itemName.c_str(), ptr, 0.01f);
+                }
+                // Vector3
+                if (std::holds_alternative<Vector3>(item) && itemName != "color") {
+                    Vector3* ptr = std::get_if<Vector3>(&item);
+                    ImGui::DragFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
+                }
+                if (std::holds_alternative<Vector3>(item) && itemName == "color") {
+                    Vector3* ptr = std::get_if<Vector3>(&item);
+                    ImGui::ColorEdit3(itemName.c_str(), reinterpret_cast<float*>(ptr));
+                }
+                // bool 
+                if (std::holds_alternative<bool>(item)) {
+                    bool* ptr = std::get_if<bool>(&item);
+                    ImGui::Checkbox(itemName.c_str(), ptr);
+                }
+            }
+            if (ImGui::Button("Export")) {
+                SaveFile(groupName);
+                std::string message = std::format("{}.json saved.", groupName);
+                MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+            }
+            ImGui::TreePop();
+        }
     }
-
-    ImGui::EndMenuBar();
     ImGui::End();
 
-#endif // DEBUG
+#endif // _DEBUG
 }
 
 void GlobalVariables::CreateGroup(const std::string& groupName)
 {
-    datas_[groupName];
+    // std::find_ifを使ってグループを検索
+    auto it = std::find_if(datas_.begin(), datas_.end(), [&groupName](const auto& pair) {
+        return pair.first == groupName;
+        });
+
+    // 存在しない場合、新しいグループを追加
+    if (it == datas_.end()) {
+        datas_.emplace_back(groupName, Group{});
+    }
 }
