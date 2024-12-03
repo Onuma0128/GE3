@@ -49,4 +49,8 @@ public:
 
     // 正射影行列の生成
     static Matrix4x4 Orthographic(float left, float top, float right, float bottom, float nearClip, float farClip);
+
+    // 任意軸回転行列の生成
+    static Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle);
+
 };
