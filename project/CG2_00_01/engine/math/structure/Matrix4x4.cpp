@@ -226,3 +226,41 @@ Matrix4x4 Matrix4x4::Orthographic(float left, float top, float right, float bott
     result.m[3][3] = 1.0f;
     return result;
 }
+
+Matrix4x4 Matrix4x4::MakeRotateAxisAngle(const Vector3& axis, float angle)
+{
+    // 回転軸を正規化
+    Vector3 normalizeAxis = axis.Normalize();
+    float x = normalizeAxis.x;
+    float y = normalizeAxis.y;
+    float z = normalizeAxis.z;
+
+    // 角度の三角関数
+    float cosTheta = std::cos(angle);
+    float sinTheta = std::sin(angle);
+    float oneMinusCosTheta = 1.0f - cosTheta;
+
+    // 回転行列の各成分を計算
+    Matrix4x4 rotation;
+    rotation.m[0][0] = cosTheta + x * x * oneMinusCosTheta;
+    rotation.m[0][1] = x * y * oneMinusCosTheta - z * sinTheta;
+    rotation.m[0][2] = x * z * oneMinusCosTheta + y * sinTheta;
+    rotation.m[0][3] = 0.0f;
+
+    rotation.m[1][0] = y * x * oneMinusCosTheta + z * sinTheta;
+    rotation.m[1][1] = cosTheta + y * y * oneMinusCosTheta;
+    rotation.m[1][2] = y * z * oneMinusCosTheta - x * sinTheta;
+    rotation.m[1][3] = 0.0f;
+
+    rotation.m[2][0] = z * x * oneMinusCosTheta - y * sinTheta;
+    rotation.m[2][1] = z * y * oneMinusCosTheta + x * sinTheta;
+    rotation.m[2][2] = cosTheta + z * z * oneMinusCosTheta;
+    rotation.m[2][3] = 0.0f;
+
+    rotation.m[3][0] = 0.0f;
+    rotation.m[3][1] = 0.0f;
+    rotation.m[3][2] = 0.0f;
+    rotation.m[3][3] = 1.0f;
+
+    return rotation;
+}
