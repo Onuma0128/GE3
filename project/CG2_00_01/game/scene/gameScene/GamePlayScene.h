@@ -11,6 +11,8 @@
 #include "BaseScene.h"
 #include "Line3d.h"
 
+#include "Camera.h"
+
 using Microsoft::WRL::ComPtr;
 
 class GamePlayScene : public BaseScene
@@ -26,6 +28,8 @@ public:
 	void Draw() override;
 
 private:
+
+	std::unique_ptr<Camera> camera_ = nullptr;
 
 	std::vector<std::unique_ptr<Sprite>> sprites_;
 	std::vector<std::unique_ptr<Object3d>> obj_;

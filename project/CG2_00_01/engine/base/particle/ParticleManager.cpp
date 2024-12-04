@@ -3,8 +3,9 @@
 #include "PrimitiveDrawer.h"
 #include "LightManager.h"
 #include "TextureManager.h"
-#include "Camera.h"
+#include "CameraManager.h"
 
+#include "Camera.h"
 #include "CreateBufferResource.h"
 #include "ParticleEmitter.h"
 
@@ -56,13 +57,13 @@ void ParticleManager::Update()
             Matrix4x4 backToFrontMatrix = rotateX * rotateY * rotateZ;
 
             // パーティクルのビルボード化
-            Matrix4x4 billboardMatrix = backToFrontMatrix * Camera::GetInstance()->GetWorldMatrix();
+            Matrix4x4 billboardMatrix = backToFrontMatrix * CameraManager::GetInstance()->GetActiveCamera()->GetWorldMatrix();
             billboardMatrix.m[3][0] = 0.0f;
             billboardMatrix.m[3][1] = 0.0f;
             billboardMatrix.m[3][2] = 0.0f;
             Matrix4x4 worldMatrix = Matrix4x4::Scale(it->transform.scale) * billboardMatrix * Matrix4x4::Translate(it->transform.translate);
-            Matrix4x4 worldViewMatrix = worldMatrix * Camera::GetInstance()->GetViewMatrix();
-            Matrix4x4 worldViewProjectionMatrix = worldViewMatrix * Camera::GetInstance()->GetProjectionMatrix();
+            Matrix4x4 worldViewMatrix = worldMatrix * CameraManager::GetInstance()->GetActiveCamera()->GetViewMatrix();
+            Matrix4x4 worldViewProjectionMatrix = worldViewMatrix * CameraManager::GetInstance()->GetActiveCamera()->GetProjectionMatrix();
 
             // パーティクルの更新
             group.emitter->UpdateParticle(it);

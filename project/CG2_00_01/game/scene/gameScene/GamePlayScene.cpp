@@ -1,6 +1,6 @@
 #include "GamePlayScene.h"
 
-#include "Camera.h"
+#include "CameraManager.h"
 #include "Input.h"
 #include "SceneManager.h"
 #include "PrimitiveDrawer.h"
@@ -10,6 +10,11 @@
 
 void GamePlayScene::Initialize()
 {
+	// カメラの初期化
+	camera_ = std::make_unique<Camera>();
+	camera_->Initialize();
+	CameraManager::GetInstance()->SetCamera(camera_.get());
+
 	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize("uvChecker.png");
 	sprite_->SetPosition({ 64,64 });

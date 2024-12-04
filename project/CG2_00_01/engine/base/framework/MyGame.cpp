@@ -1,6 +1,6 @@
 #include "MyGame.h"
 
-#include "Camera.h"
+#include "CameraManager.h"
 #include "LightManager.h"
 #include "SceneManager.h"
 #include "ParticleManager.h"
@@ -29,6 +29,9 @@ void MyGame::Update()
 {
 	Framework::Update();
 
+	// カメラの更新
+	CameraManager::GetInstance()->Update();
+
 	SceneManager::GetInstance()->Update();
 }
 
@@ -39,11 +42,7 @@ void MyGame::Draw()
 
 	GlobalVariables::GetInstance()->Update();
 
-	// カメラのImGui
-	Camera::GetInstance()->CameraImGui();
-
-	// カメラの更新
-	Camera::GetInstance()->Update();
+	CameraManager::GetInstance()->Debug_ImGui();
 
 	// ライトの更新
 	LightManager::GetInstance()->Update();

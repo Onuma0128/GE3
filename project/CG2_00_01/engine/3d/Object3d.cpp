@@ -1,5 +1,6 @@
 #include "Object3d.h"
 
+#include "CameraManager.h"
 #include "Object3dBase.h"
 #include "LightManager.h"
 #include "ModelManager.h"
@@ -8,7 +9,6 @@
 void Object3d::Initialize(const std::string& filePath)
 {
     this->object3dBase_ = Object3dBase::GetInstance();
-    this->camera_ = Object3dBase::GetInstance()->GetDefaultCamera();
 
     SetModel(filePath);
 
@@ -23,8 +23,8 @@ void Object3d::Update()
     if (parent_) {
         worldMatrix_ = worldMatrix_ * parent_->GetWorldMatrix();
     }
-    Matrix4x4 worldViewMatrixObject = worldMatrix_ * camera_->GetViewMatrix(); // カメラから見たワールド座標に変換
-    Matrix4x4 worldViewProjectionMatrixObject = worldViewMatrixObject * camera_->GetProjectionMatrix(); // 射影行列を適用してワールドビュープロジェクション行列を計算
+    Matrix4x4 worldViewMatrixObject = worldMatrix_ * CameraManager::GetInstance()->GetActiveCamera()->GetViewMatrix(); // カメラから見たワールド座標に変換
+    Matrix4x4 worldViewProjectionMatrixObject = worldViewMatrixObject * CameraManager::GetInstance()->GetActiveCamera()->GetProjectionMatrix(); // 射影行列を適用してワールドビュープロジェクション行列を計算
     wvpData_->WVP = model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
     wvpData_->World = model_->GetModelData().rootNode.localMatrix * worldMatrix_; // ワールド座標行列を更新
     wvpData_->WorldInverseTranspose = model_->GetModelData().rootNode.localMatrix * Matrix4x4::Inverse(worldViewMatrixObject);
@@ -36,7 +36,7 @@ void Object3d::Draw()
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(4, LightManager::GetInstance()->GetPointLightResource()->GetGPUVirtualAddress());
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(5, LightManager::GetInstance()->GetSpotLightResource()->GetGPUVirtualAddress());
-    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, camera_->GetCameraResource()->GetGPUVirtualAddress());
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, CameraManager::GetInstance()->GetCameraResource()->GetGPUVirtualAddress());
 
     if (model_) {
         model_->Draw();
