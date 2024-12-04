@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-#include "Camera.h"
+#include "CameraManager.h"
 #include "SpriteBase.h"
 #include "WinApp.h"
 #include "TextureManager.h"
@@ -47,7 +47,7 @@ void Sprite::Draw()
 	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
 	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(4, LightManager::GetInstance()->GetPointLightResource()->GetGPUVirtualAddress());
 	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(5, LightManager::GetInstance()->GetSpotLightResource()->GetGPUVirtualAddress());
-	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, Camera::GetInstance()->GetCameraResource()->GetGPUVirtualAddress());
+	spriteBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(6, CameraManager::GetInstance()->GetCameraResource()->GetGPUVirtualAddress());
 	
 	spriteBase_->GetDxEngine()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }

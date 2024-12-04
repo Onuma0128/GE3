@@ -9,7 +9,7 @@
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
 
-#include "Camera.h"
+#include "CameraManager.h"
 #include "LightManager.h"
 #include "Object3dBase.h"
 #include "SpriteBase.h"
@@ -26,7 +26,7 @@ using Microsoft::WRL::ComPtr;
 DirectXEngine::~DirectXEngine()
 {
 	SrvManager::GetInstance()->Finalize();
-	Camera::GetInstance()->Finalize();
+	CameraManager::GetInstance()->Finalize();
 	TextureManager::GetInstance()->Finalize();
 	SpriteBase::GetInstance()->Finalize();
 	Object3dBase::GetInstance()->Finalize();
@@ -82,7 +82,7 @@ void DirectXEngine::Initialize(WinApp* winApp)
 
 	/*==================== カメラ準備用 ====================*/
 
-	Camera::GetInstance()->Initialize(this);
+	CameraManager::GetInstance()->Initialize(this);
 
 	/*==================== ライト準備用 ====================*/
 
@@ -91,7 +91,6 @@ void DirectXEngine::Initialize(WinApp* winApp)
 	/*==================== モデル描画準備用 ====================*/
 
 	Object3dBase::GetInstance()->Initialize(this);
-	Object3dBase::GetInstance()->SetDefaultCamera(Camera::GetInstance());
 
 	/*==================== スプライト描画準備用 ====================*/
 

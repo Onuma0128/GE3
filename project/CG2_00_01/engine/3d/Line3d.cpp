@@ -1,6 +1,7 @@
 #include "Line3d.h"
 
 #include "Camera.h"
+#include "CameraManager.h"
 #include "CreateBufferResource.h"
 
 void Line3d::Initialize(Vector3 startPos, Vector3 endPos)
@@ -35,7 +36,7 @@ void Line3d::Initialize(const std::vector<Vector3>& positions)
 
 void Line3d::Update()
 {
-	*wvpData_ = Camera::GetInstance()->GetViewProjectionMatrix();
+	*wvpData_ = CameraManager::GetInstance()->GetActiveCamera()->GetViewProjectionMatrix();
 }
 
 void Line3d::Draw()

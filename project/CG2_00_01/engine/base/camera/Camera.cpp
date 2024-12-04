@@ -5,22 +5,8 @@
 #include "imgui.h"
 #endif // _DEBUG
 
-#include "CreateBufferResource.h"
-
-Camera* Camera::instance_ = nullptr;
-
-Camera* Camera::GetInstance()
+void Camera::Initialize()
 {
-	if (instance_ == nullptr) {
-		instance_ = new Camera;
-	}
-	return instance_;
-}
-
-void Camera::Initialize(DirectXEngine* dxEngine)
-{
-	dxEngine_ = dxEngine;
-
 	input_ = Input::GetInstance();
 
 	debugTransform_ = { {1.0f,1.0f,1.0f},{0.26f,0.0f,0.0f},{0.0f,4.0f,-15.0f} };
@@ -34,8 +20,6 @@ void Camera::Initialize(DirectXEngine* dxEngine)
 	viewMatrix_ = Matrix4x4::Inverse(worldMatrix_);
 	projectionMatrix_ = Matrix4x4::PerspectiveFov(fovY_, aspectRatio_, nearClip_, farClip_);
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
-
-	MakeCameraData();
 }
 
 void Camera::Update()
@@ -47,12 +31,6 @@ void Camera::Update()
 	}
 #endif // _DEBUG
 	NormalCamera();
-}
-
-void Camera::Finalize()
-{
-	delete instance_;
-	instance_ = nullptr;
 }
 
 void Camera::DebugCamera()
@@ -98,17 +76,11 @@ void Camera::DebugCamera()
 	}
 
 	UpdateMatrix(debugTransform_);
-
-	// カメラのデータを更新
-	cameraData_->worldPosition = Vector3{}.Transform(worldMatrix_);
 }
 
 void Camera::NormalCamera()
 {
 	UpdateMatrix(transform_);
-
-	// カメラのデータを更新
-	cameraData_->worldPosition = Vector3{}.Transform(worldMatrix_);
 }
 
 void Camera::UpdateMatrix(Transform transform)
@@ -137,16 +109,4 @@ void Camera::CameraImGui()
 
 	ImGui::End();
 #endif // _DEBUG
-}
-
-void Camera::MakeCameraData()
-{
-	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
-	cameraResource_ = CreateBufferResource(dxEngine_->GetDevice(), sizeof(Vector3)).Get();
-
-	// 書き込むためのアドレスを取得
-	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
-
-	// 単位行列を書き込んでおく
-	cameraData_->worldPosition = Vector3{}.Transform(worldMatrix_);
 }

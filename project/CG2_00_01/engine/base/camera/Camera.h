@@ -16,29 +16,9 @@ using Microsoft::WRL::ComPtr;
 class Camera
 {
 public:
-
-	struct CameraForGPU {
-		Vector3 worldPosition;
-	};
-
-private:
-
-	static Camera* instance_;
-
-	Camera() = default;
-	~Camera() = default;
-	Camera(Camera&) = delete;
-	Camera& operator=(Camera&) = delete;
-
-public:
-	// シングルトンインスタンスの取得
-	static Camera* GetInstance();
-
-	void Initialize(DirectXEngine* dxEngine);
+	void Initialize();
 
 	void Update();
-
-	void Finalize();
 
 	void UpdateMatrix(Transform transform);
 
@@ -48,7 +28,6 @@ private:
 
 	void DebugCamera();
 	void NormalCamera();
-	void MakeCameraData();
 
 	/*==================== アクセッサ ====================*/
 
@@ -82,12 +61,7 @@ public:
 	const Vector3& GetTranslate()const { return transform_.translate; }
 	const bool GetIsDebug()const { return isDebug_; }
 
-	// カメラリソース
-	ID3D12Resource* GetCameraResource()const { return cameraResource_.Get(); }
-
 private:
-
-	DirectXEngine* dxEngine_;
 
 	Input* input_;
 
@@ -111,9 +85,4 @@ private:
 
 	float mouseSensitivity_ = 0.001f;
 	bool isDebug_ = false;
-
-	/*==================== カメラデータ ====================*/
-
-	ComPtr<ID3D12Resource> cameraResource_ = nullptr;
-	CameraForGPU* cameraData_ = nullptr;
 };

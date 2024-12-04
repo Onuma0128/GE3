@@ -1,5 +1,7 @@
 #include "TitleScene.h"
 #include "Input.h"
+
+#include "CameraManager.h"
 #include "SpriteBase.h"
 #include "Object3dBase.h"
 #include "ModelManager.h"
@@ -11,6 +13,21 @@
 
 void TitleScene::Initialize()
 {
+	// Cameraの初期化
+	// ===============
+	// Cameraのポインタを初期化
+	// CameraManagerに登録
+	// ===============
+	camera_ = std::make_unique<Camera>();
+	camera_->Initialize();
+	CameraManager::GetInstance()->SetCamera(camera_.get());
+
+	camera1_ = std::make_unique<Camera>();
+	camera1_->Initialize();
+	camera1_->SetRotate(Vector3{ 0.26f,1.57f,0.0f });
+	camera1_->SetTranslate(Vector3{ -15.0f,4.0f,0.0f });
+	CameraManager::GetInstance()->SetCamera(camera1_.get());
+
 	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize("uvChecker.png");
 	sprite_->SetPosition({ 64,64 });
@@ -62,6 +79,14 @@ void TitleScene::Update()
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Game");
 	}
+
+	if (Input::GetInstance()->PushKey(DIK_F1)) {
+		CameraManager::GetInstance()->SetActiveCamera(0);
+	}
+	if (Input::GetInstance()->PushKey(DIK_F2)) {
+		CameraManager::GetInstance()->SetActiveCamera(1);
+	}
+
 
 	for (auto& obj : obj_) {
 		obj->Update();

@@ -108,6 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CG2_00_01\engine\base\camera\CameraManager.cpp" />
     <ClCompile Include="CG2_00_01\engine\math\structure\Matrix4x4.cpp" />
     <ClCompile Include="CG2_00_01\engine\math\structure\Vector3.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.cpp" />
@@ -165,6 +166,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CG2_00_01\engine\base\camera\CameraManager.h" />
     <ClInclude Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.h" />
     <ClInclude Include="CG2_00_01\engine\base\scene\BaseScene.h" />
     <ClInclude Include="CG2_00_01\engine\base\camera\Camera.h" />
