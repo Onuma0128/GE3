@@ -76,25 +76,6 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	Vector3 axis = { 1.0f,1.0f,1.0f };
-	float angle = 0.44f;
-	Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateAxisAngle(axis, angle);
-
-	ImGui::Begin("MT4");
-
-	if (ImGui::BeginTable("MatrixTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-		for (int j = 0; j < 4; ++j) {
-			ImGui::TableNextRow();
-			for (int i = 0; i < 4; ++i) {
-				ImGui::TableSetColumnIndex(i);
-				ImGui::Text("%.3f", rotateMatrix.m[i][j]);
-			}
-		}
-		ImGui::EndTable();
-	}
-
-	ImGui::End();
-
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
 	for (auto& obj : obj_) {
