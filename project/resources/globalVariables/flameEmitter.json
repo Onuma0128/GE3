@@ -2,13 +2,13 @@
     "flameEmitter": [
         {
             "position": [
-                0.0,
-                0.0,
+                -0.3799999952316284,
+                0.28999999165534973,
                 0.0
             ]
         },
         {
-            "lockPosition": false
+            "lockPosition": true
         },
         {
             "min": [

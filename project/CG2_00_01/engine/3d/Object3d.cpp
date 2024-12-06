@@ -57,6 +57,11 @@ void Object3d::SetModel(const std::string& filePath)
     model_ = ModelManager::GetInstance()->FindModel(filePath);
 }
 
+void Object3d::SetTexture(const std::string& directoryPath, const std::string& filePath)
+{
+    model_->SetTexture(directoryPath, filePath);
+}
+
 const Vector3 Object3d::GetWorldPosition()
 {
     Vector3 translate = { worldMatrix_.m[3][0],worldMatrix_.m[3][1],worldMatrix_.m[3][2] };

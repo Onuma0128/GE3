@@ -35,6 +35,7 @@ void TitleScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("resources", "plane.obj");
 	map_ = std::make_unique<Object3d>();
 	map_->Initialize("plane.obj");
+	map_->SetTexture("resources", "black1x1.png");
 	map_->SetScale(Vector3{ 50,50,50 });
 	map_->SetRotation(Vector3{ -1.57f,3.14f,0.0f });
 	map_->SetPosition(Vector3{ 0.0f,-1.0f,0.0f });

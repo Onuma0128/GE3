@@ -16,10 +16,10 @@ void Model::Initialize(const std::string& directoryPath, const std::string& file
 
     modelData_ = LoadObjFile(directoryPath, filename);
 
-    TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
+    TextureManager::GetInstance()->LoadTexture(modelData_.material.directoryPath + modelData_.material.filePath);
 
     modelData_.material.textureIndex =
-        TextureManager::GetInstance()->GetSrvIndex(modelData_.material.textureFilePath);
+        TextureManager::GetInstance()->GetSrvIndex(modelData_.material.directoryPath + modelData_.material.filePath);
 
     MakeVertexData();
 
@@ -93,7 +93,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
                 uint32_t vertexIndex = face.mIndices[element];
                 aiVector3D& position = mesh->mVertices[vertexIndex];
                 aiVector3D& normal = mesh->mNormals[vertexIndex];
-                
+
                 VertexData vertex;
                 vertex.position = { position.x,position.y,position.z,1.0f };
                 vertex.normal = { normal.x,normal.y,normal.z };
@@ -121,20 +121,31 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
         if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
             aiString textureFilePath;
             material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-            modelData.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
+            modelData.material.directoryPath = directoryPath + "/";
+            modelData.material.filePath = textureFilePath.C_Str();
             textureFound = true; // テクスチャが見つかった
         }
         // 他にも必要なテクスチャタイプがあればここで追加で確認する
 
         // いずれのテクスチャも見つからなければデフォルトのwhite1x1.pngを割り当てる
         if (!textureFound) {
-            modelData.material.textureFilePath = "resources/white1x1.png";
+            modelData.material.directoryPath = "resources/";
+            modelData.material.filePath = "white1x1.png";
         }
     }
 
     modelData.rootNode = ReadNode(scene->mRootNode);
 
     return modelData;
+}
+
+void Model::SetTexture(const std::string& directoryPath, const std::string& filename)
+{
+    modelData_.material.directoryPath = directoryPath + "/";
+    modelData_.material.filePath = filename;
+    TextureManager::GetInstance()->LoadTexture(modelData_.material.directoryPath + modelData_.material.filePath);
+    modelData_.material.textureIndex =
+        TextureManager::GetInstance()->GetSrvIndex(modelData_.material.directoryPath + modelData_.material.filePath);
 }
 
 Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
@@ -152,12 +163,15 @@ Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directory
             std::string textureFilename;
             s >> textureFilename;
             //連結してファイルパスにする
-            materialData.textureFilePath = directoryPath + "/" + textureFilename;
+            materialData.directoryPath = directoryPath + "/";
+            materialData.filePath = textureFilename;
         }
     }
-    if (materialData.textureFilePath.empty()) {
+    std::string materialTexture = materialData.directoryPath + materialData.filePath;
+    if (materialTexture.empty()) {
         std::string textureFilename = "white1x1.png";
-        materialData.textureFilePath = directoryPath + "/" + textureFilename;
+        materialData.directoryPath = directoryPath + "/";
+        materialData.filePath = textureFilename;
     }
     return materialData;
 }
