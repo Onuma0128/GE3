@@ -29,6 +29,8 @@ public:
 	struct Emitter {
 		std::string name;
 		Transform transform;
+		float scale;
+		Vector3 velocityY;
 		AABB size;
 		uint32_t count;
 		float frequency;
@@ -57,6 +59,8 @@ public:
 	void UpdateParticle(std::list<ParticleManager::Particle>::iterator& particle);
 
 	/*==================== アクセッサー ====================*/
+
+	Vector3 GetPosition()const { return emitter_.transform.translate; }
 
 	void SetPosition(const Vector3& position) { emitter_.transform.translate = position; }
 

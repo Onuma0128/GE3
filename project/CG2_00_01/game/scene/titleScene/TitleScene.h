@@ -1,18 +1,14 @@
 #pragma once
 #include <memory>
-#include <array>
 #include <vector>
+
 #include "wrl.h"
 
 #include "LoadSound.h"
-#include "Sprite.h"
-#include "Object3d.h"
 #include "BaseScene.h"
-
-#include "ParticleManager.h"
-#include "ParticleEmitter.h"
-#include "GlobalVariables.h"
 #include "Camera.h"
+
+#include "player/Player.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -29,20 +25,16 @@ public:
 	void Draw() override;
 
 private:
-
-	GlobalVariables* global_ = GlobalVariables::GetInstance();
-
+	// カメラ
 	std::unique_ptr<Camera> camera_ = nullptr;
 	std::unique_ptr<Camera> camera1_ = nullptr;
 
-	std::vector<std::unique_ptr<Sprite>> sprites_;
-	std::vector <std::unique_ptr<Object3d>> obj_;
+	// プレイヤー
+	std::unique_ptr<Player> player_ = nullptr;
 
-	ParticleManager* particleManager_ = ParticleManager::GetInstance();
-
-	std::unique_ptr<ParticleEmitter> emitter0_;
-	std::unique_ptr<ParticleEmitter> emitter1_;
-	std::unique_ptr<ParticleEmitter> emitter2_;
+	// 地面を配置
+	std::unique_ptr<Object3d> map_;
+	std::unique_ptr<ParticleEmitter> emitter_;
 
 	// 今後消す
 	ComPtr<IXAudio2> xAudio2;

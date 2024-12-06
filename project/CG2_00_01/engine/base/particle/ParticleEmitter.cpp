@@ -10,6 +10,7 @@ ParticleEmitter::ParticleEmitter(const std::string name)
 
     emitter_.name = name;
     emitter_.transform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+    emitter_.velocityY = { -1.0f,1.0f,0.0f };
     emitter_.frequency = 0.1f;
     emitter_.frequencyTime = 0.0f;
     accelerationField_.acceleration = { 0.0f,10.0f,0.0f };
@@ -41,16 +42,18 @@ void ParticleEmitter::GlobalInitialize(const std::string name)
 {
     std::string globalName = name + "Emitter";
 
-    global_->AddValue<Vector3>(globalName, "position", Vector3{});
-    global_->AddValue<bool>(globalName, "lockPosition", false);
-    global_->AddValue<Vector3>(globalName, "min", Vector3{ -1.0f,-1.0f,-1.0f });
-    global_->AddValue<Vector3>(globalName, "max", Vector3{ 1.0f,1.0f,1.0f });
-    global_->AddValue<Vector3>(globalName, "acceleration", Vector3{ 0.0f,10.0f,0.0f });
-    global_->AddValue<Vector3>(globalName, "color", Vector3{ 1.0f,1.0f,1.0f });
-    global_->AddValue<float>(globalName, "frequency", 0.5f);
-    global_->AddValue<int>(globalName, "count", 3);
-    global_->AddValue<bool>(globalName, "move", false);
-    global_->AddValue<bool>(globalName, "field", false);
+    global_->AddValue<Vector3>(globalName, "position", Vector3{});                      // 座標
+    global_->AddValue<bool>(globalName, "lockPosition", false);                         // 座標を固定するか
+    global_->AddValue<Vector3>(globalName, "min", Vector3{ -1.0f,-1.0f,-1.0f });        // 発生範囲_min
+    global_->AddValue<Vector3>(globalName, "max", Vector3{ 1.0f,1.0f,1.0f });           // 発生範囲_max
+    global_->AddValue<float>(globalName, "scale", 1.0f);                                // サイズ
+    global_->AddValue<Vector3>(globalName, "velocityY", Vector3{ -1.0f,1.0f,0.0f });    // 速度
+    global_->AddValue<Vector3>(globalName, "acceleration", Vector3{ 0.0f,10.0f,0.0f }); // 加速度
+    global_->AddValue<Vector3>(globalName, "color", Vector3{ 1.0f,1.0f,1.0f });         // 色
+    global_->AddValue<float>(globalName, "frequency", 0.5f);                            // 発生時間
+    global_->AddValue<int>(globalName, "count", 3);                                     // 発生数
+    global_->AddValue<bool>(globalName, "move", false);                                 // 動いているか
+    global_->AddValue<bool>(globalName, "field", false);                                // 加速度を足しているか
 
 }
 
@@ -61,28 +64,32 @@ void ParticleEmitter::Update()
     std::string globalName = emitter_.name + "Emitter";
 
     // 新たな数値を代入
-    if (!global_->GetValue<bool>(globalName, "lockPosition")) {
+    if (global_->GetValue<bool>(globalName, "lockPosition")) {
         emitter_.transform.translate = global_->GetValue<Vector3>(globalName, "position");
     }
+    // min,maxが最大値を超えていないかclamp
     Vector3 min = global_->GetValue<Vector3>(globalName, "min");
     Vector3 max = global_->GetValue<Vector3>(globalName, "max");
-    // min,maxが最大値を超えていないかclamp
     emitter_.size.min = {
         std::clamp(min.x,-256.0f,0.0f),std::clamp(min.y,-256.0f,0.0f),std::clamp(min.z,-256.0f,0.0f),
     };
     emitter_.size.max = {
         std::clamp(max.x,0.0f,256.0f),std::clamp(max.y,0.0f,256.0f),std::clamp(max.z,0.0f,256.0f),
     };
-
+    // パーティクルのVelocity
+    emitter_.velocityY = global_->GetValue<Vector3>(globalName, "velocityY");
+    float scale = global_->GetValue<float>(globalName, "scale");
+    emitter_.scale = { scale };
+    // パーティクルの発生時間と数
     emitter_.frequency = global_->GetValue<float>(globalName, "frequency");
     emitter_.count = global_->GetValue<int>(globalName, "count");
-
+    // パーティクルの場の範囲とAcceleration
     accelerationField_.area = {
         .min = emitter_.size.min + emitter_.transform.translate - Vector3{0.5f,0.5f,0.5f},
         .max = emitter_.size.max + emitter_.transform.translate + Vector3{0.5f,0.5f,0.5f}
     };
     accelerationField_.acceleration = global_->GetValue<Vector3>(globalName, "acceleration");
-
+    // 動いているか、場はあるか
     moveStart_ = global_->GetValue<bool>(globalName, "move");
     isFieldStart_ = global_->GetValue<bool>(globalName, "field");
 
@@ -154,14 +161,15 @@ ParticleManager::Particle ParticleEmitter::MakeNewParticle(std::mt19937& randomE
     std::uniform_real_distribution<float> distPosZ(emitter.size.min.z, emitter.size.max.z);
 
     std::uniform_real_distribution<float> distVelocity(-1.0f, 1.0f);
+    std::uniform_real_distribution<float> distVelocityY(emitter.velocityY.x, emitter.velocityY.y);
     //std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
     std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
     ParticleManager::Particle particle{};
-    particle.transform.scale = { 1.0f,1.0f,1.0f };
+    particle.transform.scale = { emitter.scale,emitter.scale ,emitter.scale };
     particle.transform.rotate = { 0.0f,0.0f,0.0f };
     Vector3 randomTranslate = { distPosX(randomEngine),distPosY(randomEngine) ,distPosZ(randomEngine) };
     particle.transform.translate = emitter.transform.translate + randomTranslate;
-    particle.velocity = { distVelocity(randomEngine),distVelocity(randomEngine) ,distVelocity(randomEngine) };
+    particle.velocity = { distVelocity(randomEngine),distVelocityY(randomEngine) ,distVelocity(randomEngine) };
     particle.color = { 1.0f,1.0f,1.0f,1.0f };
     particle.lifeTime = distTime(randomEngine);
     particle.currentTime = 0.0f;

@@ -9,8 +9,6 @@
 
 #include "SceneManager.h"
 
-#include "imgui.h"
-
 void TitleScene::Initialize()
 {
 	// Cameraの初期化
@@ -28,34 +26,21 @@ void TitleScene::Initialize()
 	camera1_->SetTranslate(Vector3{ -15.0f,4.0f,0.0f });
 	CameraManager::GetInstance()->SetCamera(camera1_.get());
 
-	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize("uvChecker.png");
-	sprite_->SetPosition({ 64,64 });
-	sprite_->SetSize({ 128,128 });
-	sprite_->SetAnchorPoint({ 0.5f,0.5f });
-	sprites_.push_back(std::move(sprite_));
+	CameraManager::GetInstance()->SetActiveCamera(0);
 
-	std::unique_ptr<Sprite> sprite1_ = std::make_unique<Sprite>();
-	sprite1_->Initialize("Apple.png");
-	sprite1_->SetPosition({ 640,64 });
-	sprite1_->SetSize({ 128,128 });
-	sprite1_->SetAnchorPoint({ 0.5f,0.5f });
-	sprites_.push_back(std::move(sprite1_));
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
 
-	ModelManager::GetInstance()->LoadModel("resources", "suzanne.obj");
-	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
-	object3d_->Initialize("suzanne.obj");
-	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
-	obj_.push_back(std::move(object3d_));
+	// 地面
+	ModelManager::GetInstance()->LoadModel("resources", "plane.obj");
+	map_ = std::make_unique<Object3d>();
+	map_->Initialize("plane.obj");
+	map_->SetScale(Vector3{ 50,50,50 });
+	map_->SetRotation(Vector3{ -1.57f,3.14f,0.0f });
+	map_->SetPosition(Vector3{ 0.0f,-1.0f,0.0f });
 
-	emitter0_ = std::make_unique<ParticleEmitter>("player");
-	emitter1_ = std::make_unique<ParticleEmitter>("enemy");
-	emitter2_ = std::make_unique<ParticleEmitter>("obj");
-
-	// Particleを作成
-	particleManager_->CreateParticleGroup("player", "circle.png", emitter0_.get());
-	particleManager_->CreateParticleGroup("enemy", "uvChecker.png", emitter1_.get());
-	particleManager_->CreateParticleGroup("obj", "Apple.png", emitter2_.get());
+	emitter_ = std::make_unique<ParticleEmitter>("map");
+	ParticleManager::GetInstance()->CreateParticleGroup("map", "white1x1.png", emitter_.get());
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
@@ -76,9 +61,9 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+	/*if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Game");
-	}
+	}*/
 
 	if (Input::GetInstance()->PushKey(DIK_F1)) {
 		CameraManager::GetInstance()->SetActiveCamera(0);
@@ -87,32 +72,30 @@ void TitleScene::Update()
 		CameraManager::GetInstance()->SetActiveCamera(1);
 	}
 
+	map_->Update();
 
-	for (auto& obj : obj_) {
-		obj->Update();
-	}
-	for (auto& sprite : sprites_) {
-		sprite->Update();
-	}
+	player_->Update();
 
-	// Particleの更新
-	particleManager_->Update();
+	ParticleManager::GetInstance()->Update();
 }
 
 void TitleScene::Draw()
 {
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
-	for (auto& obj : obj_) {
-		obj->Draw();
-	}
+
+	// 地面の描画
+	map_->Draw();
+
+	// プレイヤーの描画
+	player_->Draw();
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
-	for (auto& sprite : sprites_) {
-		sprite->Draw();
-	}
+
+
 
 	// Particleの描画
-	particleManager_->Draw();
+	ParticleManager::GetInstance()->Draw();
+	
 }

@@ -108,6 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\player\state\Attack.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\camera\CameraManager.cpp" />
     <ClCompile Include="CG2_00_01\engine\math\structure\Matrix4x4.cpp" />
     <ClCompile Include="CG2_00_01\engine\math\structure\Vector3.cpp" />
@@ -120,6 +121,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\DescriptorHeap.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\DirectXEngine.cpp" />
     <ClCompile Include="CG2_00_01\engine\math\structure\CreateBufferResource.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\player\state\PlayerBase.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
     <ClCompile Include="externals\imgui\imgui_draw.cpp" />
@@ -164,8 +166,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\particle\ParticleManager.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\particle\ParticleEmitter.cpp" />
     <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\player\Player.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\player\state\Move.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\player\state\Attack.h" />
     <ClInclude Include="CG2_00_01\engine\base\camera\CameraManager.h" />
     <ClInclude Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.h" />
     <ClInclude Include="CG2_00_01\engine\base\scene\BaseScene.h" />
@@ -222,6 +227,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\base\particle\ParticleManager.h" />
     <ClInclude Include="CG2_00_01\engine\base\particle\ParticleEmitter.h" />
     <ClInclude Include="CG2_00_01\engine\globalVariables\GlobalVariables.h" />
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\player\Player.h" />
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\player\state\PlayerBase.h" />
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\player\state\Move.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
