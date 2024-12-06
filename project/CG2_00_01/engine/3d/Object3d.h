@@ -45,6 +45,7 @@ public:
 	/*==================== アクセッサ ====================*/
 
 	void SetModel(const std::string& filePath);
+	void SetTexture(const std::string& directoryPath, const std::string& filePath);
 
 	// サイズ
 	const Vector3& GetScale()const { return transform_.scale; }

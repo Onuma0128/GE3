@@ -37,7 +37,8 @@ public:
 	};
 
 	struct MaterialData {
-		std::string textureFilePath;
+		std::string directoryPath;
+		std::string filePath;
 		uint32_t textureIndex = 0;
 	};
 
@@ -71,6 +72,8 @@ public:
 	const ModelData GetModelData()const { return modelData_; }
 
 	static Model::ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+
+	void SetTexture(const std::string& directoryPath, const std::string& filename);
 
 private:
 
