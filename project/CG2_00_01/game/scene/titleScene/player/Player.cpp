@@ -52,3 +52,9 @@ void Player::Draw()
 
 	model_->Draw();
 }
+
+void Player::changeState(std::unique_ptr<PlayerBase> newState)
+{
+	state_ = std::move(newState);
+	state_->Initialize();
+}

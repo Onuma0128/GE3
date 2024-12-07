@@ -23,6 +23,8 @@ public:
 
 	void Draw();
 
+	void changeState(std::unique_ptr<PlayerBase> newState);
+
 	Object3d* GetPlayerObj()const { return model_.get(); }
 
 private:

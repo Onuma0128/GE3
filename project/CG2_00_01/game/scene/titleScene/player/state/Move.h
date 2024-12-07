@@ -24,6 +24,7 @@ private:
 private:
 
 	Vector3 velocity_;
+	Vector3 cpVelocity_;
 
 	float newRotateY = 0;
 

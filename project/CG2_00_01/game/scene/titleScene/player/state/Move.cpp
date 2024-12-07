@@ -8,7 +8,8 @@ Move::Move(Player* player) :PlayerBase(player) {}
 
 void Move::Initialize()
 {
-
+	velocity_ = { 0,0,1 };
+	cpVelocity_ = { 0,0,1 };
 }
 
 void Move::Update()
@@ -30,6 +31,7 @@ void Move::Update()
 	}
 	if (velocity_.x != 0 || velocity_.z != 0) {
 		velocity_.Normalize();
+		cpVelocity_ = velocity_;
 		newRotateY = std::atan2(velocity_.x, velocity_.z);
 	}
 	// 回転を計算
