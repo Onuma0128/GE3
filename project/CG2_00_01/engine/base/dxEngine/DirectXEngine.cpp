@@ -442,7 +442,9 @@ void DirectXEngine::PreDraw()
 	commandList_->RSSetViewports(1, &viewport_);
 	commandList_->RSSetScissorRects(1, &scissorRect_);
 	//開発用UIの処理.
+#ifdef _DEBUG
 	ImGui::ShowDemoWindow();
+#endif // _DEBUG
 }
 
 void DirectXEngine::PostDraw()
