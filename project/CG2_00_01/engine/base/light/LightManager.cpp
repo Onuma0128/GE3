@@ -33,7 +33,10 @@ void LightManager::Update()
 	directionalLightData_->direction = directionalLightData_->direction.Normalize();
 
 	spotLightData_->direction = spotLightData_->direction.Normalize();
+}
 
+void LightManager::Debug_ImGui()
+{
 #ifdef _DEBUG
 	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
 	if (ImGui::TreeNodeEx("Light", flag)) {
@@ -63,7 +66,6 @@ void LightManager::Update()
 		ImGui::TreePop();
 	}
 #endif // _DEBUG
-
 }
 
 void LightManager::Finalize()

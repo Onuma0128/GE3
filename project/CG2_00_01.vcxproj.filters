@@ -142,6 +142,18 @@
     <Filter Include="ヘッダー ファイル\engine\base\scene\sceneFactory">
       <UniqueIdentifier>{9df6e2f1-212c-4188-aed6-d375e34f0f05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\globalVariables">
+      <UniqueIdentifier>{ec02487e-843e-4c4b-865b-1a279b4633bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\globalVariables">
+      <UniqueIdentifier>{1d8d1ea2-d2aa-4efc-b388-0f7ad348d4c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\engine\base\imgui">
+      <UniqueIdentifier>{b46eba40-7278-455a-ae52-f258cb1c4a2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\imgui">
+      <UniqueIdentifier>{2df74ee3-1069-42d4-ab41-ca9bbacdad78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CG2_00_01\main.cpp">
@@ -291,11 +303,14 @@
     <ClCompile Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.cpp">
       <Filter>ソース ファイル\engine\base\scene\sceneFactory</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="CG2_00_01\engine\base\camera\CameraManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\engine\base\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp">
+      <Filter>ソース ファイル\engine\globalVariables</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\base\imgui\ImGuiManager.cpp">
+      <Filter>ソース ファイル\engine\base\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -462,10 +477,13 @@
       <Filter>ヘッダー ファイル\engine\base\scene\sceneFactory</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\globalVariables\GlobalVariables.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\engine\globalVariables</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\base\imgui\ImGuiManager.h">
+      <Filter>ヘッダー ファイル\engine\base\imgui</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\camera\CameraManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\engine\base\camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

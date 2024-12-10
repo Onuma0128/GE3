@@ -27,12 +27,26 @@ void MyGame::Finalize()
 
 void MyGame::Update()
 {
+	// ImGui受付開始
+	imGuiManager_->Begin();
+
 	Framework::Update();
 
+	// GlobalVariablesの更新
+	GlobalVariables::GetInstance()->Update();
+
 	// カメラの更新
+	CameraManager::GetInstance()->Debug_ImGui();
 	CameraManager::GetInstance()->Update();
 
+	// ライトの更新
+	LightManager::GetInstance()->Debug_ImGui();
+	LightManager::GetInstance()->Update();
+
 	SceneManager::GetInstance()->Update();
+
+	// ImGui受付終了
+	imGuiManager_->End();
 }
 
 void MyGame::Draw()
@@ -40,14 +54,10 @@ void MyGame::Draw()
 	// 描画前の処理
 	directXEngine_->PreDraw();
 
-	GlobalVariables::GetInstance()->Update();
-
-	CameraManager::GetInstance()->Debug_ImGui();
-
-	// ライトの更新
-	LightManager::GetInstance()->Update();
-
 	SceneManager::GetInstance()->Draw();
+
+	// ImGuiの描画
+	imGuiManager_->Draw();
 
 	// 描画後の処理
 	directXEngine_->PostDraw();
