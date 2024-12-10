@@ -1,11 +1,5 @@
 #include "Framework.h"
 
-#include "imgui.h"
-#include "imgui_impl_dx12.h"
-#include "imgui_impl_win32.h"
-
-#include "Camera.h"
-
 void Framework::Initialize()
 {
 	winApp_ = std::make_unique<WinApp>();
@@ -15,6 +9,9 @@ void Framework::Initialize()
 	directXEngine_->Initialize(winApp_.get());
 
 	Input::GetInstance()->Initialize(winApp_.get());
+
+	imGuiManager_ = std::make_unique<ImGuiManager>();
+	imGuiManager_->Initialize(directXEngine_.get(), winApp_.get());
 }
 
 void Framework::Finalize()
@@ -22,11 +19,6 @@ void Framework::Finalize()
 	delete sceneFactory_;
 
 	Input::GetInstance()->Finalize();
-
-	//ImGuiの終了処理
-	ImGui_ImplDX12_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
 
 	SceneManager::GetInstance()->Finalize();
 }

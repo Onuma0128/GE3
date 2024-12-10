@@ -6,9 +6,8 @@
 #include <thread>
 #include "DepthStencilTexture.h"
 #include "DescriptorHeap.h"
-#include "imgui_impl_dx12.h"
-#include "imgui_impl_win32.h"
 
+#include "Logger.h"
 #include "CameraManager.h"
 #include "LightManager.h"
 #include "Object3dBase.h"
@@ -20,8 +19,6 @@
 #include "ParticleManager.h"
 
 using Microsoft::WRL::ComPtr;
-
-//const uint32_t DirectXEngine::kMaxSRVCount = 512;
 
 DirectXEngine::~DirectXEngine()
 {
@@ -35,9 +32,7 @@ DirectXEngine::~DirectXEngine()
 	PrimitiveDrawer::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
 
-	delete logger_;
 	delete stringUtility_;
-	//delete vertexResource_;
 	delete pipelineState_;
 
 	//解放の処理
@@ -104,15 +99,15 @@ void DirectXEngine::Initialize(WinApp* winApp)
 
 	ModelManager::GetInstance()->Initialize(this);
 
+	/*==================== 3Dライン ====================*/
+
 	PrimitiveDrawer::GetInstance()->SetPipelineState(pipelineState_);
 	PrimitiveDrawer::GetInstance()->Initialize(this);
 
+	/*==================== パーティクル ====================*/
+
 	ParticleManager::GetInstance()->Initialize(this);
 
-	// ImGuiの初期化
-	ImGuiInitialize();
-	// InstancingSRVの初期化
-	InstancingSrvInitialize();
 }
 
 void DirectXEngine::DeviceInitialize()
@@ -144,7 +139,7 @@ void DirectXEngine::DeviceInitialize()
 		//ソフトウェアアダプタでなければ採用
 		if (!(adapteDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
 			//採用したアダプタの情報をログに出力。wstringの方なので注意
-			logger_->Log(stringUtility_->ConvertString(std::format(L"Use Adapater : {}\n", adapteDesc.Description)));
+			Logger::Log(stringUtility_->ConvertString(std::format(L"Use Adapater : {}\n", adapteDesc.Description)));
 			//Log(std::format(L"Use Adapater : {}\n", adapteDesc.Description));
 			break;
 		}
@@ -165,13 +160,13 @@ void DirectXEngine::DeviceInitialize()
 		//指定した機能レベルでデバイスが生成できたかを確認
 		if (SUCCEEDED(hr)) {
 			//生成できたのでログ出力を行ってループを抜ける
-			logger_->Log(std::format("FeatureLevel : {}\n", featureLevelStrings[i]));
+			Logger::Log(std::format("FeatureLevel : {}\n", featureLevelStrings[i]));
 			break;
 		}
 	}
 	//デバイスの生成がうまくいかなかったので起動できない
 	assert(device_ != nullptr);
-	logger_->Log("Complete create D3D12Device!!!\n");
+	Logger::Log("Complete create D3D12Device!!!\n");
 #ifdef _DEBUG
 	ID3D12InfoQueue* infoQueue = nullptr;
 	if (SUCCEEDED(device_->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
@@ -327,38 +322,6 @@ void DirectXEngine::DxcCompilerInitialize()
 	assert(SUCCEEDED(hr));
 }
 
-void DirectXEngine::ImGuiInitialize()
-{
-	//InGuiの初期化。
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(winApp_->GetHwnd());
-	ImGui_ImplDX12_Init(device_.Get(),
-		swapChainDesc_.BufferCount,
-		rtvDesc_.Format,
-		SrvManager::GetInstance()->GetDescriptorHeap(),
-		SrvManager::GetInstance()->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(),
-		SrvManager::GetInstance()->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart()
-	);
-}
-
-//void DirectXEngine::VertexResourceInitialize()
-//{
-//	vertexResource_ = new VertexResource();
-//	vertexResource_->Initialize(device_);
-//}
-
-void DirectXEngine::InstancingSrvInitialize()
-{
-	/*SrvManager::GetInstance()->CreateSRVforStructuredBuffer(
-		1,
-		ParticleManager::GetInstance()->GetInstancingResource().Get(),
-		kNumMaxInstance,
-		sizeof(ParticleManager::ParticleForGPU)
-	);*/
-}
-
 void DirectXEngine::IncludeHandlerInitialize()
 {
 	HRESULT hr{};
@@ -409,10 +372,6 @@ void DirectXEngine::UpdateFixFPS()
 
 void DirectXEngine::PreDraw()
 {
-	//ImGuiの開始処理
-	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
 	// これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 	//TransitionBarrierの設定
@@ -441,19 +400,12 @@ void DirectXEngine::PreDraw()
 	//コマンドを積む
 	commandList_->RSSetViewports(1, &viewport_);
 	commandList_->RSSetScissorRects(1, &scissorRect_);
-	//開発用UIの処理.
-	ImGui::ShowDemoWindow();
 }
 
 void DirectXEngine::PostDraw()
 {
-	//ImGuiの内部コマンドを生成
-	ImGui::Render();
-
 	HRESULT hr{};
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
-	//実際のnommandListのImGuiの描画コマンドを積む
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList_.Get());
 	//画面に描く処理は全て終わり、画面に映すので、状態を遷移
 	//今回はRenderTargetからPresentにする
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;

@@ -1,6 +1,7 @@
 #include "TitleScene.h"
 #include "Input.h"
 
+#include "Logger.h"
 #include "CameraManager.h"
 #include "SpriteBase.h"
 #include "Object3dBase.h"

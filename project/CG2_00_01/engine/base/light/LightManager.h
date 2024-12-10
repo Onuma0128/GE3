@@ -62,6 +62,8 @@ public:
 
 	void Update();
 
+	void Debug_ImGui();
+
 	void Finalize();
 
 	void MakeDirectionalLightData();

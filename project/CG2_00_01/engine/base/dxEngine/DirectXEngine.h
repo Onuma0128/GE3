@@ -2,7 +2,6 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <wrl.h>
-#include "Logger.h"
 #include "StringUtility.h"
 #include "WinApp.h"
 
@@ -41,10 +40,6 @@ public:
 	void RectInitialize();
 	// DXCコンパイラの初期化
 	void DxcCompilerInitialize();
-	// ImGuiの初期化
-	void ImGuiInitialize();
-	// InstancingSRVの初期化
-	void InstancingSrvInitialize();
 	// IncludeHandlerの初期化
 	void IncludeHandlerInitialize();
 	// PipelineStateの初期化
@@ -67,10 +62,10 @@ public:
 	ID3D12GraphicsCommandList* GetCommandList()const { return commandList_.Get(); }
 	// パイプラインのゲッター
 	PipelineState* GetPipelineState()const { return pipelineState_; }
+	// バックバッファの数を取得
+	size_t GetBackBufferCount()const { return static_cast<size_t>(swapChainDesc_.BufferCount); }
 
 private:
-	// Logger
-	Logger* logger_ = nullptr;
 	// StringUtility
 	StringUtility* stringUtility_ = nullptr;
 	// WindowsAPI

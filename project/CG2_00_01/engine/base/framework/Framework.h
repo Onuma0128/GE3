@@ -7,6 +7,7 @@
 #include "Input.h"
 
 #include "SceneManager.h"
+#include "ImGuiManager.h"
 #include "AbstractSceneFactory.h"
 
 class Framework
@@ -34,6 +35,8 @@ protected:
 
 	std::unique_ptr<WinApp> winApp_ = nullptr;
 	std::unique_ptr<DirectXEngine> directXEngine_ = nullptr;
+
+	std::unique_ptr<ImGuiManager> imGuiManager_ = nullptr;
 
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
