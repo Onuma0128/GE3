@@ -166,6 +166,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\object\particle\ParticleEmitter.cpp" />
     <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\imgui\ImGuiManager.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\engine\base\audio\AudioManager.h" />
@@ -226,6 +227,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\base\object\particle\ParticleEmitter.h" />
     <ClInclude Include="CG2_00_01\engine\globalVariables\GlobalVariables.h" />
     <ClInclude Include="CG2_00_01\engine\base\imgui\ImGuiManager.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\player\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

@@ -13,6 +13,8 @@
 
 #include "Camera.h"
 
+#include "player/Player.h"
+
 using Microsoft::WRL::ComPtr;
 
 class GamePlayScene : public BaseScene
@@ -31,9 +33,11 @@ private:
 
 	std::unique_ptr<Camera> camera_ = nullptr;
 
-	std::vector<std::unique_ptr<Sprite>> sprites_;
 	std::vector<std::unique_ptr<Object3d>> obj_;
-	std::unique_ptr<Line3d> line3d_;
+
+	/* ==================== プレイヤー ==================== */
+
+	std::unique_ptr<Player> player_ = nullptr;
 
 	ComPtr<IXAudio2> xAudio2;
 	SoundData soundData1;
