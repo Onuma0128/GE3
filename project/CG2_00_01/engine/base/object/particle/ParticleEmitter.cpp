@@ -41,10 +41,10 @@ void ParticleEmitter::GlobalInitialize(const std::string name)
 {
     std::string globalName = name + "Emitter";
 
-    global_->AddValue<Vector3>(globalName, "position", Vector3{});
-    global_->AddValue<bool>(globalName, "lockPosition", false);
     global_->AddValue<Vector3>(globalName, "min", Vector3{ -1.0f,-1.0f,-1.0f });
     global_->AddValue<Vector3>(globalName, "max", Vector3{ 1.0f,1.0f,1.0f });
+    global_->AddValue<bool>(globalName, "isLock", false);
+    global_->AddValue<Vector3>(globalName, "position", Vector3{});
     global_->AddValue<Vector3>(globalName, "acceleration", Vector3{ 0.0f,10.0f,0.0f });
     global_->AddValue<Vector3>(globalName, "color", Vector3{ 1.0f,1.0f,1.0f });
     global_->AddValue<float>(globalName, "frequency", 0.5f);
@@ -62,9 +62,7 @@ void ParticleEmitter::Update()
     std::string globalName = emitter_.name + "Emitter";
 
     // 新たな数値を代入
-    if (!global_->GetValue<bool>(globalName, "lockPosition")) {
-        emitter_.transform.translate = global_->GetValue<Vector3>(globalName, "position");
-    }
+
     Vector3 min = global_->GetValue<Vector3>(globalName, "min");
     Vector3 max = global_->GetValue<Vector3>(globalName, "max");
     // min,maxが最大値を超えていないかclamp
@@ -82,7 +80,10 @@ void ParticleEmitter::Update()
         .min = emitter_.size.min + emitter_.transform.translate - Vector3{0.5f,0.5f,0.5f},
         .max = emitter_.size.max + emitter_.transform.translate + Vector3{0.5f,0.5f,0.5f}
     };
-    accelerationField_.acceleration = global_->GetValue<Vector3>(globalName, "acceleration");
+    if (!global_->GetValue<bool>(globalName, "isLock")) {
+        emitter_.transform.translate = global_->GetValue<Vector3>(globalName, "position");
+        accelerationField_.acceleration = global_->GetValue<Vector3>(globalName, "acceleration");
+    }
 
     moveStart_ = global_->GetValue<bool>(globalName, "move");
     isFieldStart_ = global_->GetValue<bool>(globalName, "field");

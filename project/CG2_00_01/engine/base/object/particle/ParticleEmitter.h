@@ -60,6 +60,8 @@ public:
 
 	void SetPosition(const Vector3& position) { emitter_.transform.translate = position; }
 
+	void SetAcceleration(const Vector3& acceleration) { accelerationField_.acceleration = acceleration; }
+
 private:
 
 	static std::list<ParticleManager::Particle> Emit(const Emitter& emitter, std::mt19937& randomEngine);
