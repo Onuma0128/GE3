@@ -184,6 +184,7 @@ void Player::Attack()
 		model_->SetPosition(translate);
 
 		if (model_->GetPosition().y < 0.5f) {
+			isShake_ = true;
 			attackAnimaFrame_ = 0.0f;
 			translate.y = 0.5f;
 			model_->SetPosition(translate);

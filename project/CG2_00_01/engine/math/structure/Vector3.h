@@ -36,6 +36,9 @@ public:
     // 行列による変換 (Matrix4x4は他で定義されていると仮定)
     Vector3 Transform(const Matrix4x4& matrix) const;
 
+    // シェーク
+    Vector3 Shake(float time, float duration, float intensity);
+
     // 単項演算子オーバーロード
     Vector3 operator+() const;
     Vector3 operator-() const;

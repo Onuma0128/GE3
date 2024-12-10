@@ -11,8 +11,7 @@
 #include "BaseScene.h"
 #include "Line3d.h"
 
-#include "Camera.h"
-
+#include "gameCamera/GameCamera.h"
 #include "player/Player.h"
 
 using Microsoft::WRL::ComPtr;
@@ -31,9 +30,11 @@ public:
 
 private:
 
-	std::unique_ptr<Camera> camera_ = nullptr;
-
 	std::vector<std::unique_ptr<Object3d>> obj_;
+
+	/* ==================== カメラ==================== */
+
+	std::unique_ptr<GameCamera> camera_ = nullptr;
 
 	/* ==================== プレイヤー ==================== */
 

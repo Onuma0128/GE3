@@ -1,6 +1,5 @@
 #include "GamePlayScene.h"
 
-#include "CameraManager.h"
 #include "Input.h"
 #include "SceneManager.h"
 #include "PrimitiveDrawer.h"
@@ -11,13 +10,8 @@
 
 void GamePlayScene::Initialize()
 {
-	// カメラの初期化
-	camera_ = std::make_unique<Camera>();
-	camera_->Initialize();
-	camera_->SetRotate(Vector3{ 0.33f,0.0f,0.0f });
-	camera_->SetTranslate(Vector3{ 0.0f,7.0f,-22.0f });
-	CameraManager::GetInstance()->SetCamera(camera_.get());
-	camera_->Update();
+	camera_ = std::make_unique<GameCamera>();
+	camera_->Init();
 
 	ModelManager::GetInstance()->LoadModel("resources", "ground.obj");
 
@@ -27,6 +21,8 @@ void GamePlayScene::Initialize()
 
 	player_ = std::make_unique<Player>();
 	player_->Init();
+
+	camera_->SetPlayer(player_.get());
 
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
@@ -51,8 +47,9 @@ void GamePlayScene::Update()
 		obj->Update();
 	}
 
-	player_->Update();
+	camera_->Update();
 
+	player_->Update();
 
 	// 全パーティクルの更新
 	ParticleManager::GetInstance()->Update();

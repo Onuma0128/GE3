@@ -1,5 +1,7 @@
 #include "Vector3.h"
 
+#include <random>
+
 // コンストラクタ
 Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 
@@ -56,6 +58,29 @@ Vector3 Vector3::Transform(const Matrix4x4& matrix) const {
     result.y /= w;
     result.z /= w;
     return result;
+}
+
+Vector3 Vector3::Shake(float time, float duration, float intensity)
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+
+    // 振動が終了している場合、ゼロを返す
+    if (time >= duration) {
+        return { 0.0f, 0.0f, 0.0f };
+    }
+
+    // 残り時間による振幅の減衰
+    float progress = time / duration;  // 0.0 (開始) から 1.0 (終了)
+    float damping = 1.0f - progress;   // 1.0 から 0.0 への線形減衰
+
+    // ランダムな振動の生成
+    return Vector3{
+        dist(gen) * intensity * damping,
+        dist(gen) * intensity * damping,
+        dist(gen) * intensity * damping
+    };
 }
 
 // 単項演算子オーバーロード

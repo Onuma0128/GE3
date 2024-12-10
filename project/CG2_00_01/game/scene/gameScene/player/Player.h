@@ -27,6 +27,9 @@ public:
 
 	void Draw();
 
+	void SetIsShake(bool isShake) { isShake_ = isShake; }
+
+	bool GetIsShake()const { return isShake_; }
 
 private:
 
@@ -60,5 +63,6 @@ private:
 	Vector3 velocity_;
 	Vector3 acceleration_;
 	float attackAnimaFrame_;
+	bool isShake_ = false;
 
 };
