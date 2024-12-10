@@ -195,19 +195,19 @@
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\DirectXEngine.cpp">
       <Filter>ソース ファイル\engine\base\dxEngine</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\light\LightManager.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\light\LightManager.cpp">
       <Filter>ソース ファイル\engine\base\light</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\model\ModelBase.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\model\ModelBase.cpp">
       <Filter>ソース ファイル\engine\base\model</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\model\ModelManager.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\model\ModelManager.cpp">
       <Filter>ソース ファイル\engine\base\model</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\model\Object3dBase.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\model\Object3dBase.cpp">
       <Filter>ソース ファイル\engine\base\model</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\sprite\SpriteBase.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\sprite\SpriteBase.cpp">
       <Filter>ソース ファイル\engine\base\sprite</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\DepthStencilTexture.cpp">
@@ -228,7 +228,7 @@
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\StringUtility.cpp">
       <Filter>ソース ファイル\engine\base\dxEngine</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\texture\TextureManager.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\texture\TextureManager.cpp">
       <Filter>ソース ファイル\engine\base\texture</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\3d\Model.cpp">
@@ -252,7 +252,7 @@
     <ClCompile Include="CG2_00_01\engine\math\MT3.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\camera\Camera.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\camera\Camera.cpp">
       <Filter>ソース ファイル\engine\base\camera</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\SrvManager.cpp">
@@ -267,7 +267,7 @@
     <ClCompile Include="CG2_00_01\engine\3d\Line3d.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\model\PrimitiveDrawer.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\model\PrimitiveDrawer.cpp">
       <Filter>ソース ファイル\engine\base\model</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\math\structure\Matrix4x4.cpp">
@@ -276,10 +276,10 @@
     <ClCompile Include="CG2_00_01\engine\math\structure\Vector3.cpp">
       <Filter>ソース ファイル\engine\math\structure</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\particle\ParticleEmitter.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\particle\ParticleEmitter.cpp">
       <Filter>ソース ファイル\engine\base\particle</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\particle\ParticleManager.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\particle\ParticleManager.cpp">
       <Filter>ソース ファイル\engine\base\particle</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\math\structure\CreateBufferResource.cpp">
@@ -303,7 +303,7 @@
     <ClCompile Include="CG2_00_01\engine\base\scene\sceneFactory\AbstractSceneFactory.cpp">
       <Filter>ソース ファイル\engine\base\scene\sceneFactory</Filter>
     </ClCompile>
-    <ClCompile Include="CG2_00_01\engine\base\camera\CameraManager.cpp">
+    <ClCompile Include="CG2_00_01\engine\base\object\camera\CameraManager.cpp">
       <Filter>ソース ファイル\engine\base\camera</Filter>
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp">
@@ -311,6 +311,9 @@
     </ClCompile>
     <ClCompile Include="CG2_00_01\engine\base\imgui\ImGuiManager.cpp">
       <Filter>ソース ファイル\engine\base\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\base\audio\AudioManager.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -383,22 +386,22 @@
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\WinApp.h">
       <Filter>ヘッダー ファイル\engine\base\dxEnginr</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\light\LightManager.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\light\LightManager.h">
       <Filter>ヘッダー ファイル\engine\base\light</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\model\ModelBase.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\model\ModelBase.h">
       <Filter>ヘッダー ファイル\engine\base\model</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\model\ModelManager.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\model\ModelManager.h">
       <Filter>ヘッダー ファイル\engine\base\model</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\model\Object3dBase.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\model\Object3dBase.h">
       <Filter>ヘッダー ファイル\engine\base\model</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\texture\TextureManager.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\texture\TextureManager.h">
       <Filter>ヘッダー ファイル\engine\base\texture</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\sprite\SpriteBase.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\sprite\SpriteBase.h">
       <Filter>ヘッダー ファイル\engine\base\sprite</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\input\Input.h">
@@ -413,7 +416,7 @@
     <ClInclude Include="CG2_00_01\engine\audio\LoadSound.h">
       <Filter>ヘッダー ファイル\engine\audio</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\camera\Camera.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\camera\Camera.h">
       <Filter>ヘッダー ファイル\engine\base\camera</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\SrvManager.h">
@@ -428,7 +431,7 @@
     <ClInclude Include="CG2_00_01\engine\3d\Line3d.h">
       <Filter>ヘッダー ファイル\engine\3d</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\model\PrimitiveDrawer.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\model\PrimitiveDrawer.h">
       <Filter>ヘッダー ファイル\engine\base\model</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\Transform.h">
@@ -449,10 +452,10 @@
     <ClInclude Include="CG2_00_01\engine\math\structure\Matrix4x4.h">
       <Filter>ヘッダー ファイル\engine\math\structure</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\particle\ParticleEmitter.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\particle\ParticleEmitter.h">
       <Filter>ヘッダー ファイル\engine\base\particle</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\particle\ParticleManager.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\particle\ParticleManager.h">
       <Filter>ヘッダー ファイル\engine\base\particle</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\engine\math\structure\CreateBufferResource.h">
@@ -482,8 +485,11 @@
     <ClInclude Include="CG2_00_01\engine\base\imgui\ImGuiManager.h">
       <Filter>ヘッダー ファイル\engine\base\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="CG2_00_01\engine\base\camera\CameraManager.h">
+    <ClInclude Include="CG2_00_01\engine\base\object\camera\CameraManager.h">
       <Filter>ヘッダー ファイル\engine\base\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\base\audio\AudioManager.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
