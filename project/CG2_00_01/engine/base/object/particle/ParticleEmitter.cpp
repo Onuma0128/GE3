@@ -21,9 +21,11 @@ ParticleEmitter::ParticleEmitter(const std::string name)
         .min = {-1.0f,-1.0f,-1.0f},
         .max = {1.0f,1.0f,1.0f}
     };
+    emitter_.scale = 1.0f;
 
     moveStart_ = true;
     isFieldStart_ = false;
+    isCreate_ = true;
 
     // Emitterの範囲を線で描画
     AABB aabb = emitter_.size;
@@ -46,12 +48,12 @@ void ParticleEmitter::GlobalInitialize(const std::string name)
     global_->AddValue<bool>(globalName, "isLock", false);
     global_->AddValue<Vector3>(globalName, "position", Vector3{});
     global_->AddValue<Vector3>(globalName, "acceleration", Vector3{ 0.0f,10.0f,0.0f });
+    global_->AddValue<float>(globalName, "scale", 1.0f);
     global_->AddValue<Vector3>(globalName, "color", Vector3{ 1.0f,1.0f,1.0f });
     global_->AddValue<float>(globalName, "frequency", 0.5f);
     global_->AddValue<int>(globalName, "count", 3);
     global_->AddValue<bool>(globalName, "move", false);
     global_->AddValue<bool>(globalName, "field", false);
-    global_->AddValue<bool>(globalName, "create", true);
 
 }
 
@@ -84,6 +86,7 @@ void ParticleEmitter::Update()
         emitter_.transform.translate = global_->GetValue<Vector3>(globalName, "position");
         accelerationField_.acceleration = global_->GetValue<Vector3>(globalName, "acceleration");
     }
+    emitter_.scale = global_->GetValue<float>(globalName, "scale");
 
     moveStart_ = global_->GetValue<bool>(globalName, "move");
     isFieldStart_ = global_->GetValue<bool>(globalName, "field");
@@ -114,8 +117,7 @@ void ParticleEmitter::Draw()
 
 void ParticleEmitter::CreateParticles(ParticleManager::ParticleGroup& group)
 {
-    std::string globalName = emitter_.name + "Emitter";
-    if (moveStart_ && global_->GetValue<bool>(globalName, "create")) {
+    if (moveStart_ && isCreate_) {
         emitter_.frequencyTime += kDeltaTime;
         if (emitter_.frequency <= emitter_.frequencyTime) {
             std::mt19937 randomEngine_(seedGenerator_());
@@ -160,7 +162,7 @@ ParticleManager::Particle ParticleEmitter::MakeNewParticle(std::mt19937& randomE
     //std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
     std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
     ParticleManager::Particle particle{};
-    particle.transform.scale = { 1.0f,1.0f,1.0f };
+    particle.transform.scale = { emitter.scale,emitter.scale,emitter.scale };
     particle.transform.rotate = { 0.0f,0.0f,0.0f };
     Vector3 randomTranslate = { distPosX(randomEngine),distPosY(randomEngine) ,distPosZ(randomEngine) };
     particle.transform.translate = emitter.transform.translate + randomTranslate;

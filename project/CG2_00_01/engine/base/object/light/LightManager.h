@@ -80,6 +80,8 @@ public:
 
 	ID3D12Resource* GetSpotLightResource()const { return spotLightResource_.Get(); }
 
+	void SetPointLightPosition(const Vector3& position) { pointLightData_->position = position; }
+
 private:
 
 	DirectXEngine* dxEngine_ = nullptr;

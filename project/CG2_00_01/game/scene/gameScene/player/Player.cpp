@@ -2,25 +2,39 @@
 
 #include <numbers>
 
+#include "LightManager.h"
 #include "ModelManager.h"
+#include "ParticleManager.h"
 
 void Player::Init()
 {
 	GlobalInit();
 
 	ModelManager::GetInstance()->LoadModel("resources", "box.obj");
+	ModelManager::GetInstance()->LoadModel("resources", "attackParticle.obj");
 
+	// モデルの初期化
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj");
 	model_->SetTexture("resources", "uvChecker.png");
 	model_->SetPosition(Vector3{ 0.0f,0.5f,0.0f });
 
+	shadowModel_ = std::make_unique<Object3d>();
+	shadowModel_->Initialize("box.obj");
+	shadowModel_->SetScale(Vector3{ 1.0f,0.01f,1.0f });
+	shadowModel_->SetColor(Vector4{ 0.0f,0.0f,0.0f,1.0f });
+
 	state_ = State::Move;
 
+	// パーティクルの初期化
+	emitter_ = std::make_unique<ParticleEmitter>("playerDust");
+	ParticleManager::GetInstance()->CreateParticleGroup("playerDust", "white1x1.png", emitter_.get());
 }
 
 void Player::Update()
 {
+	emitter_->SetIsCreate(false);
+
 	switch (state_)
 	{
 	case Player::State::Move:
@@ -36,12 +50,34 @@ void Player::Update()
 		break;
 	}
 
+	emitter_->SetPosition(model_->GetPosition());
+	Vector3 acceleration = velocity_ * -1.0f;
+	acceleration.y = 1.0f;
+	emitter_->SetAcceleration(acceleration);
+
 	model_->Update();
+	shadowModel_->Update();
+
+	for (auto& attackParticle : attackParticles_) {
+		attackParticle->Update();
+	}
+
+	attackParticles_.remove_if([](const std::unique_ptr<AttackParticle>& particle) {
+		return !particle->GetIsActive();
+	});
+
+	LightManager::GetInstance()->SetPointLightPosition(model_->GetPosition() + Vector3{ 0,2,0 });
 }
 
 void Player::Draw()
 {
 	model_->Draw();
+
+	shadowModel_->Draw();
+
+	for (auto& attackParticle : attackParticles_) {
+		attackParticle->Draw();
+	}
 }
 
 void Player::GlobalInit()
@@ -49,6 +85,11 @@ void Player::GlobalInit()
 	global_->AddValue<float>("Player", "velocityY", 1.0f);
 	global_->AddValue<float>("Player", "accelerationY", 0.1f);
 	global_->AddValue<float>("Player", "attackVelocityY", 0.05f);
+
+	global_->AddValue<int>("PlayerAttackParticle", "count", 20);
+	global_->AddValue<float>("PlayerAttackParticle", "scale", 1.0f);
+	global_->AddValue<float>("PlayerAttackParticle", "velocityPow", 0.1f);
+	global_->AddValue<Vector3>("PlayerAttackParticle", "offset", Vector3{ 0,0,0 });
 }
 
 void Player::Move()
@@ -75,6 +116,7 @@ void Player::Move()
 		velocity.x = 1.0f;
 	}
 	if (velocity.x != 0.0f || velocity.z != 0.0f) {
+		emitter_->SetIsCreate(true);
 		velocity.Normalize();
 		velocity_ = velocity;
 	}
@@ -89,6 +131,11 @@ void Player::Move()
 	Vector3 translate = model_->GetPosition();
 	translate += velocity * 0.03f;
 	model_->SetPosition(translate);
+
+	// 影の処理
+	translate.y = 0.01f;
+	shadowModel_->SetRotation(model_->GetRotation());
+	shadowModel_->SetPosition(translate);
 }
 
 void Player::Jump()
@@ -112,6 +159,10 @@ void Player::Jump()
 		acceleration_.y = 0.0f;
 		state_ = State::Move;
 	}
+	// 影のサイズ、透明度の処理
+	float scale = (50.0f - translate.y) / (50.0f - 0.5f);
+	shadowModel_->SetScale(Vector3{ scale,0.01f,scale });
+	shadowModel_->SetColor(Vector4{ 0.0f,0.0f,0.0f,scale });
 }
 
 void Player::Attack()
@@ -139,6 +190,12 @@ void Player::Attack()
 			velocity_.y = 0.0f;
 			acceleration_.y = 0.0f;
 			state_ = State::Move;
+			int count = global_->GetValue<int>("PlayerAttackParticle", "count");
+			for (int i = 0; i < count; ++i) {
+				std::unique_ptr<AttackParticle> particle = std::make_unique<AttackParticle>();
+				particle->Init("attackParticle.obj", model_->GetPosition());
+				attackParticles_.push_back(std::move(particle));
+			}
 		}
 	}
 }

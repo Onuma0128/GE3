@@ -28,14 +28,6 @@ public:
 		Vector3 normal;
 	};
 
-	struct Material {
-		Vector4 color;
-		int32_t enableLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-		float shininess;
-	};
-
 	struct MaterialData {
 		std::string directoryPath;
 		std::string filePath;
@@ -65,9 +57,6 @@ public:
 
 	// 頂点データの作成
 	void MakeVertexData();
-
-	// マテリアルデータの作成
-	void MakeMaterialData();
 
 	const ModelData GetModelData()const { return modelData_; }
 
@@ -101,11 +90,11 @@ private:
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
-	/*==================== マテリアル ====================*/
+	///*==================== マテリアル ====================*/
 
-	// バッファリソース
-	ComPtr<ID3D12Resource> materialResource_ = nullptr;
-	// バッファリソース内のデータを指すポインタ
-	Material* materialData_ = nullptr;
+	//// バッファリソース
+	//ComPtr<ID3D12Resource> materialResource_ = nullptr;
+	//// バッファリソース内のデータを指すポインタ
+	//Material* materialData_ = nullptr;
 
 };

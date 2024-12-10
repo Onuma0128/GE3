@@ -30,6 +30,7 @@ public:
 		std::string name;
 		Transform transform;
 		AABB size;
+		float scale;
 		uint32_t count;
 		float frequency;
 		float frequencyTime;
@@ -62,6 +63,8 @@ public:
 
 	void SetAcceleration(const Vector3& acceleration) { accelerationField_.acceleration = acceleration; }
 
+	void SetIsCreate(bool isCreate) { isCreate_ = isCreate; }
+
 private:
 
 	static std::list<ParticleManager::Particle> Emit(const Emitter& emitter, std::mt19937& randomEngine);
@@ -91,4 +94,5 @@ private:
 	const float kDeltaTime = 1.0f / 60.0f;
 	bool moveStart_ = false;
 	bool isFieldStart_ = false;
+	bool isCreate_ = true;
 };

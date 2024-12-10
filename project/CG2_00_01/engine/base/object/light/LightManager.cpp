@@ -84,7 +84,7 @@ void LightManager::MakeDirectionalLightData()
 	// デフォルト値
 	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData_->direction = { 0.0f,1.0f,0.0f };
-	directionalLightData_->intensity = 1.0f;
+	directionalLightData_->intensity = 0.2f;
 }
 
 void LightManager::MakePointLightData()
@@ -97,9 +97,9 @@ void LightManager::MakePointLightData()
 	// デフォルト値
 	pointLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	pointLightData_->position = { 0.0f,2.0f,2.0f };
-	pointLightData_->intensity = 0.0f;
-	pointLightData_->radius = 6.0f;
-	pointLightData_->decay = 2.0f;
+	pointLightData_->intensity = 1.0f;
+	pointLightData_->radius = 3.0f;
+	pointLightData_->decay = 0.3f;
 }
 
 void LightManager::MakeSpotLightData()

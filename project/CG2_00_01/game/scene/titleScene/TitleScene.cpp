@@ -49,15 +49,6 @@ void TitleScene::Initialize()
 	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
 	obj_.push_back(std::move(object3d_));
 
-	emitter0_ = std::make_unique<ParticleEmitter>("player");
-	emitter1_ = std::make_unique<ParticleEmitter>("enemy");
-	emitter2_ = std::make_unique<ParticleEmitter>("obj");
-
-	// Particleを作成
-	particleManager_->CreateParticleGroup("player", "circle.png", emitter0_.get());
-	particleManager_->CreateParticleGroup("enemy", "uvChecker.png", emitter1_.get());
-	particleManager_->CreateParticleGroup("obj", "Apple.png", emitter2_.get());
-
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
 	// XAudio2エンジンを生成
@@ -95,9 +86,6 @@ void TitleScene::Update()
 	for (auto& sprite : sprites_) {
 		sprite->Update();
 	}
-
-	// Particleの更新
-	particleManager_->Update();
 }
 
 void TitleScene::Draw()
@@ -113,7 +101,4 @@ void TitleScene::Draw()
 	for (auto& sprite : sprites_) {
 		sprite->Draw();
 	}
-
-	// Particleの描画
-	particleManager_->Draw();
 }

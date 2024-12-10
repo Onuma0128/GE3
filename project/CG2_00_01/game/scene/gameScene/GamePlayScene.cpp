@@ -5,6 +5,7 @@
 #include "SceneManager.h"
 #include "PrimitiveDrawer.h"
 #include "ModelManager.h"
+#include "ParticleManager.h"
 
 #include "titleScene/TitleScene.h"
 
@@ -51,6 +52,10 @@ void GamePlayScene::Update()
 	}
 
 	player_->Update();
+
+
+	// 全パーティクルの更新
+	ParticleManager::GetInstance()->Update();
 }
 
 void GamePlayScene::Draw()
@@ -69,5 +74,9 @@ void GamePlayScene::Draw()
 
 
 	PrimitiveDrawer::GetInstance()->DrawBase();
+
+
+	// 全パーティクルの描画
+	ParticleManager::GetInstance()->Draw();
 
 }

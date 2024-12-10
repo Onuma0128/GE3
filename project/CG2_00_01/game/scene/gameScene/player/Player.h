@@ -1,11 +1,15 @@
 #pragma once
 #include <memory>
+#include <list>
 
 #include "Input.h"
 #include "Object3d.h"
 #include "GlobalVariables.h"
+#include "ParticleEmitter.h"
 
 #include "Vector3.h"
+
+#include "attackParticle/AttackParticle.h"
 
 class Player
 {
@@ -43,6 +47,11 @@ private:
 
 	// モデル
 	std::unique_ptr<Object3d> model_ = nullptr;
+	std::unique_ptr<Object3d> shadowModel_ = nullptr;
+	// パーティクル
+	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
+	// 攻撃時のパーティクル
+	std::list<std::unique_ptr<AttackParticle>> attackParticles_;
 
 	// 状態
 	State state_ = State::Move;
