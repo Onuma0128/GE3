@@ -51,6 +51,7 @@ void ParticleEmitter::GlobalInitialize(const std::string name)
     global_->AddValue<int>(globalName, "count", 3);
     global_->AddValue<bool>(globalName, "move", false);
     global_->AddValue<bool>(globalName, "field", false);
+    global_->AddValue<bool>(globalName, "create", true);
 
 }
 
@@ -112,7 +113,8 @@ void ParticleEmitter::Draw()
 
 void ParticleEmitter::CreateParticles(ParticleManager::ParticleGroup& group)
 {
-    if (moveStart_) {
+    std::string globalName = emitter_.name + "Emitter";
+    if (moveStart_ && global_->GetValue<bool>(globalName, "create")) {
         emitter_.frequencyTime += kDeltaTime;
         if (emitter_.frequency <= emitter_.frequencyTime) {
             std::mt19937 randomEngine_(seedGenerator_());
