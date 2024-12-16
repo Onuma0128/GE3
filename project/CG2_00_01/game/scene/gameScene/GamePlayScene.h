@@ -11,6 +11,7 @@
 #include "BaseScene.h"
 #include "Line3d.h"
 
+#include "ParticleEmitter.h"
 #include "gameCamera/GameCamera.h"
 #include "player/Player.h"
 
@@ -39,6 +40,9 @@ private:
 	/* ==================== プレイヤー ==================== */
 
 	std::unique_ptr<Player> player_ = nullptr;
+
+
+	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
 
 	ComPtr<IXAudio2> xAudio2;
 	SoundData soundData1;

@@ -1,5 +1,4 @@
 #include "PrimitiveDrawer.h"
-#include "Camera.h"
 
 PrimitiveDrawer* PrimitiveDrawer::instance_ = nullptr;
 
@@ -15,8 +14,8 @@ void PrimitiveDrawer::Initialize(DirectXEngine* dxEngine)
 {
 	dxEngine_ = dxEngine;
 
-	rootSignature_ = pipeline_->CreateLine3dRootSignature();
-	pipelineState_ = pipeline_->CreateLine3dPipelineState();
+	rootSignature_ = dxEngine_->GetPipelineState()->CreateLine3dRootSignature().Get();
+	pipelineState_ = dxEngine_->GetPipelineState()->CreateLine3dPipelineState().Get();
 }
 
 void PrimitiveDrawer::DrawBase()

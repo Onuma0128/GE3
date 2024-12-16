@@ -24,6 +24,9 @@ void GamePlayScene::Initialize()
 
 	camera_->SetPlayer(player_.get());
 
+	emitter_ = std::make_unique<ParticleEmitter>("field");
+	ParticleManager::GetInstance()->CreateParticleGroup("field", "white1x1.png", emitter_.get());
+
 	// オーディオ
 	IXAudio2MasteringVoice* masterVoice;
 	// XAudio2エンジンを生成

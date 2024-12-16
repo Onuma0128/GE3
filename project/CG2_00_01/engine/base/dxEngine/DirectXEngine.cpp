@@ -101,7 +101,6 @@ void DirectXEngine::Initialize(WinApp* winApp)
 
 	/*==================== 3Dライン ====================*/
 
-	PrimitiveDrawer::GetInstance()->SetPipelineState(pipelineState_);
 	PrimitiveDrawer::GetInstance()->Initialize(this);
 
 	/*==================== パーティクル ====================*/

@@ -17,6 +17,8 @@ void Line3d::Initialize(Vector3 startPos, Vector3 endPos)
 	wvpResource_ = CreateBufferResource(primitiveDrawer_->GetDxEngine()->GetDevice(), sizeof(Matrix4x4)).Get();
 
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
+
+	*wvpData_ = CameraManager::GetInstance()->GetActiveCamera()->GetViewProjectionMatrix();
 }
 
 void Line3d::Initialize(const std::vector<Vector3>& positions)
@@ -32,6 +34,8 @@ void Line3d::Initialize(const std::vector<Vector3>& positions)
 	wvpResource_ = CreateBufferResource(primitiveDrawer_->GetDxEngine()->GetDevice(), sizeof(Matrix4x4)).Get();
 
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
+
+	*wvpData_ = CameraManager::GetInstance()->GetActiveCamera()->GetViewProjectionMatrix();
 }
 
 void Line3d::Update()

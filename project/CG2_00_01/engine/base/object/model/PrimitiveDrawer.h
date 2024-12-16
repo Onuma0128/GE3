@@ -36,12 +36,9 @@ public:
 
 	DirectXEngine* GetDxEngine() const { return dxEngine_; }
 
-	void SetPipelineState(PipelineState* pipeline) { pipeline_ = pipeline; }
-
 private:
 
 	DirectXEngine* dxEngine_ = nullptr;
-	PipelineState* pipeline_ = nullptr;
 
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;
