@@ -15,10 +15,10 @@ Audio::Audio()
 
 Audio::~Audio()
 {
-    xAudio2_.Reset();
     if (masterVoice_) {
         masterVoice_->DestroyVoice();
     }
+    xAudio2_.Reset();
 }
 
 void Audio::SoundPlayWave(const std::string& filePath)
