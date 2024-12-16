@@ -13,6 +13,7 @@
 #include "ParticleEmitter.h"
 #include "GlobalVariables.h"
 #include "Camera.h"
+#include "Audio.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -44,8 +45,7 @@ private:
 	std::unique_ptr<ParticleEmitter> emitter1_;
 	std::unique_ptr<ParticleEmitter> emitter2_;
 
-	// 今後消す
-	ComPtr<IXAudio2> xAudio2;
-	SoundData soundData1;
-};
+	std::unique_ptr<Audio> audio_ = nullptr;
+	std::unique_ptr<Audio> audio2_ = nullptr;
 
+};

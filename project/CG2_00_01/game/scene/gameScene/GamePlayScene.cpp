@@ -54,22 +54,10 @@ void GamePlayScene::Initialize()
 	}
 	line3d_ = std::make_unique<Line3d>();
 	line3d_->Initialize(lines);
-
-	// オーディオ
-	IXAudio2MasteringVoice* masterVoice;
-	// XAudio2エンジンを生成
-	HRESULT hr{};
-	hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-	hr = xAudio2->CreateMasteringVoice(&masterVoice);
-	// 音声読み込み
-	soundData1 = SoundLoadWave("resources/Alarm01.wav");
-	//SoundPlayWave(xAudio2.Get(), soundData1);
 }
 
 void GamePlayScene::Finalize()
 {
-	xAudio2.Reset();
-	SoundUnload(&soundData1);
 }
 
 void GamePlayScene::Update()

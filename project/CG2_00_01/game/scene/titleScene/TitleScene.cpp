@@ -7,6 +7,7 @@
 #include "Object3dBase.h"
 #include "ModelManager.h"
 #include "ParticleManager.h"
+#include "AudioManager.h"
 
 #include "SceneManager.h"
 
@@ -58,21 +59,18 @@ void TitleScene::Initialize()
 	particleManager_->CreateParticleGroup("enemy", "uvChecker.png", emitter1_.get());
 	particleManager_->CreateParticleGroup("obj", "Apple.png", emitter2_.get());
 
-	// オーディオ
-	IXAudio2MasteringVoice* masterVoice;
-	// XAudio2エンジンを生成
-	HRESULT hr{};
-	hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-	hr = xAudio2->CreateMasteringVoice(&masterVoice);
-	// 音声読み込み
-	soundData1 = SoundLoadWave("resources/Alarm01.wav");
-	//SoundPlayWave(xAudio2.Get(), soundData1);
+	AudioManager::GetInstance()->LoadAudioFile("resources", "Alarm01.wav");
+	audio_ = std::make_unique<Audio>();
+	audio_->SoundPlayWave("Alarm01.wav");
+
+	AudioManager::GetInstance()->LoadAudioFile("resources", "piano.wav");
+	audio2_ = std::make_unique<Audio>();
+	audio2_->SoundPlayWave("piano.wav");
 }
 
 void TitleScene::Finalize()
 {
-	xAudio2.Reset();
-	SoundUnload(&soundData1);
+	AudioManager::GetInstance()->Finalize();
 }
 
 void TitleScene::Update()
