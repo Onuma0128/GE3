@@ -111,6 +111,10 @@ void ParticleManager::Draw()
 
 void ParticleManager::Finalize()
 {
+    for (auto& [name, group] : particleGroups_) {
+        particleGroups_[name].emitter = nullptr;
+    }
+
     delete instance_;
     instance_ = nullptr;
 }

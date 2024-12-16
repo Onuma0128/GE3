@@ -27,6 +27,14 @@ public:
 		Matrix4x4 WorldInverseTranspose;
 	};
 
+	struct Material {
+		Vector4 color;
+		int32_t enableLighting;
+		float padding[3];
+		Matrix4x4 uvTransform;
+		float shininess;
+	};
+
 public:
 	/*==================== メンバ関数 ====================*/
 
@@ -46,6 +54,7 @@ public:
 
 	void SetModel(const std::string& filePath);
 	void SetTexture(const std::string& directoryPath, const std::string& filePath);
+	void SetColor(const Vector4& color);
 
 	// サイズ
 	const Vector3& GetScale()const { return transform_.scale; }
@@ -67,6 +76,11 @@ public:
 
 private:
 
+	// マテリアルデータの作成
+	void MakeMaterialData();
+
+private:
+
 	Object3dBase* object3dBase_ = nullptr;
 
 	Model* model_ = nullptr;
@@ -85,5 +99,12 @@ private:
 	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
 	// バッファリソース内のデータを指すポインタ
 	TransformationMatrix* wvpData_ = nullptr;
+
+	/*==================== マテリアル ====================*/
+
+	// バッファリソース
+	ComPtr<ID3D12Resource> materialResource_ = nullptr;
+	// バッファリソース内のデータを指すポインタ
+	Material* materialData_ = nullptr;
 
 };

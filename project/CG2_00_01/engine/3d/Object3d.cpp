@@ -14,6 +14,8 @@ void Object3d::Initialize(const std::string& filePath)
 
     MakeWvpData();
 
+    MakeMaterialData();
+
     transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 }
 
@@ -32,6 +34,7 @@ void Object3d::Update()
 
 void Object3d::Draw()
 {
+    object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(3, LightManager::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
     object3dBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(4, LightManager::GetInstance()->GetPointLightResource()->GetGPUVirtualAddress());
@@ -62,6 +65,11 @@ void Object3d::SetTexture(const std::string& directoryPath, const std::string& f
     model_->SetTexture(directoryPath, filePath);
 }
 
+void Object3d::SetColor(const Vector4& color)
+{
+    materialData_->color = color;
+}
+
 const Vector3 Object3d::GetWorldPosition()
 {
     Vector3 translate = { worldMatrix_.m[3][0],worldMatrix_.m[3][1],worldMatrix_.m[3][2] };
@@ -71,4 +79,17 @@ const Vector3 Object3d::GetWorldPosition()
 const Matrix4x4& Object3d::GetWorldMatrix()
 {
     return worldMatrix_;
+}
+
+void Object3d::MakeMaterialData()
+{
+    // マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
+    materialResource_ = CreateBufferResource(object3dBase_->GetDxEngine()->GetDevice(), sizeof(Material)).Get();
+    // 書き込むためのアドレスを取得
+    materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+    // 今回は白を書き込んでいく
+    materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    materialData_->enableLighting = true;
+    materialData_->uvTransform = Matrix4x4::Identity();
+    materialData_->shininess = 20.0f;
 }

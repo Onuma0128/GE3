@@ -22,14 +22,11 @@ void Model::Initialize(const std::string& directoryPath, const std::string& file
         TextureManager::GetInstance()->GetSrvIndex(modelData_.material.directoryPath + modelData_.material.filePath);
 
     MakeVertexData();
-
-    MakeMaterialData();
 }
 
 void Model::Draw()
 {
     modelBase_->GetDxEngine()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-    modelBase_->GetDxEngine()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
     SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, modelData_.material.textureIndex);
     // 描画
     modelBase_->GetDxEngine()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
@@ -45,19 +42,6 @@ void Model::MakeVertexData()
 
     vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
     std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
-}
-
-void Model::MakeMaterialData()
-{
-    // マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-    materialResource_ = CreateBufferResource(modelBase_->GetDxEngine()->GetDevice(), sizeof(Material)).Get();
-    // 書き込むためのアドレスを取得
-    materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-    // 今回は白を書き込んでいく
-    materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    materialData_->enableLighting = true;
-    materialData_->uvTransform = Matrix4x4::Identity();
-    materialData_->shininess = 8.0f;
 }
 
 std::wstring Model::s2ws(const std::string& str)
@@ -93,7 +77,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
                 uint32_t vertexIndex = face.mIndices[element];
                 aiVector3D& position = mesh->mVertices[vertexIndex];
                 aiVector3D& normal = mesh->mNormals[vertexIndex];
-                
+
                 VertexData vertex;
                 vertex.position = { position.x,position.y,position.z,1.0f };
                 vertex.normal = { normal.x,normal.y,normal.z };
@@ -122,7 +106,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
             aiString textureFilePath;
             material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
             modelData.material.directoryPath = directoryPath + "/";
-            modelData.material.filePath =textureFilePath.C_Str();
+            modelData.material.filePath = textureFilePath.C_Str();
             textureFound = true; // テクスチャが見つかった
         }
         // 他にも必要なテクスチャタイプがあればここで追加で確認する
