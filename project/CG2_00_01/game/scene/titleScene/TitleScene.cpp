@@ -48,22 +48,11 @@ void TitleScene::Initialize()
 	object3d_->Initialize("suzanne.obj");
 	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
 	obj_.push_back(std::move(object3d_));
-
-	// オーディオ
-	IXAudio2MasteringVoice* masterVoice;
-	// XAudio2エンジンを生成
-	HRESULT hr{};
-	hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-	hr = xAudio2->CreateMasteringVoice(&masterVoice);
-	// 音声読み込み
-	soundData1 = SoundLoadWave("resources/Alarm01.wav");
-	//SoundPlayWave(xAudio2.Get(), soundData1);
 }
 
 void TitleScene::Finalize()
 {
-	xAudio2.Reset();
-	SoundUnload(&soundData1);
+
 }
 
 void TitleScene::Update()
