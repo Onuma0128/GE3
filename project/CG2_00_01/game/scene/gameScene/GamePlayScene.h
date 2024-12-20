@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "wrl.h"
 
 #include "SpriteBase.h"
 #include "Sprite.h"
@@ -14,8 +13,6 @@
 #include "ParticleEmitter.h"
 #include "gameCamera/GameCamera.h"
 #include "player/Player.h"
-
-using Microsoft::WRL::ComPtr;
 
 class GamePlayScene : public BaseScene
 {
@@ -43,8 +40,5 @@ private:
 
 
 	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
-
-	ComPtr<IXAudio2> xAudio2;
-	SoundData soundData1;
 };
 

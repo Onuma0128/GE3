@@ -2,7 +2,6 @@
 #include <memory>
 #include <array>
 #include <vector>
-#include "wrl.h"
 
 #include "LoadSound.h"
 #include "Sprite.h"
@@ -13,8 +12,6 @@
 #include "ParticleEmitter.h"
 #include "GlobalVariables.h"
 #include "Camera.h"
-
-using Microsoft::WRL::ComPtr;
 
 class TitleScene : public BaseScene
 {
@@ -37,5 +34,7 @@ private:
 
 	std::vector<std::unique_ptr<Sprite>> sprites_;
 	std::vector <std::unique_ptr<Object3d>> obj_;
+
+	std::unique_ptr<ParticleEmitter> emitter_;
 };
 

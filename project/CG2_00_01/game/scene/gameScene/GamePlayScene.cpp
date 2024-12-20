@@ -26,26 +26,20 @@ void GamePlayScene::Initialize()
 
 	emitter_ = std::make_unique<ParticleEmitter>("field");
 	ParticleManager::GetInstance()->CreateParticleGroup("field", "white1x1.png", emitter_.get());
-
-	// オーディオ
-	IXAudio2MasteringVoice* masterVoice;
-	// XAudio2エンジンを生成
-	HRESULT hr{};
-	hr = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-	hr = xAudio2->CreateMasteringVoice(&masterVoice);
-	// 音声読み込み
-	soundData1 = SoundLoadWave("resources/Alarm01.wav");
-	//SoundPlayWave(xAudio2.Get(), soundData1);
 }
 
 void GamePlayScene::Finalize()
 {
-	xAudio2.Reset();
-	SoundUnload(&soundData1);
+	ParticleManager::GetInstance()->Clear();
 }
 
 void GamePlayScene::Update()
 {
+
+	if (Input::GetInstance()->PushKey(DIK_P)) {
+		SceneManager::GetInstance()->ChangeScene("Title");
+	}
+
 	for (auto& obj : obj_) {
 		obj->Update();
 	}

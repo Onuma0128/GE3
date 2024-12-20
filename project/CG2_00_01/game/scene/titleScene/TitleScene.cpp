@@ -48,11 +48,14 @@ void TitleScene::Initialize()
 	object3d_->Initialize("suzanne.obj");
 	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
 	obj_.push_back(std::move(object3d_));
+
+	emitter_ = std::make_unique<ParticleEmitter>("test");
+	ParticleManager::GetInstance()->CreateParticleGroup("test", "uvChecker.png", emitter_.get());
 }
 
 void TitleScene::Finalize()
 {
-
+	ParticleManager::GetInstance()->Clear();
 }
 
 void TitleScene::Update()
@@ -61,10 +64,10 @@ void TitleScene::Update()
 		SceneManager::GetInstance()->ChangeScene("Game");
 	}
 
-	if (Input::GetInstance()->PushKey(DIK_F1)) {
+	if (Input::GetInstance()->PushKey(DIK_F)) {
 		CameraManager::GetInstance()->SetActiveCamera(0);
 	}
-	if (Input::GetInstance()->PushKey(DIK_F2)) {
+	if (Input::GetInstance()->PushKey(DIK_G)) {
 		CameraManager::GetInstance()->SetActiveCamera(1);
 	}
 
@@ -75,6 +78,8 @@ void TitleScene::Update()
 	for (auto& sprite : sprites_) {
 		sprite->Update();
 	}
+
+	ParticleManager::GetInstance()->Update();
 }
 
 void TitleScene::Draw()
@@ -90,4 +95,7 @@ void TitleScene::Draw()
 	for (auto& sprite : sprites_) {
 		sprite->Draw();
 	}
+
+
+	ParticleManager::GetInstance()->Draw();
 }
