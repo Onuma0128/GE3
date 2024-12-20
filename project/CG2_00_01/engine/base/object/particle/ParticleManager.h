@@ -85,6 +85,9 @@ public:
 
 	void Draw();
 
+	// グループのクリア処理
+	void Clear();
+
 	void Finalize();
 
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleEmitter* emitter);

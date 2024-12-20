@@ -70,7 +70,7 @@ void TitleScene::Initialize()
 
 void TitleScene::Finalize()
 {
-	AudioManager::GetInstance()->Finalize();
+	particleManager_->Clear();
 }
 
 void TitleScene::Update()

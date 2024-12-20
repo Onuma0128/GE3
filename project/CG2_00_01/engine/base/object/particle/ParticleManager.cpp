@@ -26,7 +26,7 @@ void ParticleManager::Initialize(DirectXEngine* dxEngine)
 
     rootSignature_ = dxEngine_->GetPipelineState()->CreateParticleRootSignature();
     pipelineState_ = dxEngine_->GetPipelineState()->CreateParticlePipelineState();
-    
+
     modelData_ = Model::LoadObjFile("resources", "plane.obj");
 
     CreateVertexResource();
@@ -111,12 +111,13 @@ void ParticleManager::Draw()
 
 void ParticleManager::Finalize()
 {
-    for (auto& [name, group] : particleGroups_) {
-        particleGroups_[name].emitter = nullptr;
-    }
-
     delete instance_;
     instance_ = nullptr;
+}
+
+void ParticleManager::Clear()
+{
+    particleGroups_.clear();
 }
 
 void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleEmitter* emitter)
