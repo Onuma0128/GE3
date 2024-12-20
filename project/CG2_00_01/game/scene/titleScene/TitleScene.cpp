@@ -7,6 +7,7 @@
 #include "Object3dBase.h"
 #include "ModelManager.h"
 #include "ParticleManager.h"
+#include "AudioManager.h"
 
 #include "SceneManager.h"
 

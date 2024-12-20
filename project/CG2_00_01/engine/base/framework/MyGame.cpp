@@ -32,6 +32,9 @@ void MyGame::Update()
 
 	Framework::Update();
 
+	// シーンの更新
+	SceneManager::GetInstance()->Update();
+
 	// GlobalVariablesの更新
 	GlobalVariables::GetInstance()->Update();
 
@@ -42,8 +45,6 @@ void MyGame::Update()
 	// ライトの更新
 	LightManager::GetInstance()->Debug_ImGui();
 	LightManager::GetInstance()->Update();
-
-	SceneManager::GetInstance()->Update();
 
 	// ImGui受付終了
 	imGuiManager_->End();

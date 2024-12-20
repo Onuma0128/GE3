@@ -83,4 +83,5 @@ void Player::GlobalInit()
 	global_->AddValue<float>("PlayerAttackParticle", "scale", 1.0f);
 	global_->AddValue<float>("PlayerAttackParticle", "velocityPow", 0.1f);
 	global_->AddValue<Vector3>("PlayerAttackParticle", "offset", Vector3{ 0,0,0 });
+	global_->AddValue<float>("PlayerAttackParticle", "alphaSubtrac", 0.01f);
 }

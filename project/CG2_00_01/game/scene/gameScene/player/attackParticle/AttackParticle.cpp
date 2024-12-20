@@ -30,7 +30,7 @@ void AttackParticle::Update()
 
 	if (particle_->GetPosition().y < 0.0f && velocity_.y < 0.0f) {
 		velocity_.y = -1.0f;
-		alpha_ -= 0.01f;
+		alpha_ -= global_->GetValue<float>("PlayerAttackParticle", "alphaSubtrac");
 		particle_->SetColor(Vector4{ 1.0f,1.0f,1.0f,alpha_ });
 		if (alpha_ <= 0.0f) {
 			isActive_ = false;

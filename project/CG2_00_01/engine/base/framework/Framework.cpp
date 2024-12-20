@@ -33,8 +33,6 @@ void Framework::Update()
 		// 入力の更新
 		Input::GetInstance()->Update();
 
-		// シーンの更新
-		SceneManager::GetInstance()->Update();
 	}
 }
 

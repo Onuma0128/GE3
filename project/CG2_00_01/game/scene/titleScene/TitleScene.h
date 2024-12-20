@@ -12,6 +12,7 @@
 #include "ParticleEmitter.h"
 #include "GlobalVariables.h"
 #include "Camera.h"
+#include "Audio.h"
 
 class TitleScene : public BaseScene
 {

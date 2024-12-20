@@ -90,11 +90,4 @@ private:
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
-	///*==================== マテリアル ====================*/
-
-	//// バッファリソース
-	//ComPtr<ID3D12Resource> materialResource_ = nullptr;
-	//// バッファリソース内のデータを指すポインタ
-	//Material* materialData_ = nullptr;
-
 };

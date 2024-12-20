@@ -26,7 +26,7 @@ void ParticleManager::Initialize(DirectXEngine* dxEngine)
 
     rootSignature_ = dxEngine_->GetPipelineState()->CreateParticleRootSignature();
     pipelineState_ = dxEngine_->GetPipelineState()->CreateParticlePipelineState();
-    
+
     modelData_ = Model::LoadObjFile("resources", "plane.obj");
 
     CreateVertexResource();

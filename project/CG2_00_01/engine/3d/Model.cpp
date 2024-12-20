@@ -77,7 +77,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
                 uint32_t vertexIndex = face.mIndices[element];
                 aiVector3D& position = mesh->mVertices[vertexIndex];
                 aiVector3D& normal = mesh->mNormals[vertexIndex];
-                
+
                 VertexData vertex;
                 vertex.position = { position.x,position.y,position.z,1.0f };
                 vertex.normal = { normal.x,normal.y,normal.z };
@@ -106,7 +106,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
             aiString textureFilePath;
             material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
             modelData.material.directoryPath = directoryPath + "/";
-            modelData.material.filePath =textureFilePath.C_Str();
+            modelData.material.filePath = textureFilePath.C_Str();
             textureFound = true; // テクスチャが見つかった
         }
         // 他にも必要なテクスチャタイプがあればここで追加で確認する

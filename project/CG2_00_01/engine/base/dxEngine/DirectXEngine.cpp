@@ -17,6 +17,7 @@
 #include "SrvManager.h"
 #include "PrimitiveDrawer.h"
 #include "ParticleManager.h"
+#include "AudioManager.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -31,6 +32,7 @@ DirectXEngine::~DirectXEngine()
 	ModelManager::GetInstance()->Finalize();
 	PrimitiveDrawer::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
+	AudioManager::GetInstance()->Finalize();
 
 	delete stringUtility_;
 	delete pipelineState_;
