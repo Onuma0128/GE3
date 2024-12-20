@@ -15,6 +15,10 @@
 #include "Camera.h"
 #include "Audio.h"
 
+#include "player/Player.h"
+#include "command/Command.h"
+#include "inputHandler/InputHandler.h"
+
 using Microsoft::WRL::ComPtr;
 
 class TitleScene : public BaseScene
@@ -36,16 +40,8 @@ private:
 	std::unique_ptr<Camera> camera_ = nullptr;
 	std::unique_ptr<Camera> camera1_ = nullptr;
 
-	std::vector<std::unique_ptr<Sprite>> sprites_;
-	std::vector <std::unique_ptr<Object3d>> obj_;
-
-	ParticleManager* particleManager_ = ParticleManager::GetInstance();
-
-	std::unique_ptr<ParticleEmitter> emitter0_;
-	std::unique_ptr<ParticleEmitter> emitter1_;
-	std::unique_ptr<ParticleEmitter> emitter2_;
-
-	std::unique_ptr<Audio> audio_ = nullptr;
-	std::unique_ptr<Audio> audio2_ = nullptr;
+	std::unique_ptr<Player> player_ = nullptr;
+	ICommand* command_ = nullptr;
+	std::unique_ptr<InputHandler> inputHandler_ = nullptr;
 
 };

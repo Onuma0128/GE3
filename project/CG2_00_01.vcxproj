@@ -122,6 +122,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\DescriptorHeap.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\dxEngine\DirectXEngine.cpp" />
     <ClCompile Include="CG2_00_01\engine\math\structure\CreateBufferResource.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\command\Command.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
     <ClCompile Include="externals\imgui\imgui_draw.cpp" />
@@ -167,6 +168,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\base\object\particle\ParticleEmitter.cpp" />
     <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\imgui\ImGuiManager.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\player\Player.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\titleScene\inputHandler\InputHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\engine\audio\Audio.h" />
@@ -181,6 +184,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\DescriptorHeap.h" />
     <ClInclude Include="CG2_00_01\engine\base\dxEngine\DirectXEngine.h" />
     <ClInclude Include="CG2_00_01\engine\math\structure\CreateBufferResource.h" />
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\command\Command.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />
     <ClInclude Include="externals\imgui\imgui_impl_dx12.h" />
@@ -228,6 +232,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\base\object\particle\ParticleEmitter.h" />
     <ClInclude Include="CG2_00_01\engine\globalVariables\GlobalVariables.h" />
     <ClInclude Include="CG2_00_01\engine\base\imgui\ImGuiManager.h" />
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\player\Player.h" />
+    <ClInclude Include="CG2_00_01\game\scene\titleScene\inputHandler\InputHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
