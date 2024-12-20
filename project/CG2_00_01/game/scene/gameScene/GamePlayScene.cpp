@@ -18,9 +18,18 @@ void GamePlayScene::Initialize()
 	camera_->Initialize();
 	CameraManager::GetInstance()->SetCamera(camera_.get());
 
+	transform_ = std::make_unique<WorldTransform>();
+
 	ModelManager::GetInstance()->LoadModel("resources", "terrain.obj");
 	model_ = std::make_unique<Object3d>();
-	model_->Initialize("terrain.obj");
+	model_->Initialize("terrain.obj", transform_.get());
+
+	teapotTrans_ = std::make_unique<WorldTransform>();
+
+	ModelManager::GetInstance()->LoadModel("resources", "teapot.obj");
+	teapot_ = std::make_unique<Object3d>();
+	teapot_->Initialize("teapot.obj", teapotTrans_.get());
+	teapotTrans_->parent_ = transform_.get();
 
 }
 
@@ -34,6 +43,9 @@ void GamePlayScene::Update()
 		SceneManager::GetInstance()->ChangeScene("Title");
 	}
 
+	transform_->rotation_.y += 0.01f;
+
+	teapot_->Update();
 	model_->Update();
 }
 
@@ -43,7 +55,7 @@ void GamePlayScene::Draw()
 	Object3dBase::GetInstance()->DrawBase();
 	
 	model_->Draw();
-
+	teapot_->Draw();
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
