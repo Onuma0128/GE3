@@ -1,17 +1,12 @@
 #include "TitleScene.h"
+
+#include "CameraManager.h"
+#include "SceneManager.h"
 #include "Input.h"
 
-#include "Logger.h"
-#include "CameraManager.h"
-#include "SpriteBase.h"
 #include "Object3dBase.h"
-#include "ModelManager.h"
-#include "ParticleManager.h"
-#include "AudioManager.h"
-
-#include "SceneManager.h"
-
-#include "imgui.h"
+#include "SpriteBase.h"
+#include "PrimitiveDrawer.h"
 
 void TitleScene::Initialize()
 {
@@ -29,48 +24,10 @@ void TitleScene::Initialize()
 	camera1_->SetRotate(Vector3{ 0.26f,1.57f,0.0f });
 	camera1_->SetTranslate(Vector3{ -15.0f,4.0f,0.0f });
 	CameraManager::GetInstance()->SetCamera(camera1_.get());
-
-	std::unique_ptr<Sprite> sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize("uvChecker.png");
-	sprite_->SetPosition({ 64,64 });
-	sprite_->SetSize({ 128,128 });
-	sprite_->SetAnchorPoint({ 0.5f,0.5f });
-	sprites_.push_back(std::move(sprite_));
-
-	std::unique_ptr<Sprite> sprite1_ = std::make_unique<Sprite>();
-	sprite1_->Initialize("Apple.png");
-	sprite1_->SetPosition({ 640,64 });
-	sprite1_->SetSize({ 128,128 });
-	sprite1_->SetAnchorPoint({ 0.5f,0.5f });
-	sprites_.push_back(std::move(sprite1_));
-
-	ModelManager::GetInstance()->LoadModel("resources", "suzanne.obj");
-	std::unique_ptr<Object3d> object3d_ = std::make_unique<Object3d>();
-	object3d_->Initialize("suzanne.obj");
-	object3d_->SetRotation({ 0.0f,3.14f,0.0f });
-	obj_.push_back(std::move(object3d_));
-
-	emitter0_ = std::make_unique<ParticleEmitter>("player");
-	emitter1_ = std::make_unique<ParticleEmitter>("enemy");
-	emitter2_ = std::make_unique<ParticleEmitter>("obj");
-
-	// Particleを作成
-	particleManager_->CreateParticleGroup("player", "circle.png", emitter0_.get());
-	particleManager_->CreateParticleGroup("enemy", "uvChecker.png", emitter1_.get());
-	particleManager_->CreateParticleGroup("obj", "Apple.png", emitter2_.get());
-
-	AudioManager::GetInstance()->LoadAudioFile("resources", "Alarm01.wav");
-	audio_ = std::make_unique<Audio>();
-	audio_->SoundPlayWave("Alarm01.wav");
-
-	AudioManager::GetInstance()->LoadAudioFile("resources", "piano.wav");
-	audio2_ = std::make_unique<Audio>();
-	audio2_->SoundPlayWave("piano.wav");
 }
 
 void TitleScene::Finalize()
 {
-	particleManager_->Clear();
 }
 
 void TitleScene::Update()
@@ -85,33 +42,28 @@ void TitleScene::Update()
 	if (Input::GetInstance()->PushKey(DIK_F2)) {
 		CameraManager::GetInstance()->SetActiveCamera(1);
 	}
-
-
-	for (auto& obj : obj_) {
-		obj->Update();
-	}
-	for (auto& sprite : sprites_) {
-		sprite->Update();
-	}
-
-	// Particleの更新
-	particleManager_->Update();
 }
 
 void TitleScene::Draw()
 {
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
-	for (auto& obj : obj_) {
-		obj->Draw();
-	}
+	
+
+
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
-	for (auto& sprite : sprites_) {
-		sprite->Draw();
-	}
+	
+
+
+
+	// Lineの描画準備
+	PrimitiveDrawer::GetInstance()->DrawBase();
+
+
+
 
 	// Particleの描画
-	particleManager_->Draw();
+
 }
