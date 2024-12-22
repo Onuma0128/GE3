@@ -8,6 +8,8 @@
 #include "SpriteBase.h"
 #include "PrimitiveDrawer.h"
 
+#include "imgui.h"
+
 void TitleScene::Initialize()
 {
 	// Cameraの初期化
@@ -32,16 +34,27 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
-		SceneManager::GetInstance()->ChangeScene("Game");
-	}
-
 	if (Input::GetInstance()->PushKey(DIK_F1)) {
 		CameraManager::GetInstance()->SetActiveCamera(0);
 	}
 	if (Input::GetInstance()->PushKey(DIK_F2)) {
 		CameraManager::GetInstance()->SetActiveCamera(1);
 	}
+
+	Vector3 from0 = { 1.0f,0.7f,0.5f };
+	Vector3 to0 = -from0;
+	Vector3 from1 = { -0.6f,0.9f,0.2f };
+	Vector3 to1 = { 0.4f,0.7f,-0.5f };
+
+	Matrix4x4 rotateMatrix0 = Matrix4x4::DirectionToDirection(
+		Vector3{ 1.0f,0.0f,0.0f }, Vector3{ -1.0f,0.0f,0.0f }
+	);
+	Matrix4x4 rotateMatrix1 = Matrix4x4::DirectionToDirection(from0, to0);
+	Matrix4x4 rotateMatrix2 = Matrix4x4::DirectionToDirection(from1, to1);
+
+	Matrix4x4::ImGuiMatrix("MT4", rotateMatrix0);
+	Matrix4x4::ImGuiMatrix("MT4", rotateMatrix1);
+	Matrix4x4::ImGuiMatrix("MT4", rotateMatrix2);
 }
 
 void TitleScene::Draw()

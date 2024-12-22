@@ -1,6 +1,9 @@
 #include "Matrix4x4.h"
 
 #include <cmath>
+
+#include "imgui.h"
+
 #include "Vector3.h"
 
 // コンストラクタ：すべての要素を0に初期化
@@ -10,6 +13,24 @@ Matrix4x4::Matrix4x4() {
             m[i][j] = 0.0f;
         }
     }
+}
+
+void Matrix4x4::ImGuiMatrix(const std::string& imguiName, const Matrix4x4& m)
+{
+    ImGui::Begin(imguiName.c_str());
+
+    if (ImGui::BeginTable("MatrixTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        for (int j = 0; j < 4; ++j) {
+            ImGui::TableNextRow();
+            for (int i = 0; i < 4; ++i) {
+                ImGui::TableSetColumnIndex(i);
+                ImGui::Text("%.3f", m.m[i][j]);
+            }
+        }
+        ImGui::EndTable();
+    }
+
+    ImGui::End();
 }
 
 // 単位行列の生成
@@ -231,9 +252,7 @@ Matrix4x4 Matrix4x4::MakeRotateAxisAngle(const Vector3& axis, float angle)
 {
     // 回転軸を正規化
     Vector3 normalizeAxis = axis.Normalize();
-    float x = normalizeAxis.x;
-    float y = normalizeAxis.y;
-    float z = normalizeAxis.z;
+    float x = normalizeAxis.x, y = normalizeAxis.y, z = normalizeAxis.z;
 
     // 角度の三角関数
     float cosTheta = std::cos(angle);
@@ -241,7 +260,7 @@ Matrix4x4 Matrix4x4::MakeRotateAxisAngle(const Vector3& axis, float angle)
     float oneMinusCosTheta = 1.0f - cosTheta;
 
     // 回転行列の各成分を計算
-    Matrix4x4 rotation;
+    Matrix4x4 rotation = Matrix4x4::Identity();
     rotation.m[0][0] = cosTheta + x * x * oneMinusCosTheta;
     rotation.m[0][1] = x * y * oneMinusCosTheta - z * sinTheta;
     rotation.m[0][2] = x * z * oneMinusCosTheta + y * sinTheta;
@@ -261,6 +280,47 @@ Matrix4x4 Matrix4x4::MakeRotateAxisAngle(const Vector3& axis, float angle)
     rotation.m[3][1] = 0.0f;
     rotation.m[3][2] = 0.0f;
     rotation.m[3][3] = 1.0f;
+
+    return rotation;
+}
+
+Matrix4x4 Matrix4x4::DirectionToDirection(const Vector3& from, const Vector3& to)
+{
+    // 入力ベクトルの正規化
+    Vector3 fromNorm = from.Normalize();
+    Vector3 toNorm = to.Normalize();
+
+    // 回転軸を計算
+    Vector3 axis = Vector3::Cross(fromNorm, toNorm);
+
+    // from と to が同じ方向の場合、単位行列を返す
+    if (axis.Length() < 1e-6f) {
+        return Matrix4x4::Identity();
+    }
+
+    // 回転軸を正規化
+    Vector3 normalizeAxis = axis.Normalize();
+
+    // 回転角を計算
+    float cosTheta = Vector3::Dot(fromNorm, toNorm);
+    float sinTheta = std::sqrt(1.0f - cosTheta * cosTheta);
+    float oneMinusCosTheta = 1.0f - cosTheta;
+
+    // 回転行列の作成
+    Matrix4x4 rotation = Matrix4x4::Identity();
+    float x = normalizeAxis.x, y = normalizeAxis.y, z = normalizeAxis.z;
+
+    rotation.m[0][0] = cosTheta + x * x * oneMinusCosTheta;
+    rotation.m[0][1] = x * y * oneMinusCosTheta - z * sinTheta;
+    rotation.m[0][2] = x * z * oneMinusCosTheta + y * sinTheta;
+
+    rotation.m[1][0] = y * x * oneMinusCosTheta + z * sinTheta;
+    rotation.m[1][1] = cosTheta + y * y * oneMinusCosTheta;
+    rotation.m[1][2] = y * z * oneMinusCosTheta - x * sinTheta;
+
+    rotation.m[2][0] = z * x * oneMinusCosTheta - y * sinTheta;
+    rotation.m[2][1] = z * y * oneMinusCosTheta + x * sinTheta;
+    rotation.m[2][2] = cosTheta + z * z * oneMinusCosTheta;
 
     return rotation;
 }
