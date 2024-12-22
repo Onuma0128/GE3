@@ -168,6 +168,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\globalVariables\GlobalVariables.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\imgui\ImGuiManager.cpp" />
     <ClCompile Include="CG2_00_01\engine\3d\WorldTransform.cpp" />
+    <ClCompile Include="CG2_00_01\engine\math\structure\Quaternion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\engine\audio\Audio.h" />
@@ -230,6 +231,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\globalVariables\GlobalVariables.h" />
     <ClInclude Include="CG2_00_01\engine\base\imgui\ImGuiManager.h" />
     <ClInclude Include="CG2_00_01\engine\3d\WorldTransform.h" />
+    <ClInclude Include="CG2_00_01\engine\math\structure\Quaternion.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

@@ -33,7 +33,7 @@ public:
     // 正規化
     Vector3 Normalize() const;
 
-    // 行列による変換 (Matrix4x4は他で定義されていると仮定)
+    // 行列による変換
     Vector3 Transform(const Matrix4x4& matrix) const;
 
     // 単項演算子オーバーロード
