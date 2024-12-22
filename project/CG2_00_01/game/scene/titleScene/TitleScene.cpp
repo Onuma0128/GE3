@@ -40,21 +40,6 @@ void TitleScene::Update()
 	if (Input::GetInstance()->PushKey(DIK_F2)) {
 		CameraManager::GetInstance()->SetActiveCamera(1);
 	}
-
-	Vector3 from0 = { 1.0f,0.7f,0.5f };
-	Vector3 to0 = -from0;
-	Vector3 from1 = { -0.6f,0.9f,0.2f };
-	Vector3 to1 = { 0.4f,0.7f,-0.5f };
-
-	Matrix4x4 rotateMatrix0 = Matrix4x4::DirectionToDirection(
-		Vector3{ 1.0f,0.0f,0.0f }, Vector3{ -1.0f,0.0f,0.0f }
-	);
-	Matrix4x4 rotateMatrix1 = Matrix4x4::DirectionToDirection(from0, to0);
-	Matrix4x4 rotateMatrix2 = Matrix4x4::DirectionToDirection(from1, to1);
-
-	Matrix4x4::ImGuiMatrix("MT4", rotateMatrix0);
-	Matrix4x4::ImGuiMatrix("MT4", rotateMatrix1);
-	Matrix4x4::ImGuiMatrix("MT4", rotateMatrix2);
 }
 
 void TitleScene::Draw()
