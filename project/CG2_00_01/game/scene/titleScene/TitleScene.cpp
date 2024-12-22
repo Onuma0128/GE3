@@ -42,27 +42,6 @@ void TitleScene::Update()
 	if (Input::GetInstance()->PushKey(DIK_F2)) {
 		CameraManager::GetInstance()->SetActiveCamera(1);
 	}
-
-	Quaternion q1 = { 2.0f,3.0f,4.0f,1.0f };
-	Quaternion q2 = { 1.0f,3.0f,5.0f,2.0f };
-
-	Quaternion identity = Quaternion::IdentityQuaternion();
-	Quaternion conj = q1;
-	Quaternion inv = q1;
-	Quaternion normal = q1;
-	Quaternion mul1 = q1 * q2;
-	Quaternion mul2 = q2 * q1;
-	float norm = q1.Norm();
-
-	ImGui::Begin("MT4");
-	identity.ImGuiQuaternion("Identity\n");
-	conj.Conjugate().ImGuiQuaternion("Conjugate\n");
-	inv.Inverse().ImGuiQuaternion("Inverse\n");
-	normal.Normalize().ImGuiQuaternion("Normalize\n");
-	mul1.ImGuiQuaternion("Multiply(q1, q2)\n");
-	mul2.ImGuiQuaternion("Multiply(q2, q1)\n");
-	ImGui::Text("%.3f : Norm", norm);
-	ImGui::End();
 }
 
 void TitleScene::Draw()
