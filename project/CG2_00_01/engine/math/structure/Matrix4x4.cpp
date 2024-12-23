@@ -24,7 +24,7 @@ void Matrix4x4::ImGuiMatrix(const std::string& imguiName, const Matrix4x4& m)
             ImGui::TableNextRow();
             for (int i = 0; i < 4; ++i) {
                 ImGui::TableSetColumnIndex(i);
-                ImGui::Text("%.3f", m.m[i][j]);
+                ImGui::Text("%.3f", m.m[j][i]);
             }
         }
         ImGui::EndTable();
