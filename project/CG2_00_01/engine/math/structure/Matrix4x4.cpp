@@ -15,22 +15,18 @@ Matrix4x4::Matrix4x4() {
     }
 }
 
-void Matrix4x4::ImGuiMatrix(const std::string& imguiName, const Matrix4x4& m)
+void Matrix4x4::ImGuiMatrix()
 {
-    ImGui::Begin(imguiName.c_str());
-
     if (ImGui::BeginTable("MatrixTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         for (int j = 0; j < 4; ++j) {
             ImGui::TableNextRow();
             for (int i = 0; i < 4; ++i) {
                 ImGui::TableSetColumnIndex(i);
-                ImGui::Text("%.3f", m.m[j][i]);
+                ImGui::Text("%.3f", m[j][i]);
             }
         }
         ImGui::EndTable();
     }
-
-    ImGui::End();
 }
 
 // 単位行列の生成
@@ -311,16 +307,24 @@ Matrix4x4 Matrix4x4::DirectionToDirection(const Vector3& from, const Vector3& to
     float x = normalizeAxis.x, y = normalizeAxis.y, z = normalizeAxis.z;
 
     rotation.m[0][0] = cosTheta + x * x * oneMinusCosTheta;
-    rotation.m[0][1] = x * y * oneMinusCosTheta - z * sinTheta;
-    rotation.m[0][2] = x * z * oneMinusCosTheta + y * sinTheta;
+    rotation.m[0][1] = x * y * oneMinusCosTheta + z * sinTheta;
+    rotation.m[0][2] = x * z * oneMinusCosTheta - y * sinTheta;
+    rotation.m[0][3] = 0.0f;
 
-    rotation.m[1][0] = y * x * oneMinusCosTheta + z * sinTheta;
+    rotation.m[1][0] = y * x * oneMinusCosTheta - z * sinTheta;
     rotation.m[1][1] = cosTheta + y * y * oneMinusCosTheta;
-    rotation.m[1][2] = y * z * oneMinusCosTheta - x * sinTheta;
+    rotation.m[1][2] = y * z * oneMinusCosTheta + x * sinTheta;
+    rotation.m[1][3] = 0.0f;
 
-    rotation.m[2][0] = z * x * oneMinusCosTheta - y * sinTheta;
-    rotation.m[2][1] = z * y * oneMinusCosTheta + x * sinTheta;
+    rotation.m[2][0] = z * x * oneMinusCosTheta + y * sinTheta;
+    rotation.m[2][1] = z * y * oneMinusCosTheta - x * sinTheta;
     rotation.m[2][2] = cosTheta + z * z * oneMinusCosTheta;
+    rotation.m[2][3] = 0.0f;
+
+    rotation.m[3][0] = 0.0f;
+    rotation.m[3][1] = 0.0f;
+    rotation.m[3][2] = 0.0f;
+    rotation.m[3][3] = 1.0f;
 
     return rotation;
 }

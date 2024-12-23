@@ -13,7 +13,7 @@ public:
     Matrix4x4();
 
     // MatrixのImGui
-    static void ImGuiMatrix(const std::string& imguiName, const Matrix4x4& m);
+    void ImGuiMatrix();
 
     // 単位行列の生成
     static Matrix4x4 Identity();
