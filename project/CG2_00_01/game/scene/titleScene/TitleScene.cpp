@@ -42,19 +42,6 @@ void TitleScene::Update()
 	if (Input::GetInstance()->PushKey(DIK_F2)) {
 		CameraManager::GetInstance()->SetActiveCamera(1);
 	}
-
-	Quaternion rotation = Quaternion::MakeRotateAxisAngleQuaternion(Vector3{ 1.0f,0.4f,-0.2f }, 0.45f);
-	Vector3 pointY = { 2.1f,-0.9f,1.3f };
-	Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(rotation);
-	Vector3 rotateByQuaternion = Quaternion::RotateVector(pointY, rotation);
-	Vector3 rotateByMatrix = pointY.Transform(rotateMatrix);
-
-	ImGui::Begin("MT4");
-	rotation.ImGuiQuaternion("rotation");
-	Matrix4x4::ImGuiMatrix("MT4", rotateMatrix);
-	ImGui::Text("%.3f %.3f %.3f : rotateByQuaternion", rotateByQuaternion.x, rotateByQuaternion.y, rotateByQuaternion.z);
-	ImGui::Text("%.3f %.3f %.3f : rotateByMatrix", rotateByMatrix.x, rotateByMatrix.y, rotateByMatrix.z);
-	ImGui::End();
 }
 
 void TitleScene::Draw()
