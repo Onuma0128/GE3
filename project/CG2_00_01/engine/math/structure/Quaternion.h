@@ -2,6 +2,9 @@
 
 #include <string>
 
+class Vector3;
+class Matrix4x4;
+
 class Quaternion
 {
 public:
@@ -17,16 +20,25 @@ public:
     static Quaternion IdentityQuaternion();
 
     // 共役Quaternion
-    Quaternion Conjugate() const;
+    static Quaternion Conjugate(const Quaternion& quaternion);
 
     // ノルムQuaternion
-    float Norm() const;
+    static float Norm(const Quaternion& quaternion);
 
     // 正規化Quaternion
-    Quaternion& Normalize();
+    static Quaternion Normalize(const Quaternion& quaternion);
 
     // 逆Quaternion
-    Quaternion Inverse() const;
+    static Quaternion Inverse(const Quaternion& quaternion);
+
+    // 任意軸回転を表すQuaternion
+    static Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
+
+    // Vector3をQuaternionで回転させた結果のVector3を求める
+    static Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion);
+
+    // Quaternionから回転行列を求める
+    static Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion);
 
 
 
@@ -36,4 +48,3 @@ public:
     // 複合代入演算子オーバーロード
     Quaternion& operator*=(const Quaternion& q);
 };
-
