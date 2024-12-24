@@ -45,7 +45,6 @@ void TitleScene::Update()
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Game");
 	}
-
 }
 
 void TitleScene::Draw()

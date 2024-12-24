@@ -4,6 +4,9 @@
 #include <dinput.h>
 #include <cassert>
 #include <windows.h>
+#include <Xinput.h>
+#pragma comment(lib, "Xinput.lib")
+
 #include "WinApp.h"
 
 class Input
@@ -26,11 +29,14 @@ public:
 	void Initialize(WinApp* winApp);
 	// 更新
 	void Update();
+	// 終了
+	void Finalize();
 
 	// キーの押下をチェック
 	bool PushKey(BYTE keyNumber);
 	// キーのトリガーをチェック
 	bool TriggerKey(BYTE keyNumber);
+
 	// マウスボタンの押下
 	bool PushMouseButton(int buttonNumber)const;
 	// マウスボタンのトリガーをチェック
@@ -42,27 +48,52 @@ public:
 	int GetMousePosX()const { return mousePosX_; }
 	int GetMousePosY()const { return mousePosY_; }
 
-	// 終了
-	void Finalize();
+	// ジョイスティックボタンの押下チェック
+	bool PushGamepadButton(WORD button) const;
+	// ジョイスティックボタンのトリガーチェック
+	bool TriggerGamepadButton(WORD button) const;
+	// スティックのX軸とY軸の取得
+	// 左
+	float GetGamepadLeftStickX() const;
+	float GetGamepadLeftStickY() const;
+	// 右
+	float GetGamepadRightStickX() const;
+	float GetGamepadRightStickY() const;
+	// LT/RT
+	float GetGamepadLeftTrigger() const;
+	float GetGamepadRightTrigger() const;
 
 private:
+	// スティックの正規化
+	static float NormalizeStickValue(SHORT value, SHORT deadzone);
+
+private:
+	// WindowsAPI
+	WinApp* winApp_ = nullptr;
+	// 入力デバイス
 	ComPtr<IDirectInput8> directInput_;
 	// キーボードのデバイス
 	ComPtr<IDirectInputDevice8> keyboard_;
 	// マウスのデバイス
 	ComPtr<IDirectInputDevice8> mouse_;
+	// ジョイスティックのデバイス
+	ComPtr<IDirectInputDevice8> joystick_;
+
+	/*==================== キーボード ====================*/
 
 	// 全キーの状態
 	BYTE key_[256] = {};
 	// 前回の全キーの状態
 	BYTE keyPre_[256] = {};
+
+	/*==================== マウス ====================*/
+
 	// マウスの状態
 	DIMOUSESTATE mouseState_ = {};
 	// マウスボタンの状態
 	BYTE mouseButton_[4] = {};
 	// マウスボタンの前回の状態
 	BYTE mouseButtonPre_[4] = {};
-
 	// マウスの移動量
 	int mouseDeltaX_ = 0;
 	int mouseDeltaY_ = 0;
@@ -70,6 +101,16 @@ private:
 	int mousePosX_ = 0;
 	int mousePosY_ = 0;
 
-	// WindowsAPI
-	WinApp* winApp_ = nullptr;
+	/*==================== ジョイスティック ====================*/
+
+	// ジョイスティックの状態
+	XINPUT_STATE xInputState_ = {};
+	// 前回のジョイスティックの状態
+	XINPUT_STATE xInputStatePre_ = {};
+	// ジョイスティックの範囲情報
+	LONG joystickMinX_ = -1000;
+	LONG joystickMaxX_ = 1000;
+	LONG joystickMinY_ = -1000;
+	LONG joystickMaxY_ = 1000;
+
 };
