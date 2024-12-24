@@ -4,12 +4,13 @@
 
 void AttackParticle::Init(const std::string& modelName, const Vector3& position)
 {
+	transform_ = std::make_unique<WorldTransform>();
 	particle_ = std::make_unique<Object3d>();
-	particle_->Initialize(modelName);
+	particle_->Initialize(modelName, transform_.get());
 	float scale = global_->GetValue<float>("PlayerAttackParticle", "scale");
-	particle_->SetScale(Vector3{ scale,scale,scale });
+	transform_->scale_ = Vector3{ scale,scale,scale };
 	Vector3 offset = global_->GetValue<Vector3>("PlayerAttackParticle", "offset");
-	particle_->SetPosition(position + offset);
+	transform_->translation_ = position + offset;
 	particle_->SetTexture("resources", "white1x1.png");
 	float velocityPow = global_->GetValue<float>("PlayerAttackParticle", "velocityPow");
 	velocity_ = {
@@ -28,7 +29,7 @@ void AttackParticle::Update()
 		return;
 	}
 
-	if (particle_->GetPosition().y < 0.0f && velocity_.y < 0.0f) {
+	if (transform_->translation_.y < 0.0f && velocity_.y < 0.0f) {
 		velocity_.y = -1.0f;
 		alpha_ -= global_->GetValue<float>("PlayerAttackParticle", "alphaSubtrac");
 		particle_->SetColor(Vector4{ 1.0f,1.0f,1.0f,alpha_ });
@@ -37,13 +38,9 @@ void AttackParticle::Update()
 		}
 	}
 	else {
-		Vector3 rotate = particle_->GetRotation();
-		Vector3 translate = particle_->GetPosition();
 		velocity_.y -= 0.005f;
-		rotate += velocity_;
-		translate += velocity_;
-		particle_->SetRotation(rotate);
-		particle_->SetPosition(translate);
+		transform_->rotation_ += velocity_;
+		transform_->translation_ += velocity_;
 	}
 	particle_->Update();
 }

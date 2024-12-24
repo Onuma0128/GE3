@@ -2,15 +2,12 @@
 #include <memory>
 #include <vector>
 
-#include "SpriteBase.h"
-#include "Sprite.h"
-#include "Object3dBase.h"
-#include "Object3d.h"
-#include "LoadSound.h"
 #include "BaseScene.h"
-#include "Line3d.h"
 
+#include "WorldTransform.h"
+#include "Object3d.h"
 #include "ParticleEmitter.h"
+
 #include "gameCamera/GameCamera.h"
 #include "player/Player.h"
 
@@ -28,9 +25,10 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<Object3d>> obj_;
+	std::unique_ptr<Object3d> ground_;
+	std::unique_ptr<WorldTransform> groundTransform_;
 
-	/* ==================== �J����==================== */
+	/* ==================== カメラ ==================== */
 
 	std::unique_ptr<GameCamera> camera_ = nullptr;
 

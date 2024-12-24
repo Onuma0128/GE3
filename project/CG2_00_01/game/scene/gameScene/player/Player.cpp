@@ -19,15 +19,17 @@ void Player::Init()
 	ModelManager::GetInstance()->LoadModel("resources", "attackParticle.obj");
 
 	// モデルの初期化
+	transform_ = std::make_unique<WorldTransform>();
 	model_ = std::make_unique<Object3d>();
-	model_->Initialize("box.obj");
+	model_->Initialize("box.obj", transform_.get());
 	model_->SetTexture("resources", "uvChecker.png");
-	model_->SetPosition(Vector3{ 0.0f,0.5f,0.0f });
+	transform_->translation_ = Vector3{ 0.0f,0.5f,0.0f };
 
+	shadowTransform_ = std::make_unique<WorldTransform>();
 	shadowModel_ = std::make_unique<Object3d>();
-	shadowModel_->Initialize("box.obj");
-	shadowModel_->SetScale(Vector3{ 1.0f,0.01f,1.0f });
+	shadowModel_->Initialize("box.obj", shadowTransform_.get());
 	shadowModel_->SetColor(Vector4{ 0.0f,0.0f,0.0f,1.0f });
+	shadowTransform_->scale_ = Vector3{ 1.0f,0.01f,1.0f };
 
 	// パーティクルの初期化
 	moveParticleEmitter_ = std::make_unique<ParticleEmitter>("playerDust");
@@ -51,7 +53,7 @@ void Player::Update()
 		return !particle->GetIsActive();
 	});
 
-	LightManager::GetInstance()->SetPointLightPosition(model_->GetPosition() + Vector3{ 0,2,0 });
+	LightManager::GetInstance()->SetPointLightPosition(transform_->translation_ + Vector3{ 0,2,0 });
 }
 
 void Player::Draw()
@@ -75,6 +77,7 @@ void Player::ChengeState(std::unique_ptr<BaseState> newState)
 
 void Player::GlobalInit()
 {
+	global_->AddValue<float>("Player", "moveSpeed", 0.1f);
 	global_->AddValue<float>("Player", "velocityY", 1.0f);
 	global_->AddValue<float>("Player", "accelerationY", 0.1f);
 	global_->AddValue<float>("Player", "attackVelocityY", 0.05f);

@@ -4,6 +4,7 @@
 
 #include "Input.h"
 #include "Object3d.h"
+#include "WorldTransform.h"
 #include "GlobalVariables.h"
 #include "ParticleEmitter.h"
 
@@ -27,10 +28,13 @@ public:
 	void SetIsShake(bool isShake) { isShake_ = isShake; }
 	bool GetIsShake()const { return isShake_; }
 
-	/* ==================== モデル ==================== */
+	/* ==================== モデル&トランスフォーム ==================== */
 
 	Object3d* GetModel()const { return model_.get(); }
+	WorldTransform* GetTransform()const { return transform_.get(); }
+
 	Object3d* GetShadowModel()const { return shadowModel_.get(); }
+	WorldTransform* GetShadowTransform()const { return shadowTransform_.get(); }
 
 	/* ==================== パーティクル ==================== */
 
@@ -58,7 +62,10 @@ private:
 
 	// モデル
 	std::unique_ptr<Object3d> model_ = nullptr;
+	std::unique_ptr<WorldTransform> transform_ = nullptr;
+	// プレイヤーの影
 	std::unique_ptr<Object3d> shadowModel_ = nullptr;
+	std::unique_ptr<WorldTransform> shadowTransform_ = nullptr;
 
 	// 移動時のパーティクル
 	std::unique_ptr<ParticleEmitter> moveParticleEmitter_ = nullptr;

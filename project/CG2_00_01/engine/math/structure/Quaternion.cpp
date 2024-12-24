@@ -1,0 +1,137 @@
+#include "Quaternion.h"
+
+#include <cmath>
+
+#include "imgui.h"
+#include "Vector3.h"
+#include "Matrix4x4.h"
+
+Quaternion::Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+
+void Quaternion::ImGuiQuaternion(const std::string& imguiName) const
+{
+	ImGui::Text("%.3f, %.3f, %.3f, %.3f : ", x, y, z, w);
+	ImGui::SameLine();
+	ImGui::Text(imguiName.c_str());
+}
+
+Quaternion Quaternion::IdentityQuaternion()
+{
+	return { 0.0f,0.0f,0.0f,1.0f };
+}
+
+Quaternion Quaternion::Conjugate(const Quaternion& quaternion)
+{
+	return { -quaternion.x,-quaternion.y,-quaternion.z,quaternion.w };
+}
+
+float Quaternion::Norm(const Quaternion& quaternion)
+{
+	return std::sqrt(
+		quaternion.x * quaternion.x + quaternion.y * quaternion.y + 
+		quaternion.z * quaternion.z + quaternion.w * quaternion.w
+	);
+}
+
+Quaternion Quaternion::Normalize(const Quaternion& quaternion)
+{
+	float norm = Norm(quaternion);
+
+	Quaternion result = quaternion;
+
+	if (norm > 0.0f)
+	{
+		result.x /= norm;
+		result.y /= norm;
+		result.z /= norm;
+		result.w /= norm;
+	}
+
+	return result;
+}
+
+Quaternion Quaternion::Inverse(const Quaternion& quaternion)
+{
+	float norm = Norm(quaternion) * Norm(quaternion);
+
+	Quaternion conjugate = Conjugate(quaternion);
+
+	return {
+		conjugate.x / norm,
+		conjugate.y / norm,
+		conjugate.z / norm,
+		conjugate.w / norm
+	};
+}
+
+Quaternion Quaternion::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle)
+{
+	Vector3 axisNormal = axis.Normalize();
+
+	float halfAngle = angle / 2.0f;
+
+	float cosAngle = std::cos(halfAngle);
+	float sinAngle = std::sin(halfAngle);
+
+	return {
+		axisNormal.x * sinAngle,
+		axisNormal.y * sinAngle,
+		axisNormal.z * sinAngle,
+		cosAngle
+	};
+}
+
+Vector3 Quaternion::RotateVector(const Vector3& vector, const Quaternion& quaternion)
+{
+	Quaternion conjugate = Conjugate(quaternion);
+
+	Quaternion vectorQuat(vector.x, vector.y, vector.z, 0.0f);
+
+	Quaternion rotatedQuat = quaternion * vectorQuat * conjugate;
+
+	return { rotatedQuat.x, rotatedQuat.y, rotatedQuat.z };
+}
+
+Matrix4x4 Quaternion::MakeRotateMatrix(const Quaternion& quaternion)
+{
+	Quaternion q = quaternion;
+	Matrix4x4 result = Matrix4x4::Identity();
+
+	result.m[0][0] = q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z;
+	result.m[0][1] = 2.0f * (q.x * q.y + q.w * q.z);
+	result.m[0][2] = 2.0f * (q.x * q.z - q.w * q.y);
+	result.m[0][3] = 0.0f;
+
+	result.m[1][0] = 2.0f * (q.x * q.y - q.w * q.z);
+	result.m[1][1] = q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z;
+	result.m[1][2] = 2.0f * (q.y * q.z + q.w * q.x);
+	result.m[1][3] = 0.0f;
+
+	result.m[2][0] = 2.0f * (q.x * q.z + q.w * q.y);
+	result.m[2][1] = 2.0f * (q.y * q.z - q.w * q.x);
+	result.m[2][2] = q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z;
+	result.m[2][3] = 0.0f;
+
+	result.m[3][0] = 0.0f;
+	result.m[3][1] = 0.0f;
+	result.m[3][2] = 0.0f;
+	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
+Quaternion Quaternion::operator*(const Quaternion& q) const
+{
+	return {
+		y * q.z - z * q.y + q.w * x + w * q.x,
+		z * q.x - x * q.z + q.w * y + w * q.y,
+		x * q.y - y * q.x + q.w * z + w * q.z,
+		w * q.w - x * q.x - y * q.y - z * q.z
+	};
+}
+
+Quaternion& Quaternion::operator*=(const Quaternion& q)
+{
+	*this = *this * q;
+	return *this;
+}

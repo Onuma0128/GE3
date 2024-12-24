@@ -2,9 +2,12 @@
 
 #include "Input.h"
 #include "SceneManager.h"
-#include "PrimitiveDrawer.h"
 #include "ModelManager.h"
 #include "ParticleManager.h"
+
+#include "Object3dBase.h"
+#include "SpriteBase.h"
+#include "PrimitiveDrawer.h"
 
 #include "titleScene/TitleScene.h"
 
@@ -15,9 +18,9 @@ void GamePlayScene::Initialize()
 
 	ModelManager::GetInstance()->LoadModel("resources", "ground.obj");
 
-	std::unique_ptr<Object3d> object3d = std::make_unique<Object3d>();
-	object3d->Initialize("ground.obj");
-	obj_.push_back(std::move(object3d));
+	groundTransform_ = std::make_unique<WorldTransform>();
+	ground_ = std::make_unique<Object3d>();
+	ground_->Initialize("ground.obj", groundTransform_.get());
 
 	player_ = std::make_unique<Player>();
 	player_->Init();
@@ -40,9 +43,7 @@ void GamePlayScene::Update()
 		SceneManager::GetInstance()->ChangeScene("Title");
 	}
 
-	for (auto& obj : obj_) {
-		obj->Update();
-	}
+	ground_->Update();
 
 	camera_->Update();
 
@@ -56,9 +57,8 @@ void GamePlayScene::Draw()
 {
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
-	for (auto& obj : obj_) {
-		obj->Draw();
-	}
+
+	ground_->Draw();
 
 	player_->Draw();
 
@@ -67,6 +67,7 @@ void GamePlayScene::Draw()
 
 
 
+	// Lineの描画準備
 	PrimitiveDrawer::GetInstance()->DrawBase();
 
 

@@ -49,22 +49,20 @@ void MoveState::Update()
 
 	// 回転の処理
 	float newRotateY = std::atan2(player_->GetVelocity().x, player_->GetVelocity().z);
-	float nowRotateY = player_->GetModel()->GetRotation().y;
+	float nowRotateY = player_->GetTransform()->rotation_.y;
 	float rotate = LerpShortAngle(nowRotateY, newRotateY, 0.2f);
-	player_->GetModel()->SetRotation(Vector3{0.0f,rotate ,0.0f});
+	player_->GetTransform()->rotation_ = Vector3{ 0.0f,rotate ,0.0f };
 
 	// 移動の処理
-	Vector3 translate = player_->GetModel()->GetPosition();
-	translate += velocity * 0.03f;
-	player_->GetModel()->SetPosition(translate);
+	player_->GetTransform()->translation_ += velocity * global_->GetValue<float>("Player", "moveSpeed");
 
 	// 影の処理
-	translate.y = 0.01f;
-	player_->GetShadowModel()->SetRotation(player_->GetModel()->GetRotation());
-	player_->GetShadowModel()->SetPosition(translate);
+	player_->GetShadowTransform()->translation_.y = 0.01f;
+	player_->GetShadowTransform()->rotation_ = player_->GetTransform()->rotation_;
+	player_->GetShadowTransform()->translation_ = player_->GetTransform()->translation_;
 
 	// エミッターの処理
-	player_->GetMoveEmitter()->SetPosition(player_->GetModel()->GetPosition());
+	player_->GetMoveEmitter()->SetPosition(player_->GetTransform()->translation_);
 	Vector3 acceleration = player_->GetVelocity() * -1.0f;
 	acceleration.y = 1.0f;
 	player_->GetMoveEmitter()->SetAcceleration(acceleration);

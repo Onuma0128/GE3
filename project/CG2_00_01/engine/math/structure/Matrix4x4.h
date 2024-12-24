@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class Vector3;
 
 class Matrix4x4 {
@@ -9,6 +11,9 @@ public:
 
     // コンストラクタ
     Matrix4x4();
+
+    // MatrixのImGui
+    void ImGuiMatrix();
 
     // 単位行列の生成
     static Matrix4x4 Identity();
@@ -52,5 +57,8 @@ public:
 
     // 任意軸回転行列の生成
     static Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle);
+
+    // ある方向からある方向への回転行列
+    static Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
 
 };
