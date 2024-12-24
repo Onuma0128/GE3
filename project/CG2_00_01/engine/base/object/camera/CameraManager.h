@@ -41,6 +41,8 @@ public:
 
 	void Finalize();
 
+	void Clear();
+
 	void SetCamera(Camera* camera) { 
 		cameras_.push_back(camera); 
 		activeCameraIndex_ = static_cast<uint32_t>(cameras_.size()) - 1;

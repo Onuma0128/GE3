@@ -1,6 +1,9 @@
 #include "SceneManager.h"
 #include <cassert>
 
+#include "CameraManager.h"
+#include "ParticleManager.h"
+
 SceneManager* SceneManager::instance_ = nullptr;
 
 SceneManager* SceneManager::GetInstance()
@@ -16,6 +19,8 @@ void SceneManager::Update()
 	if (nextScene_) {
 		// 旧シーンの終了
 		if (scene_) {
+			CameraManager::GetInstance()->Clear();
+			ParticleManager::GetInstance()->Clear();
 			scene_->Finalize();
 			delete scene_;
 		}

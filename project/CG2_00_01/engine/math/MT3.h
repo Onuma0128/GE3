@@ -11,10 +11,10 @@
 #include "structure/Matrix4x4.h"
 #include "structure/Transform.h"
 
-struct AABB {
-	Vector3 min;
-	Vector3 max;
-};
+//struct AABB {
+//	Vector3 min;
+//	Vector3 max;
+//};
 //struct VertexData {
 //	Vector4 position;
 //	Vector2 texcoord;
@@ -60,14 +60,14 @@ struct AABB {
 //	Vector3 acceleration;
 //	AABB area;
 //};
-struct CameraForGPU {
-	Vector3 worldPosition;
-};
+//struct CameraForGPU {
+//	Vector3 worldPosition;
+//};
 
-const float pi = 3.141592653589793238462643383279f;
+//const float pi = 3.141592653589793238462643383279f;
 
 // 正規化
-Vector3 Normalize(const Vector4& v);
+//Vector3 Normalize(const Vector4& v);
 
 ////Sphere
 //VertexData* DrawSphere(VertexData* vertexData, uint32_t kSubdivision);
@@ -76,4 +76,4 @@ Vector3 Normalize(const Vector4& v);
 ////Emit関数
 //std::list<Particle> Emit(const Emitter& emitter, std::mt19937& randomEngine);
 // AABBとpoint
-bool IsCollision(const AABB& aabb, const Vector3& point);
+//bool IsCollision(const AABB& aabb, const Vector3& point);

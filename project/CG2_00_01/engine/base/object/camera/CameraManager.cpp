@@ -41,6 +41,11 @@ void CameraManager::Finalize()
 	instance_ = nullptr;
 }
 
+void CameraManager::Clear()
+{
+	cameras_.clear();
+}
+
 void CameraManager::MakeCameraData()
 {
 	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
