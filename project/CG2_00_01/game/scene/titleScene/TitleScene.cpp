@@ -42,6 +42,25 @@ void TitleScene::Update()
 	if (Input::GetInstance()->PushKey(DIK_F2)) {
 		CameraManager::GetInstance()->SetActiveCamera(1);
 	}
+
+	Quaternion rotation0 = Quaternion::MakeRotateAxisAngleQuaternion({ 0.71f,0.71f,0.0f }, 0.3f);
+	Quaternion rotation1 = Quaternion::MakeRotateAxisAngleQuaternion({ 0.71f,0.0f,0.71f }, 3.141592f);
+	//Quaternion rotation1 = -rotation0;
+
+	Quaternion interpolate0 = Quaternion::Slerp(rotation0, rotation1, 0.0f);
+	Quaternion interpolate1 = Quaternion::Slerp(rotation0, rotation1, 0.3f);
+	Quaternion interpolate2 = Quaternion::Slerp(rotation0, rotation1, 0.5f);
+	Quaternion interpolate3 = Quaternion::Slerp(rotation0, rotation1, 0.7f);
+	Quaternion interpolate4 = Quaternion::Slerp(rotation0, rotation1, 1.0f);
+
+	ImGui::Begin("MT4");
+	interpolate0.ImGuiQuaternion("interpolate0");
+	interpolate1.ImGuiQuaternion("interpolate1");
+	interpolate2.ImGuiQuaternion("interpolate2");
+	interpolate3.ImGuiQuaternion("interpolate3");
+	interpolate4.ImGuiQuaternion("interpolate4");
+	ImGui::End();
+
 }
 
 void TitleScene::Draw()

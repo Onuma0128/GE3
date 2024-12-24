@@ -25,6 +25,9 @@ public:
     // ノルムQuaternion
     static float Norm(const Quaternion& quaternion);
 
+    // 内積Quaternion
+    static float Dot(const Quaternion& q0, const Quaternion& q1);
+
     // 正規化Quaternion
     static Quaternion Normalize(const Quaternion& quaternion);
 
@@ -40,11 +43,20 @@ public:
     // Quaternionから回転行列を求める
     static Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion);
 
+    // 球面線形補間
+    static Quaternion Slerp(Quaternion q0, const Quaternion& q1, float t);
 
+
+    // 単項演算子オーバーロード
+    Quaternion operator-() const;
 
     // 二項演算子オーバーロード
+    Quaternion operator+(const Quaternion& q) const;
     Quaternion operator*(const Quaternion& q) const;
+    Quaternion operator*(float scalar) const;
 
     // 複合代入演算子オーバーロード
+    Quaternion& operator+=(const Quaternion& q);
     Quaternion& operator*=(const Quaternion& q);
+    Quaternion& operator*=(float scalar);
 };
