@@ -7,7 +7,7 @@
 #include <Xinput.h>
 #pragma comment(lib, "Xinput.lib")
 
-#include "WinApp.h"
+class WinApp;
 
 class Input
 {

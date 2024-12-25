@@ -2,6 +2,8 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+#include "WinApp.h"
+
 Input* Input::instance_ = nullptr;
 
 Input* Input::GetInstance()
