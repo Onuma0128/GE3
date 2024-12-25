@@ -2,6 +2,8 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+#include "WinApp.h"
+
 Input* Input::instance_ = nullptr;
 
 Input* Input::GetInstance()
@@ -10,6 +12,12 @@ Input* Input::GetInstance()
 		instance_ = new Input;
 	}
 	return instance_;
+}
+
+void Input::Finalize()
+{
+	delete instance_;
+	instance_ = nullptr;
 }
 
 void Input::Initialize(WinApp* winApp)
@@ -38,6 +46,7 @@ void Input::Initialize(WinApp* winApp)
 		winApp_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(hr));
 
+
 	// マウスデバイスの生成
 	hr = directInput_->CreateDevice(GUID_SysMouse, &mouse_, NULL);
 	assert(SUCCEEDED(hr));
@@ -50,6 +59,42 @@ void Input::Initialize(WinApp* winApp)
 	assert(SUCCEEDED(hr));
 
 	mouse_->Acquire();
+
+
+	//// ジョイスティックデバイスの生成
+	//hr = directInput_->CreateDevice(GUID_Joystick, &joystick_, NULL);
+	//assert(SUCCEEDED(hr));
+	//// 入力データ形式のセット
+	//hr = joystick_->SetDataFormat(&c_dfDIJoystick2);
+	//assert(SUCCEEDED(hr));
+	//// 排他制御レベルのセット
+	//hr = joystick_->SetCooperativeLevel(
+	//	winApp_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	//assert(SUCCEEDED(hr));
+
+	//// ジョイスティックの取得開始
+	//joystick_->Acquire();
+
+	//// ジョイスティックの範囲設定の初期化
+	//if (joystick_) {
+	//	DIPROPRANGE dipr;
+	//	dipr.diph.dwSize = sizeof(DIPROPRANGE);
+	//	dipr.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+	//	dipr.diph.dwObj = DIJOFS_X; // X軸
+	//	dipr.diph.dwHow = DIPH_BYOFFSET;
+	//	dipr.lMin = -1000; // 最小値
+	//	dipr.lMax = 1000;  // 最大値
+
+	//	joystick_->SetProperty(DIPROP_RANGE, &dipr.diph);
+	//	joystickMinX_ = dipr.lMin;
+	//	joystickMaxX_ = dipr.lMax;
+
+	//	// 同様にY軸にも適用
+	//	dipr.diph.dwObj = DIJOFS_Y; // Y軸
+	//	joystick_->SetProperty(DIPROP_RANGE, &dipr.diph);
+	//	joystickMinY_ = dipr.lMin;
+	//	joystickMaxY_ = dipr.lMax;
+	//}
 }
 
 void Input::Update()
@@ -82,6 +127,15 @@ void Input::Update()
 
 	memcpy(mouseButtonPre_, mouseButton_, sizeof(mouseButton_));
 	memcpy(mouseButton_, mouseState_.rgbButtons, sizeof(mouseButton_));
+
+	// XInput の更新
+	xInputStatePre_ = xInputState_; // 前回の状態を保存
+	ZeroMemory(&xInputState_, sizeof(XINPUT_STATE));
+	DWORD result = XInputGetState(0, &xInputState_); // コントローラー 0 を取得
+	if (result != ERROR_SUCCESS) {
+		// コントローラーが接続されていない場合
+		ZeroMemory(&xInputState_, sizeof(XINPUT_STATE));
+	}
 }
 
 bool Input::PushKey(BYTE keyNumber)
@@ -106,8 +160,47 @@ bool Input::TriggerMouseButton(int buttonNumber) const
 	return (mouseButton_[buttonNumber] & 0x80) != 0 && !(mouseButtonPre_[buttonNumber] & 0x80);
 }
 
-void Input::Finalize()
+bool Input::PushGamepadButton(WORD button) const
 {
-	delete instance_;
-	instance_ = nullptr;
+	return (xInputState_.Gamepad.wButtons & button) != 0;
+}
+
+bool Input::TriggerGamepadButton(WORD button) const
+{
+	return (xInputState_.Gamepad.wButtons & button) != 0 &&
+		!(xInputStatePre_.Gamepad.wButtons & button);
+}
+
+float Input::NormalizeStickValue(SHORT value, SHORT deadzone)
+{
+	if (abs(value) < deadzone) {
+		return 0.0f; // デッドゾーン内は 0
+	}
+	return static_cast<float>(value) / 32767.0f; // -1.0 ～ 1.0 に正規化
+}
+
+float Input::GetGamepadLeftStickX() const {
+	return NormalizeStickValue(xInputState_.Gamepad.sThumbLX, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+}
+
+float Input::GetGamepadLeftStickY() const {
+	return NormalizeStickValue(xInputState_.Gamepad.sThumbLY, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+}
+
+float Input::GetGamepadRightStickX() const {
+	return NormalizeStickValue(xInputState_.Gamepad.sThumbRX, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+}
+
+float Input::GetGamepadRightStickY() const {
+	return NormalizeStickValue(xInputState_.Gamepad.sThumbRY, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+}
+
+float Input::GetGamepadLeftTrigger() const
+{
+	return static_cast<float>(xInputState_.Gamepad.bLeftTrigger) / 255.0f;
+}
+
+float Input::GetGamepadRightTrigger() const
+{
+	return static_cast<float>(xInputState_.Gamepad.bRightTrigger) / 255.0f;
 }

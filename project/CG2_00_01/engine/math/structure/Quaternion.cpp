@@ -33,6 +33,11 @@ float Quaternion::Norm(const Quaternion& quaternion)
 	);
 }
 
+float Quaternion::Dot(const Quaternion& q0, const Quaternion& q1)
+{
+	return q0.x * q1.x + q0.y * q1.y + q0.z * q1.z + q0.w * q1.w;
+}
+
 Quaternion Quaternion::Normalize(const Quaternion& quaternion)
 {
 	float norm = Norm(quaternion);
@@ -120,6 +125,36 @@ Matrix4x4 Quaternion::MakeRotateMatrix(const Quaternion& quaternion)
 	return result;
 }
 
+Quaternion Quaternion::Slerp(Quaternion q0, const Quaternion& q1, float t)
+{
+	float dot = Dot(q0, q1);
+	if (dot < 0) {
+		q0 = -q0;
+		dot = -dot;
+	}
+
+	if (dot >= 1.0f - FLT_EPSILON) {
+		return q0 * (1.0f - t) + q1 * t;
+	}
+
+	float theta = std::acos(dot);
+
+	float scale0 = std::sin((1.0f - t) * theta) / std::sin(theta);
+	float scale1 = std::sin(t * theta) / std::sin(theta);
+
+	return q0 * scale0 + q1 * scale1;
+}
+
+Quaternion Quaternion::operator-() const
+{
+	return { -x, -y, -z , -w };
+}
+
+Quaternion Quaternion::operator+(const Quaternion& q) const
+{
+	return { x + q.x,q.y + y,q.z + z,q.w + w };
+}
+
 Quaternion Quaternion::operator*(const Quaternion& q) const
 {
 	return {
@@ -130,8 +165,31 @@ Quaternion Quaternion::operator*(const Quaternion& q) const
 	};
 }
 
+Quaternion Quaternion::operator*(float scalar) const
+{
+	return { x * scalar,y * scalar,z * scalar,w * scalar };
+}
+
+Quaternion& Quaternion::operator+=(const Quaternion& q)
+{
+	x += q.x;
+	y += q.y;
+	z += q.z;
+	w += q.w;
+	return *this;
+}
+
 Quaternion& Quaternion::operator*=(const Quaternion& q)
 {
 	*this = *this * q;
+	return *this;
+}
+
+Quaternion& Quaternion::operator*=(float scalar)
+{
+	x *= scalar;
+	y *= scalar;
+	z *= scalar;
+	w *= scalar;
 	return *this;
 }

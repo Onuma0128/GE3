@@ -2,17 +2,17 @@
 #include <cmath>
 #include <vector>
 
-Vector3 Normalize(const Vector4& v) {
-	Vector3 result{};
-	float Length{};
-	Length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
-	if (Length != 0.0f) {
-		result.x = v.x / Length;
-		result.y = v.y / Length;
-		result.z = v.z / Length;
-	}
-	return result;
-}
+//Vector3 Normalize(const Vector4& v) {
+//	Vector3 result{};
+//	float Length{};
+//	Length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+//	if (Length != 0.0f) {
+//		result.x = v.x / Length;
+//		result.y = v.y / Length;
+//		result.z = v.z / Length;
+//	}
+//	return result;
+//}
 
 //VertexData* DrawSphere(VertexData* vertexData, uint32_t kSubdivision) {
 //

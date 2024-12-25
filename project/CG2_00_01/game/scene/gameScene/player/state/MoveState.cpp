@@ -14,7 +14,7 @@ void MoveState::Update()
 {
 	player_->GetMoveEmitter()->SetIsCreate(false);
 	
-	if (input_->TriggerKey(DIK_SPACE)) {
+	if (input_->TriggerKey(DIK_SPACE) || input_->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
 		Vector3 velocity = player_->GetVelocity();
 		velocity.y = global_->GetValue<float>("Player", "velocityY");
 		player_->SetVelocity(velocity);
@@ -29,7 +29,7 @@ void MoveState::Update()
 
 	Vector3 velocity = {};
 
-	if (input_->PushKey(DIK_W)) {
+	/*if (input_->PushKey(DIK_W)) {
 		velocity.z = 1.0f;
 	}
 	if (input_->PushKey(DIK_S)) {
@@ -40,7 +40,11 @@ void MoveState::Update()
 	}
 	if (input_->PushKey(DIK_D)) {
 		velocity.x = 1.0f;
-	}
+	}*/
+
+	velocity.x = input_->GetGamepadLeftStickX();
+	velocity.z = input_->GetGamepadLeftStickY();
+
 	if (velocity.x != 0.0f || velocity.z != 0.0f) {
 		player_->GetMoveEmitter()->SetIsCreate(true);
 		velocity.Normalize();

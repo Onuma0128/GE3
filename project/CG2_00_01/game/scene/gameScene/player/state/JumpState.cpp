@@ -35,7 +35,7 @@ void JumpState::Update()
 	/* ==================== ジャンプから攻撃の処理へ ==================== */
 
 	if (player_->GetTransform()->translation_.y > 2.5f) {
-		if (input_->TriggerKey(DIK_SPACE)) {
+		if (input_->TriggerKey(DIK_SPACE) || input_->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
 			velocity.y = global_->GetValue<float>("Player", "attackVelocityY") * -1.0f;
 			player_->SetVelocity(velocity);
 			player_->ChengeState(std::make_unique<AttackState>(player_));
