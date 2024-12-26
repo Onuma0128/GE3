@@ -39,7 +39,6 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-
 	if (Input::GetInstance()->PushKey(DIK_P)) {
 		SceneManager::GetInstance()->ChangeScene("Title");
 	}

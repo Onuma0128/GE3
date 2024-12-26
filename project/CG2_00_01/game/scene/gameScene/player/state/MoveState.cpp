@@ -52,15 +52,15 @@ void MoveState::Update()
 	}
 
 	// 回転の処理
-	player_->GetTransform()->rotation_.Slerp(yRotation_, 0.1f);
+	player_->GetTransform()->rotation_.Slerp(yRotation_, global_->GetValue<float>("Player", "slerpSpeed"));
 
 	// 移動の処理
 	player_->GetTransform()->translation_ += velocity * global_->GetValue<float>("Player", "moveSpeed");
 
 	// 影の処理
-	player_->GetShadowTransform()->translation_.y = 0.01f;
 	player_->GetShadowTransform()->rotation_ = player_->GetTransform()->rotation_;
 	player_->GetShadowTransform()->translation_ = player_->GetTransform()->translation_;
+	player_->GetShadowTransform()->translation_.y = 0.01f;
 
 	// エミッターの処理
 	player_->GetMoveEmitter()->SetPosition(player_->GetTransform()->translation_);

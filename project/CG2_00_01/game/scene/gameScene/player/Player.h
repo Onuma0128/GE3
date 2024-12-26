@@ -23,6 +23,8 @@ public:
 
 	void Update();
 
+	void ShadowUpdate();
+
 	void Draw();
 
 	void SetIsShake(bool isShake) { isShake_ = isShake; }

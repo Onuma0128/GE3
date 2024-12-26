@@ -27,10 +27,8 @@ void JumpState::Update()
 	// エミッターの処理
 	player_->GetMoveEmitter()->SetPosition(player_->GetTransform()->translation_);
 
-	// 影のサイズ、透明度の処理
-	float scale = (50.0f - player_->GetTransform()->translation_.y) / (50.0f - 0.5f);
-	player_->GetShadowTransform()->scale_ = Vector3{ scale,0.01f,scale };
-	player_->GetShadowModel()->SetColor(Vector4{ 0.0f,0.0f,0.0f,scale });
+	// 影のサイズ、透明度の更新処理
+	player_->ShadowUpdate();
 
 	/* ==================== ジャンプから攻撃の処理へ ==================== */
 

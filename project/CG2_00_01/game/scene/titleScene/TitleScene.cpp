@@ -31,10 +31,7 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
-		SceneManager::GetInstance()->ChangeScene("Game");
-	}
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+	if (Input::GetInstance()->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
 		SceneManager::GetInstance()->ChangeScene("Game");
 	}
 }

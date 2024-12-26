@@ -20,7 +20,7 @@ void AttackState::Update()
 	/* ==================== 攻撃時のアニメーション ==================== */
 
 	if (attackAnimaFrame_ < 1.0f) {
-		attackAnimaFrame_ += 1.0f / 20.0f;
+		attackAnimaFrame_ += 1.0f / global_->GetValue<float>("PlayerAttack", "attackAnimaFrame");
 		if (attackAnimaFrame_ >= 1.0f) {
 			attackAnimaFrame_ = 1.0f;
 		}
@@ -32,7 +32,8 @@ void AttackState::Update()
 
 		// ベクトルから回転行列を計算
 		currentDirection = Vector3::ExprUnitX;
-		Quaternion xRotation = Quaternion::MakeRotateAxisAngleQuaternion(currentDirection, static_cast<float>(std::numbers::pi) / 10.0f);
+		float angle = static_cast<float>(std::numbers::pi) * 2.0f / global_->GetValue<float>("PlayerAttack", "attackAnimaFrame");
+		Quaternion xRotation = Quaternion::MakeRotateAxisAngleQuaternion(currentDirection, angle);
 		player_->GetTransform()->rotation_.AddRotation(xRotation);
 	}
 
@@ -42,6 +43,9 @@ void AttackState::Update()
 		attackAnimaFrame_ = 1.0f;
 
 		player_->GetTransform()->translation_.y += player_->GetVelocity().y;
+
+		// 影のサイズ、透明度の更新処理
+		player_->ShadowUpdate();
 
 		if (player_->GetTransform()->translation_.y < 0.5f) {
 			player_->SetIsShake(true);
