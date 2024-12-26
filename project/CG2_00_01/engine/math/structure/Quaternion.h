@@ -19,6 +19,9 @@ public:
     // 単位Quaternion
     static Quaternion IdentityQuaternion();
 
+    // Quaternionの加算
+    void AddRotation(const Quaternion& deltaRotation);
+
     // 共役Quaternion
     static Quaternion Conjugate(const Quaternion& quaternion);
 
@@ -43,8 +46,11 @@ public:
     // Quaternionから回転行列を求める
     static Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion);
 
+    // 回転行列からQuaternionを求める
+    static Quaternion FormRotationMatrix(const Matrix4x4& matrix);
+
     // 球面線形補間
-    static Quaternion Slerp(Quaternion q0, const Quaternion& q1, float t);
+    void Slerp(const Quaternion& q1, float t);
 
 
     // 単項演算子オーバーロード

@@ -28,5 +28,7 @@ private:
 
 	std::unique_ptr<Object3d> teapot_ = nullptr;
 	std::unique_ptr<WorldTransform> teapotTrans_ = nullptr;
+
+	Quaternion yRotation = Quaternion::IdentityQuaternion();
 };
 

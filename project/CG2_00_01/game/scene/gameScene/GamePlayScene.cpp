@@ -9,6 +9,7 @@
 #include "SpriteBase.h"
 #include "PrimitiveDrawer.h"
 
+#include "imgui.h"
 #include "titleScene/TitleScene.h"
 
 void GamePlayScene::Initialize()
@@ -43,10 +44,26 @@ void GamePlayScene::Update()
 		SceneManager::GetInstance()->ChangeScene("Title");
 	}
 
-	transform_->rotation_.y += 0.01f;
+	float joystickX = Input::GetInstance()->GetGamepadLeftStickX();
+	float joystickY = Input::GetInstance()->GetGamepadLeftStickY();
+
+	Vector3 velocity = { joystickX, 0.0f, joystickY };
+	Vector3 targetDirection = { -joystickX, 0.0f, joystickY };
+	Vector3 currentDirection = Vector3::ExprUnitZ;
+	if (joystickX != 0.0f || joystickY != 0.0f) {
+		Matrix4x4 rotationMatrix = Matrix4x4::DirectionToDirection(currentDirection, targetDirection);
+		yRotation = Quaternion::FormRotationMatrix(rotationMatrix);
+	}
+	teapotTrans_->rotation_.Slerp(yRotation, 0.1f);
+
+	teapotTrans_->translation_ += velocity * 0.1f;
 
 	teapot_->Update();
 	model_->Update();
+
+	ImGui::Begin("joystick");
+	ImGui::Text("%.3f,%.3f", joystickX, joystickY);
+	ImGui::End();
 }
 
 void GamePlayScene::Draw()

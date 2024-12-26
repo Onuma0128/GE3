@@ -6,6 +6,7 @@
 
 #include "Vector3.h"
 #include "Matrix4x4.h"
+#include "Quaternion.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -43,8 +44,8 @@ public:
 
 	// ローカルスケール
 	Vector3 scale_ = { 1, 1, 1 };
-	// X,Y,Z軸回りのローカル回転角
-	Vector3 rotation_ = { 0, 0, 0 };
+	// ローカル回転角
+	Quaternion rotation_ = Quaternion::IdentityQuaternion();
 	// ローカル座標
 	Vector3 translation_ = { 0, 0, 0 };
 	// ローカル → ワールド変換行列

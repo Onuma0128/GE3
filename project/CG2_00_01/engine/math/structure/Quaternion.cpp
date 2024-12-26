@@ -20,6 +20,11 @@ Quaternion Quaternion::IdentityQuaternion()
 	return { 0.0f,0.0f,0.0f,1.0f };
 }
 
+void Quaternion::AddRotation(const Quaternion& deltaRotation)
+{
+	*this = Normalize(*this * deltaRotation);
+}
+
 Quaternion Quaternion::Conjugate(const Quaternion& quaternion)
 {
 	return { -quaternion.x,-quaternion.y,-quaternion.z,quaternion.w };
@@ -125,16 +130,58 @@ Matrix4x4 Quaternion::MakeRotateMatrix(const Quaternion& quaternion)
 	return result;
 }
 
-Quaternion Quaternion::Slerp(Quaternion q0, const Quaternion& q1, float t)
+Quaternion Quaternion::FormRotationMatrix(const Matrix4x4& matrix)
 {
-	float dot = Dot(q0, q1);
+	Quaternion result = IdentityQuaternion();
+
+	float trace = matrix.m[0][0] + matrix.m[1][1] + matrix.m[2][2];
+
+	if (trace > 0.0f) {
+		float s = std::sqrt(trace + 1.0f) * 2.0f; // s = 4 * w
+		result.w = 0.25f * s;
+		result.x = (matrix.m[2][1] - matrix.m[1][2]) / s;
+		result.y = (matrix.m[0][2] - matrix.m[2][0]) / s;
+		result.z = (matrix.m[1][0] - matrix.m[0][1]) / s;
+	}
+	else {
+		// 最大要素を基準にしてゼロ除算を防ぐ
+		if ((matrix.m[0][0] > matrix.m[1][1]) && (matrix.m[0][0] > matrix.m[2][2])) {
+			float s = std::sqrt(1.0f + matrix.m[0][0] - matrix.m[1][1] - matrix.m[2][2]) * 2.0f;
+			result.w = (matrix.m[2][1] - matrix.m[1][2]) / s;
+			result.x = 0.25f * s;
+			result.y = (matrix.m[0][1] + matrix.m[1][0]) / s;
+			result.z = (matrix.m[0][2] + matrix.m[2][0]) / s;
+		}
+		else if (matrix.m[1][1] > matrix.m[2][2]) {
+			float s = std::sqrt(1.0f + matrix.m[1][1] - matrix.m[0][0] - matrix.m[2][2]) * 2.0f;
+			result.w = (matrix.m[0][2] - matrix.m[2][0]) / s;
+			result.x = (matrix.m[0][1] + matrix.m[1][0]) / s;
+			result.y = 0.25f * s;
+			result.z = (matrix.m[1][2] + matrix.m[2][1]) / s;
+		}
+		else {
+			float s = std::sqrt(1.0f + matrix.m[2][2] - matrix.m[0][0] - matrix.m[1][1]) * 2.0f;
+			result.w = (matrix.m[1][0] - matrix.m[0][1]) / s;
+			result.x = (matrix.m[0][2] + matrix.m[2][0]) / s;
+			result.y = (matrix.m[1][2] + matrix.m[2][1]) / s;
+			result.z = 0.25f * s;
+		}
+	}
+
+	return Normalize(result);
+}
+
+void Quaternion::Slerp(const Quaternion& q1, float t)
+{
+	float dot = Dot(*this, q1);
 	if (dot < 0) {
-		q0 = -q0;
+		*this = -*this;
 		dot = -dot;
 	}
 
 	if (dot >= 1.0f - FLT_EPSILON) {
-		return q0 * (1.0f - t) + q1 * t;
+		*this = *this * (1.0f - t) + q1 * t;
+		return;
 	}
 
 	float theta = std::acos(dot);
@@ -142,7 +189,7 @@ Quaternion Quaternion::Slerp(Quaternion q0, const Quaternion& q1, float t)
 	float scale0 = std::sin((1.0f - t) * theta) / std::sin(theta);
 	float scale1 = std::sin(t * theta) / std::sin(theta);
 
-	return q0 * scale0 + q1 * scale1;
+	*this = *this * scale0 + q1 * scale1;
 }
 
 Quaternion Quaternion::operator-() const
