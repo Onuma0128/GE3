@@ -9,6 +9,7 @@
 #include "SpriteBase.h"
 #include "PrimitiveDrawer.h"
 
+#include "imgui.h"
 #include "titleScene/TitleScene.h"
 
 void GamePlayScene::Initialize()

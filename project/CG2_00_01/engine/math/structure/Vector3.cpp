@@ -5,6 +5,11 @@
 // コンストラクタ
 Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 
+const Vector3 Vector3::ExprUnitX = { 1.0f,0.0f,0.0f };
+const Vector3 Vector3::ExprUnitY = { 0.0f,1.0f,0.0f };
+const Vector3 Vector3::ExprUnitZ = { 0.0f,0.0f,1.0f };
+const Vector3 Vector3::ExprZero = { 0.0f,0.0f,0.0f };
+
 // 加算
 Vector3 Vector3::Add(const Vector3& v1, const Vector3& v2) {
     return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };

@@ -5,6 +5,8 @@
 
 #include "gameScene/player/state/BaseState.h"
 
+#include "Quaternion.h"
+
 class MoveState : public BaseState
 {
 public:
@@ -28,4 +30,5 @@ private:
 	Input* input_ = Input::GetInstance();
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 
+	Quaternion yRotation_ = Quaternion::IdentityQuaternion();
 };

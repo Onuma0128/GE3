@@ -13,6 +13,12 @@ public:
     // コンストラクタ
     Vector3(float x = 0, float y = 0, float z = 0);
 
+    // 定数
+    static const Vector3 ExprUnitX;
+    static const Vector3 ExprUnitY;
+    static const Vector3 ExprUnitZ;
+    static const Vector3 ExprZero;
+
     // 加算
     static Vector3 Add(const Vector3& v1, const Vector3& v2);
 

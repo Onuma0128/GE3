@@ -1,10 +1,12 @@
 #include "Matrix4x4.h"
 
 #include <cmath>
+#include <numbers>
 
 #include "imgui.h"
 
 #include "Vector3.h"
+#include "Quaternion.h"
 
 // コンストラクタ：すべての要素を0に初期化
 Matrix4x4::Matrix4x4() {
@@ -168,6 +170,11 @@ Matrix4x4 Matrix4x4::Affine(const Vector3& scale, const Vector3& rotate, const V
     return  Scale(scale) * Rotate(rotate) * Translate(translate);
 }
 
+Matrix4x4 Matrix4x4::Affine(const Vector3& scale, const Quaternion& rotate, const Vector3& translate)
+{
+    return Scale(scale) * Quaternion::MakeRotateMatrix(rotate) * Translate(translate);
+}
+
 // 逆行列の生成
 Matrix4x4 Matrix4x4::Inverse(const Matrix4x4& m) {
     Matrix4x4 result;
@@ -258,55 +265,6 @@ Matrix4x4 Matrix4x4::MakeRotateAxisAngle(const Vector3& axis, float angle)
     // 回転行列の各成分を計算
     Matrix4x4 rotation = Matrix4x4::Identity();
     rotation.m[0][0] = cosTheta + x * x * oneMinusCosTheta;
-    rotation.m[0][1] = x * y * oneMinusCosTheta - z * sinTheta;
-    rotation.m[0][2] = x * z * oneMinusCosTheta + y * sinTheta;
-    rotation.m[0][3] = 0.0f;
-
-    rotation.m[1][0] = y * x * oneMinusCosTheta + z * sinTheta;
-    rotation.m[1][1] = cosTheta + y * y * oneMinusCosTheta;
-    rotation.m[1][2] = y * z * oneMinusCosTheta - x * sinTheta;
-    rotation.m[1][3] = 0.0f;
-
-    rotation.m[2][0] = z * x * oneMinusCosTheta - y * sinTheta;
-    rotation.m[2][1] = z * y * oneMinusCosTheta + x * sinTheta;
-    rotation.m[2][2] = cosTheta + z * z * oneMinusCosTheta;
-    rotation.m[2][3] = 0.0f;
-
-    rotation.m[3][0] = 0.0f;
-    rotation.m[3][1] = 0.0f;
-    rotation.m[3][2] = 0.0f;
-    rotation.m[3][3] = 1.0f;
-
-    return rotation;
-}
-
-Matrix4x4 Matrix4x4::DirectionToDirection(const Vector3& from, const Vector3& to)
-{
-    // 入力ベクトルの正規化
-    Vector3 fromNorm = from.Normalize();
-    Vector3 toNorm = to.Normalize();
-
-    // 回転軸を計算
-    Vector3 axis = Vector3::Cross(fromNorm, toNorm);
-
-    // from と to が同じ方向の場合、単位行列を返す
-    if (axis.Length() < 1e-6f) {
-        return Matrix4x4::Identity();
-    }
-
-    // 回転軸を正規化
-    Vector3 normalizeAxis = axis.Normalize();
-
-    // 回転角を計算
-    float cosTheta = Vector3::Dot(fromNorm, toNorm);
-    float sinTheta = std::sqrt(1.0f - cosTheta * cosTheta);
-    float oneMinusCosTheta = 1.0f - cosTheta;
-
-    // 回転行列の作成
-    Matrix4x4 rotation = Matrix4x4::Identity();
-    float x = normalizeAxis.x, y = normalizeAxis.y, z = normalizeAxis.z;
-
-    rotation.m[0][0] = cosTheta + x * x * oneMinusCosTheta;
     rotation.m[0][1] = x * y * oneMinusCosTheta + z * sinTheta;
     rotation.m[0][2] = x * z * oneMinusCosTheta - y * sinTheta;
     rotation.m[0][3] = 0.0f;
@@ -327,4 +285,33 @@ Matrix4x4 Matrix4x4::DirectionToDirection(const Vector3& from, const Vector3& to
     rotation.m[3][3] = 1.0f;
 
     return rotation;
+}
+
+Matrix4x4 Matrix4x4::DirectionToDirection(const Vector3& from, const Vector3& to)
+{
+    // 入力ベクトルの正規化
+    Vector3 fromNorm = from.Normalize();
+    Vector3 toNorm = to.Normalize();
+
+    // 回転軸を計算し、正規化
+    Vector3 axis = Vector3::Cross(fromNorm, toNorm);
+
+    // from と to が同じ方向の場合、単位行列を返す
+    if (axis.Length() < 1e-6f) {
+        // 同方向: 単位行列
+        if (Vector3::Dot(fromNorm, toNorm) > 0.9999f) {
+            return Matrix4x4::Identity();
+        }
+
+        // 逆方向: 任意の軸で180度回転
+        Vector3 arbitraryAxis = (std::abs(fromNorm.x) < 0.1f) ? Vector3(1.0f, 0.0f, 0.0f) : Vector3(0.0f, 1.0f, 0.0f);
+        axis = Vector3::Cross(fromNorm, arbitraryAxis).Normalize();
+        return MakeRotateAxisAngle(axis, static_cast<float>(std::numbers::pi));
+    }
+
+    axis = axis.Normalize();
+    float cosTheta = Vector3::Dot(fromNorm, toNorm);
+
+    // 回転行列を返す
+    return MakeRotateAxisAngle(axis, std::acos(cosTheta));
 }

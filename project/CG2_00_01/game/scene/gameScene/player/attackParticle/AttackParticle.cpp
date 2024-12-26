@@ -1,6 +1,7 @@
 #include "AttackParticle.h"
 
 #include "random"
+#include <numbers>
 
 void AttackParticle::Init(const std::string& modelName, const Vector3& position)
 {
@@ -39,7 +40,7 @@ void AttackParticle::Update()
 	}
 	else {
 		velocity_.y -= 0.005f;
-		transform_->rotation_ += velocity_;
+		transform_->rotation_.AddRotation(Quaternion::MakeRotateAxisAngleQuaternion(velocity_,static_cast<float>(std::numbers::pi) / 18.0f));
 		transform_->translation_ += velocity_;
 	}
 	particle_->Update();

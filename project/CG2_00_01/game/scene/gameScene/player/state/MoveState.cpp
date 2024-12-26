@@ -7,7 +7,14 @@ MoveState::MoveState(Player* player) : BaseState(player) {}
 
 void MoveState::Initialize()
 {
-	
+	// 回転用のベクトル
+	Vector3 targetDirection = { -player_->GetVelocity().x, 0.0f, player_->GetVelocity().z};
+	Vector3 currentDirection = Vector3::ExprUnitZ;
+	// ベクトルから回転行列を計算
+	if (player_->GetVelocity().x != 0.0f || player_->GetVelocity().z != 0.0f) {
+		Matrix4x4 rotationMatrix = Matrix4x4::DirectionToDirection(currentDirection, targetDirection);
+		yRotation_ = Quaternion::FormRotationMatrix(rotationMatrix);
+	}
 }
 
 void MoveState::Update()
@@ -28,34 +35,24 @@ void MoveState::Update()
 	}
 
 	Vector3 velocity = {};
-
-	/*if (input_->PushKey(DIK_W)) {
-		velocity.z = 1.0f;
-	}
-	if (input_->PushKey(DIK_S)) {
-		velocity.z = -1.0f;
-	}
-	if (input_->PushKey(DIK_A)) {
-		velocity.x = -1.0f;
-	}
-	if (input_->PushKey(DIK_D)) {
-		velocity.x = 1.0f;
-	}*/
-
 	velocity.x = input_->GetGamepadLeftStickX();
 	velocity.z = input_->GetGamepadLeftStickY();
+	// 回転用のベクトル
+	Vector3 targetDirection = { -velocity.x, 0.0f, velocity.z };
+	Vector3 currentDirection = Vector3::ExprUnitZ;
 
 	if (velocity.x != 0.0f || velocity.z != 0.0f) {
 		player_->GetMoveEmitter()->SetIsCreate(true);
 		velocity.Normalize();
 		player_->SetVelocity(velocity);
+
+		// ベクトルから回転行列を計算
+		Matrix4x4 rotationMatrix = Matrix4x4::DirectionToDirection(currentDirection, targetDirection);
+		yRotation_ = Quaternion::FormRotationMatrix(rotationMatrix);
 	}
 
 	// 回転の処理
-	float newRotateY = std::atan2(player_->GetVelocity().x, player_->GetVelocity().z);
-	float nowRotateY = player_->GetTransform()->rotation_.y;
-	float rotate = LerpShortAngle(nowRotateY, newRotateY, 0.2f);
-	player_->GetTransform()->rotation_ = Vector3{ 0.0f,rotate ,0.0f };
+	player_->GetTransform()->rotation_.Slerp(yRotation_, 0.1f);
 
 	// 移動の処理
 	player_->GetTransform()->translation_ += velocity * global_->GetValue<float>("Player", "moveSpeed");

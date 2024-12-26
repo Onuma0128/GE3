@@ -28,11 +28,11 @@ private:
 	std::unique_ptr<Object3d> ground_;
 	std::unique_ptr<WorldTransform> groundTransform_;
 
-	/* ==================== カメラ ==================== */
+	/* ==================== �J���� ==================== */
 
 	std::unique_ptr<GameCamera> camera_ = nullptr;
 
-	/* ==================== プレイヤー ==================== */
+	/* ==================== �v���C���[ ==================== */
 
 	std::unique_ptr<Player> player_ = nullptr;
 

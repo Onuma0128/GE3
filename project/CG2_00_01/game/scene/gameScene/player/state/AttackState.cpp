@@ -25,9 +25,15 @@ void AttackState::Update()
 			attackAnimaFrame_ = 1.0f;
 		}
 		Vector3 velocity = player_->GetVelocity();
-		float rotateX = 2.0f * static_cast<float>(std::numbers::pi) * attackAnimaFrame_;
-		float rotateY = std::atan2(velocity.x, velocity.z);
-		player_->GetTransform()->rotation_ = Vector3{ rotateX ,rotateY,0.0f };
+
+		// 回転用のベクトル
+		Vector3 targetDirection = { -velocity.x, 0.0f, velocity.y };
+		Vector3 currentDirection = Vector3::ExprUnitZ;
+
+		// ベクトルから回転行列を計算
+		currentDirection = Vector3::ExprUnitX;
+		Quaternion xRotation = Quaternion::MakeRotateAxisAngleQuaternion(currentDirection, static_cast<float>(std::numbers::pi) / 10.0f);
+		player_->GetTransform()->rotation_.AddRotation(xRotation);
 	}
 
 	/* ==================== 移動の処理に遷移 ==================== */

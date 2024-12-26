@@ -3,6 +3,7 @@
 #include <string>
 
 class Vector3;
+class Quaternion;
 
 class Matrix4x4 {
 public:
@@ -45,6 +46,7 @@ public:
 
     // アフィン変換行列の生成
     static Matrix4x4 Affine(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+    static Matrix4x4 Affine(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
 
     // 逆行列の生成
     static Matrix4x4 Inverse(const Matrix4x4& matrix);
