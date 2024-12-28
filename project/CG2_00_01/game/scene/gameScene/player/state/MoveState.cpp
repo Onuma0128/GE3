@@ -1,9 +1,9 @@
 #include "MoveState.h"
 
 #include "gameScene/player/Player.h"
-#include "gameScene/player/state/JumpState.h"
+#include "gameScene/animation/PlayerAnimation.h"
 
-MoveState::MoveState(Player* player) : BaseState(player) {}
+MoveState::MoveState(Player* player, PlayerAnimation* playerAnimation) : BaseState(player, playerAnimation) {}
 
 void MoveState::Initialize()
 {
@@ -20,19 +20,6 @@ void MoveState::Initialize()
 void MoveState::Update()
 {
 	player_->GetMoveEmitter()->SetIsCreate(false);
-	
-	if (input_->TriggerKey(DIK_SPACE) || input_->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
-		Vector3 velocity = player_->GetVelocity();
-		velocity.y = global_->GetValue<float>("Player", "velocityY");
-		player_->SetVelocity(velocity);
-
-		Vector3 acceleration = player_->GetAcceleration();
-		acceleration.y = global_->GetValue<float>("Player", "accelerationY");
-		player_->SetAcceleration(acceleration);
-
-		player_->ChengeState(std::make_unique<JumpState>(player_));
-		return;
-	}
 
 	Vector3 velocity = {};
 	velocity.x = input_->GetGamepadLeftStickX();
@@ -67,10 +54,14 @@ void MoveState::Update()
 	Vector3 acceleration = player_->GetVelocity() * -1.0f;
 	acceleration.y = 1.0f;
 	player_->GetMoveEmitter()->SetAcceleration(acceleration);
+
+	playerAnimation_->NormalAnimation();
+	playerAnimation_->Update();
 }
 
 void MoveState::Draw()
 {
+	playerAnimation_->Draw();
 }
 
 void MoveState::Finalize()

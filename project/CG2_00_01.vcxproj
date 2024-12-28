@@ -108,8 +108,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CG2_00_01\game\scene\gameScene\player\state\AttackState.cpp" />
-    <ClCompile Include="CG2_00_01\game\scene\gameScene\player\attackParticle\AttackParticle.cpp" />
     <ClCompile Include="CG2_00_01\engine\audio\Audio.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\audio\AudioManager.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\object\camera\CameraManager.cpp" />
@@ -176,12 +174,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\game\scene\gameScene\player\Player.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\gameScene\gameCamera\GameCamera.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\gameScene\player\state\MoveState.cpp" />
-    <ClCompile Include="CG2_00_01\game\scene\gameScene\player\state\JumpState.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\animation\PlayerModels.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\animation\PlayerAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CG2_00_01\game\scene\gameScene\player\state\AttackState.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameScene\player\state\BaseState.h" />
-    <ClInclude Include="CG2_00_01\game\scene\gameScene\player\attackParticle\AttackParticle.h" />
     <ClInclude Include="CG2_00_01\engine\audio\Audio.h" />
     <ClInclude Include="CG2_00_01\engine\base\audio\AudioManager.h" />
     <ClInclude Include="CG2_00_01\engine\base\object\camera\CameraManager.h" />
@@ -246,7 +243,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\game\scene\gameScene\player\Player.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameScene\gameCamera\GameCamera.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameScene\player\state\MoveState.h" />
-    <ClInclude Include="CG2_00_01\game\scene\gameScene\player\state\JumpState.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\animation\PlayerModels.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\animation\PlayerAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

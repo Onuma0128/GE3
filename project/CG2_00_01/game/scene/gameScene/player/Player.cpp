@@ -31,11 +31,15 @@ void Player::Init()
 	shadowModel_->SetColor(Vector4{ 0.0f,0.0f,0.0f,1.0f });
 	shadowTransform_->scale_ = Vector3{ 1.0f,0.01f,1.0f };
 
+	playerAnimation_ = std::make_unique<PlayerAnimation>();
+	playerAnimation_->SetPlayer(this);
+	playerAnimation_->Init();
+
 	// パーティクルの初期化
 	moveParticleEmitter_ = std::make_unique<ParticleEmitter>("playerDust");
 	ParticleManager::GetInstance()->CreateParticleGroup("playerDust", "white1x1.png", moveParticleEmitter_.get());
 
-	ChengeState(std::make_unique<MoveState>(this));
+	ChengeState(std::make_unique<MoveState>(this, playerAnimation_.get()));
 }
 
 void Player::Update()
@@ -43,17 +47,10 @@ void Player::Update()
 	state_->Update();
 
 	model_->Update();
+
 	shadowModel_->Update();
 
-	for (auto& attackParticle : attackParticles_) {
-		attackParticle->Update();
-	}
-
-	attackParticles_.remove_if([](const std::unique_ptr<AttackParticle>& particle) {
-		return !particle->GetIsActive();
-	});
-
-	LightManager::GetInstance()->SetPointLightPosition(transform_->translation_ + Vector3{ 0,2,0 });
+	LightManager::GetInstance()->SetPointLightPosition(transform_->translation_ + Vector3{ 0,4,0 });
 }
 
 void Player::ShadowUpdate()
@@ -72,13 +69,9 @@ void Player::Draw()
 {
 	state_->Draw();
 
-	model_->Draw();
+	//model_->Draw();
 
 	shadowModel_->Draw();
-
-	for (auto& attackParticle : attackParticles_) {
-		attackParticle->Draw();
-	}
 }
 
 void Player::ChengeState(std::unique_ptr<BaseState> newState)

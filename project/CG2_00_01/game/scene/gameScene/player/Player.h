@@ -11,7 +11,7 @@
 #include "Vector3.h"
 
 #include "state/BaseState.h"
-#include "attackParticle/AttackParticle.h"
+#include "gameScene/animation/PlayerAnimation.h"
 
 class Player
 {
@@ -41,7 +41,6 @@ public:
 	/* ==================== パーティクル ==================== */
 
 	ParticleEmitter* GetMoveEmitter()const { return moveParticleEmitter_.get(); }
-	void SetAttackParticle(std::unique_ptr<AttackParticle> particle) { attackParticles_.push_back(std::move(particle)); }
 
 	/* ==================== playerの変数 ==================== */
 
@@ -69,10 +68,11 @@ private:
 	std::unique_ptr<Object3d> shadowModel_ = nullptr;
 	std::unique_ptr<WorldTransform> shadowTransform_ = nullptr;
 
+	// プレイヤーのモデル
+	std::unique_ptr<PlayerAnimation> playerAnimation_ = nullptr;
+
 	// 移動時のパーティクル
 	std::unique_ptr<ParticleEmitter> moveParticleEmitter_ = nullptr;
-	// 攻撃時のパーティクル
-	std::list<std::unique_ptr<AttackParticle>> attackParticles_;
 
 	// 状態
 	std::unique_ptr<BaseState> state_;

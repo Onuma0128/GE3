@@ -98,7 +98,7 @@ void LightManager::MakePointLightData()
 	pointLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	pointLightData_->position = { 0.0f,2.0f,2.0f };
 	pointLightData_->intensity = 1.0f;
-	pointLightData_->radius = 3.0f;
+	pointLightData_->radius = 5.0f;
 	pointLightData_->decay = 0.3f;
 }
 

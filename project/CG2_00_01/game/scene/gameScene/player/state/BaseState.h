@@ -1,12 +1,13 @@
 #pragma once
 
 class Player;
+class PlayerAnimation;
 
 class BaseState
 {
 public:
 
-	BaseState(Player* player);
+	BaseState(Player* player,PlayerAnimation* playerAnimation);
 
 	virtual void Initialize() = 0;
 
@@ -19,5 +20,6 @@ public:
 protected:
 
 	Player* player_ = nullptr;
+	PlayerAnimation* playerAnimation_ = nullptr;
 
 };

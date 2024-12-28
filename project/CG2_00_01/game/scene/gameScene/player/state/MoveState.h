@@ -11,7 +11,7 @@ class MoveState : public BaseState
 {
 public:
 
-	MoveState(Player* player);
+	MoveState(Player* player, PlayerAnimation* playerAnimation);
 
 	void Initialize() override;
 

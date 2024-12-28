@@ -11,6 +11,8 @@ void MyGame::Initialize()
 {
 	Framework::Initialize();
 
+	LoadResource();
+
 	sceneFactory_ = new SceneFactory();
 	SceneManager::GetInstance()->SetSceneFactory(sceneFactory_);
 	SceneManager::GetInstance()->ChangeScene("Title");
@@ -62,4 +64,15 @@ void MyGame::Draw()
 
 	// 描画後の処理
 	directXEngine_->PostDraw();
+}
+
+void MyGame::LoadResource()
+{
+	ModelManager::GetInstance()->LoadModel("resources/player/head", "player_head.obj");
+	ModelManager::GetInstance()->LoadModel("resources/player/body", "player_body.obj");
+	ModelManager::GetInstance()->LoadModel("resources/player/leftShoulder", "player_leftShoulder.obj");
+	ModelManager::GetInstance()->LoadModel("resources/player/rightShoulder", "player_rightShoulder.obj");
+	ModelManager::GetInstance()->LoadModel("resources/player/leftArm", "player_leftArm.obj");
+	ModelManager::GetInstance()->LoadModel("resources/player/rightArm", "player_rightArm.obj");
+	ModelManager::GetInstance()->LoadModel("resources/player/sword", "sword.obj");
 }

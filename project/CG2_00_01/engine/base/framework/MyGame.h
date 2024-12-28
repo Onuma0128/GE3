@@ -19,6 +19,8 @@ public:
 	// 描画
 	void Draw() override;
 
+	void LoadResource();
+
 private:
 
 };
