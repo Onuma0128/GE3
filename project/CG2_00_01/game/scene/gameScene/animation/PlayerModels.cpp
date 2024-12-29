@@ -58,6 +58,7 @@ void PlayerModels::Init()
 
 void PlayerModels::GlobalInit()
 {
+	// 座標
 	global_->AddValue<Vector3>("PlayerModelOffset", "head", Vector3{});
 	global_->AddValue<Vector3>("PlayerModelOffset", "body", Vector3{});
 	global_->AddValue<Vector3>("PlayerModelOffset", "leftShoulder", Vector3{});
@@ -66,6 +67,7 @@ void PlayerModels::GlobalInit()
 	global_->AddValue<Vector3>("PlayerModelOffset", "rightArm", Vector3{});
 	global_->AddValue<Vector3>("PlayerModelOffset", "sword", Vector3{});
 
+	// 回転
 	global_->AddValue<Vector3>("PlayerModelOffset", "headAngle", Vector3{});
 	global_->AddValue<Vector3>("PlayerModelOffset", "bodyAngle", Vector3{});
 	global_->AddValue<Vector3>("PlayerModelOffset", "leftShoulderAngle", Vector3{});

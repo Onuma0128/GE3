@@ -3,6 +3,8 @@
 #include "gameScene/player/Player.h"
 #include "gameScene/animation/PlayerAnimation.h"
 
+#include "gameScene/player/state/AttackState.h"
+
 MoveState::MoveState(Player* player, PlayerAnimation* playerAnimation) : BaseState(player, playerAnimation) {}
 
 void MoveState::Initialize()
@@ -54,6 +56,12 @@ void MoveState::Update()
 	Vector3 acceleration = player_->GetVelocity() * -1.0f;
 	acceleration.y = 1.0f;
 	player_->GetMoveEmitter()->SetAcceleration(acceleration);
+
+	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
+		player_->GetMoveEmitter()->SetIsCreate(false);
+		player_->ChengeState(std::make_unique<AttackState>(player_, playerAnimation_));
+		return;
+	}
 
 	playerAnimation_->NormalAnimation();
 	playerAnimation_->Update();

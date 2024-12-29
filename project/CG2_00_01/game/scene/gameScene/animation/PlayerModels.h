@@ -28,6 +28,7 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 
 	// Modelのゲッター
+	Object3d* GetHeadModel() { return head_.get(); }
 	Object3d* GetBodyModel() { return body_.get(); }
 	Object3d* GetLeftShoulderModel() { return leftShoulder_.get(); }
 	Object3d* GetRightShoulderModel() { return rightShoulder_.get(); }
@@ -36,6 +37,7 @@ public:
 	std::vector<std::unique_ptr<Object3d>>& GetModels() { return models_; }
 
 	// Transformのゲッター
+	WorldTransform* GetHeadTrans() { return headTrans_.get(); }
 	WorldTransform* GetBodyTrans() { return bodyTrans_.get(); }
 	WorldTransform* GetLeftShoulderTrans() { return leftShoulderTrans_.get(); }
 	WorldTransform* GetRightShoulderTrans() { return rightShoulderTrans_.get(); }

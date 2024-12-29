@@ -44,6 +44,8 @@ void Player::Init()
 
 void Player::Update()
 {
+	playerAnimation_->Debug_ImGui();
+
 	state_->Update();
 
 	model_->Update();
