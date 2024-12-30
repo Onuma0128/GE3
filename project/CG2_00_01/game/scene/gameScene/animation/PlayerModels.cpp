@@ -54,6 +54,10 @@ void PlayerModels::Init()
 	swordTrans_->parent_ = rightArmTrans_.get();
 
 	ModelOffset();
+
+	for (auto& model : models_) {
+		model->Update();
+	}
 }
 
 void PlayerModels::GlobalInit()

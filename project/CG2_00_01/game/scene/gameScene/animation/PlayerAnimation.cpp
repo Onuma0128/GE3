@@ -43,6 +43,8 @@ void PlayerAnimation::Reset()
 	combo2Frame_ = 0.0f;
 	combo3Frame_ = 0.0f;
 
+	nextCombo_ = false;
+
 	combo1Completion_ = false;
 	combo2Completion_ = false;
 	combo3Completion_ = false;
@@ -142,6 +144,7 @@ void PlayerAnimation::AddGlobalVariables(int comboNum, int frameNum)
 	global_->AddValue<Vector3>(AttackCombo, "rightShoulderAngle" + num, Vector3{});
 	global_->AddValue<Vector3>(AttackCombo, "leftArmAngle" + num, Vector3{});
 	global_->AddValue<Vector3>(AttackCombo, "rightArmAngle" + num, Vector3{});
+	global_->AddValue<Vector3>(AttackCombo, "swordAngle" + num, Vector3{});
 
 	// 座標用
 	global_->AddValue<Vector3>(AttackCombo, "headPos" + num, Vector3{});
@@ -150,6 +153,7 @@ void PlayerAnimation::AddGlobalVariables(int comboNum, int frameNum)
 	global_->AddValue<Vector3>(AttackCombo, "rightShoulderPos" + num, Vector3{});
 	global_->AddValue<Vector3>(AttackCombo, "leftArmPos" + num, Vector3{});
 	global_->AddValue<Vector3>(AttackCombo, "rightArmPos" + num, Vector3{});
+	global_->AddValue<Vector3>(AttackCombo, "swordPos" + num, Vector3{});
 }
 
 void PlayerAnimation::AnimationUpdate(int comboNum, int frameNum)
@@ -219,6 +223,15 @@ void PlayerAnimation::AnimationUpdate(int comboNum, int frameNum)
 	slerpV = global_->GetValue<Vector3>(AttackCombo, "rightArmPos" + num) + global_->GetValue<Vector3>("PlayerModelOffset", "rightArm");
 	Vector3LerpShortPosition(playerModels_->GetRightArmTrans()->translation_, slerpV, slerpSpeed);
 
+	/* ========== 剣 ========== */
+	// 回転
+	RotationQuaternion(offsetQ, global_->GetValue<Vector3>("PlayerModelOffset", "swordAngle"));
+	RotationQuaternion(slerpQ, global_->GetValue<Vector3>(AttackCombo, "swordAngle" + num));
+	playerModels_->GetSwordTrans()->rotation_.Slerp((offsetQ * slerpQ), slerpSpeed);
+	// 座標
+	slerpV = global_->GetValue<Vector3>(AttackCombo, "swordPos" + num) + global_->GetValue<Vector3>("PlayerModelOffset", "sword");
+	Vector3LerpShortPosition(playerModels_->GetSwordTrans()->translation_, slerpV, slerpSpeed);
+
 }
 
 void PlayerAnimation::NormalAnimation()
@@ -252,6 +265,12 @@ void PlayerAnimation::AttackCombo1()
 		}
 	}
 
+	// 次のコンボに行ける時間
+	nextCombo_ = false;
+	if (combo1Frame_ > 2.0f && combo1Frame_ <= 3.0f) {
+		nextCombo_ = true;
+	}
+
 	// 最後のフレームまで行ったらフラグを完了にする
 	if (combo1Frame_ > static_cast<float>(animationFrameNum)) {
 		combo1Completion_ = true;
@@ -261,8 +280,40 @@ void PlayerAnimation::AttackCombo1()
 
 void PlayerAnimation::AttackCombo2()
 {
+	// アニメーションを更新
+	int animationFrameNum = global_->GetValue<int>("AttackCombo2", "frameNum");
+	for (int i = 1; i <= animationFrameNum; ++i) {
+		if (combo2Frame_ >= static_cast<float>(i - 1) && combo2Frame_ < static_cast<float>(i)) {
+			combo2Frame_ += 1.0f / global_->GetValue<float>("AttackCombo2", "frame" + std::to_string(i));
+			AnimationUpdate(2, i);
+		}
+	}
+
+	// 次のコンボに行ける時間
+	nextCombo_ = false;
+	if (combo2Frame_ > 2.0f && combo2Frame_ <= 3.0f) {
+		nextCombo_ = true;
+	}
+
+	// 最後のフレームまで行ったらフラグを完了にする
+	if (combo2Frame_ > static_cast<float>(animationFrameNum)) {
+		combo2Completion_ = true;
+	}
 }
 
 void PlayerAnimation::AttackCombo3()
 {
+	// アニメーションを更新
+	int animationFrameNum = global_->GetValue<int>("AttackCombo3", "frameNum");
+	for (int i = 1; i <= animationFrameNum; ++i) {
+		if (combo3Frame_ >= static_cast<float>(i - 1) && combo3Frame_ < static_cast<float>(i)) {
+			combo3Frame_ += 1.0f / global_->GetValue<float>("AttackCombo3", "frame" + std::to_string(i));
+			AnimationUpdate(3, i);
+		}
+	}
+
+	// 最後のフレームまで行ったらフラグを完了にする
+	if (combo3Frame_ > static_cast<float>(animationFrameNum)) {
+		combo3Completion_ = true;
+	}
 }

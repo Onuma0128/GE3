@@ -41,6 +41,7 @@ public:
 	/* ==================== パーティクル ==================== */
 
 	ParticleEmitter* GetMoveEmitter()const { return moveParticleEmitter_.get(); }
+	ParticleEmitter* GetSwordEmitter()const { return swordParticleEmitter_.get(); }
 
 	/* ==================== playerの変数 ==================== */
 
@@ -73,6 +74,9 @@ private:
 
 	// 移動時のパーティクル
 	std::unique_ptr<ParticleEmitter> moveParticleEmitter_ = nullptr;
+
+	// 攻撃時剣先のパーティクル
+	std::unique_ptr<ParticleEmitter> swordParticleEmitter_ = nullptr;
 
 	// 状態
 	std::unique_ptr<BaseState> state_;

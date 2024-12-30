@@ -4,6 +4,7 @@
 #include "GlobalVariables.h"
 
 #include "gameScene/player/state/BaseState.h"
+#include "ParticleEmitter.h"
 
 class AttackState : public BaseState
 {
@@ -30,7 +31,10 @@ private:
 	Input* input_ = Input::GetInstance();
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 
-
+	// 現在のコンボ
 	AttackCombo nowCombo_ = AttackCombo::Combo1;
+
+	// コンボ終了後のフレームを管理
+	
 };
 

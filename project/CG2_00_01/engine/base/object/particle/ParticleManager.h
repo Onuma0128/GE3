@@ -22,7 +22,7 @@
 using Microsoft::WRL::ComPtr;
 
 // パーティクルのMAX値(上げすぎ注意!!)
-const uint32_t kNumMaxInstance = 512;
+const uint32_t kNumMaxInstance = 1024;
 
 class ParticleEmitter;
 

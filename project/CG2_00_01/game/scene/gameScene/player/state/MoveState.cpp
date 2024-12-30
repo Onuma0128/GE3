@@ -1,5 +1,7 @@
 #include "MoveState.h"
 
+#include "CameraManager.h"
+
 #include "gameScene/player/Player.h"
 #include "gameScene/animation/PlayerAnimation.h"
 
@@ -29,14 +31,17 @@ void MoveState::Update()
 	// 回転用のベクトル
 	Vector3 targetDirection = { -velocity.x, 0.0f, velocity.z };
 	Vector3 currentDirection = Vector3::ExprUnitZ;
+	Matrix4x4 rotateMatrix = Matrix4x4::RotateY(CameraManager::GetInstance()->GetActiveCamera()->GetRotate().y);
 
 	if (velocity.x != 0.0f || velocity.z != 0.0f) {
 		player_->GetMoveEmitter()->SetIsCreate(true);
 		velocity.Normalize();
+		velocity *= global_->GetValue<float>("Player", "moveSpeed");
+		velocity = velocity.Transform(rotateMatrix);
 		player_->SetVelocity(velocity);
 
 		// ベクトルから回転行列を計算
-		Matrix4x4 rotationMatrix = Matrix4x4::DirectionToDirection(currentDirection, targetDirection);
+		Matrix4x4 rotationMatrix = Matrix4x4::DirectionToDirection(currentDirection.Transform(rotateMatrix), targetDirection);
 		yRotation_ = Quaternion::FormRotationMatrix(rotationMatrix);
 	}
 
@@ -44,7 +49,7 @@ void MoveState::Update()
 	player_->GetTransform()->rotation_.Slerp(yRotation_, global_->GetValue<float>("Player", "slerpSpeed"));
 
 	// 移動の処理
-	player_->GetTransform()->translation_ += velocity * global_->GetValue<float>("Player", "moveSpeed");
+	player_->GetTransform()->translation_ += velocity;
 
 	// 影の処理
 	player_->GetShadowTransform()->rotation_ = player_->GetTransform()->rotation_;

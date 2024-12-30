@@ -79,8 +79,8 @@ void ParticleEmitter::Update()
     emitter_.count = global_->GetValue<int>(globalName, "count");
 
     accelerationField_.area = {
-        .min = emitter_.size.min + emitter_.transform.translate - Vector3{0.5f,0.5f,0.5f},
-        .max = emitter_.size.max + emitter_.transform.translate + Vector3{0.5f,0.5f,0.5f}
+        .min = emitter_.size.min + emitter_.transform.translate - Vector3{10.0f,10.0f,10.0f},
+        .max = emitter_.size.max + emitter_.transform.translate + Vector3{10.0f,10.0f,10.0f}
     };
     if (!global_->GetValue<bool>(globalName, "isLock")) {
         emitter_.transform.translate = global_->GetValue<Vector3>(globalName, "position");

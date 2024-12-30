@@ -1,5 +1,6 @@
 #include "AttackState.h"
 
+#include "ParticleManager.h"
 #include "gameScene/player/Player.h"
 #include "gameScene/animation/PlayerAnimation.h"
 
@@ -10,17 +11,43 @@ AttackState::AttackState(Player* player, PlayerAnimation* playerAnimation) : Bas
 void AttackState::Initialize()
 {
 	nowCombo_ = AttackCombo::Combo1;
+
+	// 剣のワールド座標を取得
+	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
+	Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
+	player_->GetSwordEmitter()->SetIsCreate(false);
+	player_->GetSwordEmitter()->SetPosition(world);
+	player_->GetSwordEmitter()->SetAcceleration(acceleration);
 }
 
 void AttackState::Update()
 {
+	player_->GetSwordEmitter()->SetIsCreate(false);
+	// 剣のワールド座標を取得
+	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
+
 	switch (nowCombo_)
 	{
 	case AttackState::AttackCombo::Combo1:
+		// 2コンボ目のアニメーションを更新
 		playerAnimation_->AttackCombo1();
+		player_->GetSwordEmitter()->SetIsCreate(true);
+		player_->GetSwordEmitter()->SetPosition(world);
+
+		if (playerAnimation_->GetCombo1Frame() < 1.1f || playerAnimation_->GetCombo1Frame() > 1.7f) {
+			player_->GetSwordEmitter()->SetIsCreate(false);
+		}
 
 		// 条件を達成したら次のコンボに移動
-		// nowCombo_ = AttackCombo::Combo2;
+		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
+			playerAnimation_->Reset();
+			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration2") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
+			player_->GetSwordEmitter()->SetAcceleration(acceleration);
+			nowCombo_ = AttackCombo::Combo2;
+			return;
+		}
+
+		// 攻撃が終了したらステートを変更
 		if (playerAnimation_->GetCombo1Completion()) {
 			playerAnimation_->Reset();
 			player_->ChengeState(std::make_unique<MoveState>(player_, playerAnimation_));
@@ -29,17 +56,48 @@ void AttackState::Update()
 
 		break;
 	case AttackState::AttackCombo::Combo2:
+		// 2コンボ目のアニメーションを更新
 		playerAnimation_->AttackCombo2();
+		player_->GetSwordEmitter()->SetIsCreate(true);
+		player_->GetSwordEmitter()->SetPosition(world);
+
+		if (playerAnimation_->GetCombo2Frame() < 1.0f || playerAnimation_->GetCombo2Frame() > 1.4f) {
+			player_->GetSwordEmitter()->SetIsCreate(false);
+		}
 
 		// 条件を達成したら次のコンボに移動
-		// nowCombo_ = AttackCombo::Combo3;
+		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
+			playerAnimation_->Reset();
+			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration3") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
+			player_->GetSwordEmitter()->SetAcceleration(acceleration);
+			nowCombo_ = AttackCombo::Combo3;
+			return;
+		}
+
+		// 攻撃が終了したらステートを変更
+		if (playerAnimation_->GetCombo2Completion()) {
+			playerAnimation_->Reset();
+			player_->ChengeState(std::make_unique<MoveState>(player_, playerAnimation_));
+			return;
+		}
 
 		break;
 	case AttackState::AttackCombo::Combo3:
+		// 3コンボ目のアニメーションを更新
 		playerAnimation_->AttackCombo3();
+		player_->GetSwordEmitter()->SetIsCreate(true);
+		player_->GetSwordEmitter()->SetPosition(world);
 
-		// 条件を達成したらコンボ攻撃を終了
-		// player_->ChengeState(std::make_unique<MoveState>(player_, playerAnimation_));
+		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 2.5f) {
+			player_->GetSwordEmitter()->SetIsCreate(false);
+		}
+
+		// 攻撃が終了したらステートを変更
+		if (playerAnimation_->GetCombo3Completion()) {
+			playerAnimation_->Reset();
+			player_->ChengeState(std::make_unique<MoveState>(player_, playerAnimation_));
+			return;
+		}
 
 		break;
 	default:

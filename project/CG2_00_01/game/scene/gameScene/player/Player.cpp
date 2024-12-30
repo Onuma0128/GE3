@@ -23,7 +23,6 @@ void Player::Init()
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj", transform_.get());
 	model_->SetTexture("resources", "uvChecker.png");
-	transform_->translation_ = Vector3{ 0.0f,0.5f,0.0f };
 
 	shadowTransform_ = std::make_unique<WorldTransform>();
 	shadowModel_ = std::make_unique<Object3d>();
@@ -35,11 +34,18 @@ void Player::Init()
 	playerAnimation_->SetPlayer(this);
 	playerAnimation_->Init();
 
-	// パーティクルの初期化
+	// 移動時パーティクルの初期化
 	moveParticleEmitter_ = std::make_unique<ParticleEmitter>("playerDust");
 	ParticleManager::GetInstance()->CreateParticleGroup("playerDust", "white1x1.png", moveParticleEmitter_.get());
 
-	ChengeState(std::make_unique<MoveState>(this, playerAnimation_.get()));
+	// 攻撃時パーティクルの初期化
+	swordParticleEmitter_ = std::make_unique<ParticleEmitter>("sword");
+	ParticleManager::GetInstance()->CreateParticleGroup("sword", "circle.png", swordParticleEmitter_.get());
+	swordParticleEmitter_->SetIsCreate(false);
+
+
+	state_ = std::move(std::make_unique<MoveState>(this, playerAnimation_.get()));
+	state_->Initialize();
 }
 
 void Player::Update()
@@ -78,6 +84,7 @@ void Player::Draw()
 
 void Player::ChengeState(std::unique_ptr<BaseState> newState)
 {
+	state_->Finalize();
 	state_ = std::move(newState);
 	state_->Initialize();
 }
@@ -90,13 +97,10 @@ void Player::GlobalInit()
 	global_->AddValue<float>("Player", "attackVelocityY", 0.05f);
 	global_->AddValue<float>("Player", "slerpSpeed", 0.1f);
 
-	global_->AddValue<float>("PlayerAttack", "attackAnimaFrame", 20.0f);
-
-	global_->AddValue<int>("PlayerAttackParticle", "count", 20);
-	global_->AddValue<float>("PlayerAttackParticle", "scale", 1.0f);
-	global_->AddValue<float>("PlayerAttackParticle", "velocityPow", 0.1f);
-	global_->AddValue<Vector3>("PlayerAttackParticle", "offset", Vector3{ 0,0,0 });
-	global_->AddValue<float>("PlayerAttackParticle", "alphaSubtrac", 0.01f);
+	global_->AddValue<Vector3>("PlayerSwordParticle", "position", Vector3{});
+	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration", Vector3{});
+	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration2", Vector3{});
+	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration3", Vector3{});
 
 	global_->AddValue<float>("PlayerShadow", "scalePow", 25.0f);
 	global_->AddValue<float>("PlayerShadow", "alphaPow", 10.0f);

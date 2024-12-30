@@ -34,6 +34,7 @@ public:
 	Object3d* GetRightShoulderModel() { return rightShoulder_.get(); }
 	Object3d* GetLeftArmModel() { return leftArm_.get(); }
 	Object3d* GetRightArmModel() { return rightArm_.get(); }
+	Object3d* GetSwordModel() { return sword_.get(); }
 	std::vector<std::unique_ptr<Object3d>>& GetModels() { return models_; }
 
 	// Transformのゲッター
@@ -43,6 +44,7 @@ public:
 	WorldTransform* GetRightShoulderTrans() { return rightShoulderTrans_.get(); }
 	WorldTransform* GetLeftArmTrans() { return leftArmTrans_.get(); }
 	WorldTransform* GetRightArmTrans() { return rightArmTrans_.get(); }
+	WorldTransform* GetSwordTrans() { return swordTrans_.get(); }
 
 private:
 

@@ -24,7 +24,6 @@ private:
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 
 	std::unique_ptr<Camera> camera_ = nullptr;
-	Vector3 offset_{};
 
 	Player* player_ = nullptr;
 
