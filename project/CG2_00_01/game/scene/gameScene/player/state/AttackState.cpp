@@ -61,7 +61,7 @@ void AttackState::Update()
 		player_->GetSwordEmitter()->SetIsCreate(true);
 		player_->GetSwordEmitter()->SetPosition(world);
 
-		if (playerAnimation_->GetCombo2Frame() < 1.0f || playerAnimation_->GetCombo2Frame() > 1.4f) {
+		if (playerAnimation_->GetCombo2Frame() < 1.0f || playerAnimation_->GetCombo2Frame() > 1.6f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
 		}
 

@@ -22,6 +22,7 @@ void GamePlayScene::Initialize()
 	groundTransform_ = std::make_unique<WorldTransform>();
 	ground_ = std::make_unique<Object3d>();
 	ground_->Initialize("ground.obj", groundTransform_.get());
+	groundTransform_->scale_ = { 10.0f,1.0f,10.0f };
 
 	player_ = std::make_unique<Player>();
 	player_->Init();
