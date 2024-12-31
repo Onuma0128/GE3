@@ -11,6 +11,7 @@
 #include "gameCamera/GameCamera.h"
 #include "player/Player.h"
 #include "enemyManager/EnemyManager.h"
+#include "collision/CollisionManager.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -24,10 +25,13 @@ public:
 
 	void Draw() override;
 
+	void CheckAllCollisions();
+
 private:
 
 	std::unique_ptr<Object3d> ground_;
 	std::unique_ptr<WorldTransform> groundTransform_;
+	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
 
 	/* ==================== カメラ ==================== */
 
@@ -41,7 +45,9 @@ private:
 
 	std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
 
+	/* ==================== 衝突マネージャー ==================== */
 
-	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
+	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
+
 };
 

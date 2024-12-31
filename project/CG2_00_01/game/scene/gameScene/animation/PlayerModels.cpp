@@ -4,6 +4,36 @@
 
 #include "gameScene/player/Player.h"
 
+void PlayerModels::OnCollision(std::string& name)
+{
+	// 衝突判定は1パターン
+
+	// 攻撃を与えた判定
+	if (name == "enemy") {
+
+	}
+}
+
+Vector3 PlayerModels::GetCenterPosition() const
+{
+	return Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(swordTrans_->matWorld_);
+}
+
+std::string PlayerModels::GetColliderName() const
+{
+	return "sword";
+}
+
+float PlayerModels::GetRadius() const
+{
+	if (player_->GetPlayerAnima()->GetCombo3Frame() == 0.0f) {
+		return global_->GetValue<float>("Collider", "swordRadius");
+	}
+	else {
+		return global_->GetValue<float>("Collider", "swordRadius") * 5.0f;
+	}
+}
+
 void PlayerModels::Init()
 {
 	GlobalInit();
@@ -80,6 +110,8 @@ void PlayerModels::GlobalInit()
 	global_->AddValue<Vector3>("PlayerModelOffset", "rightArmAngle", Vector3{});
 	global_->AddValue<Vector3>("PlayerModelOffset", "swordAngle", Vector3{});
 
+
+	global_->AddValue<float>("Collider", "swordRadius", 1.0f);
 }
 
 void PlayerModels::Update()

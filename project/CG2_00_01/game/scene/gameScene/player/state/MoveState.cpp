@@ -53,8 +53,8 @@ void MoveState::Update()
 
 	// エミッターの処理
 	player_->GetMoveEmitter()->SetPosition(player_->GetTransform()->translation_);
-	Vector3 acceleration = player_->GetVelocity() * -1.0f;
-	acceleration.y = 1.0f;
+	Vector3 acceleration = player_->GetVelocity() * global_->GetValue<float>("Player", "dustAcceleration");
+	acceleration.y = global_->GetValue<float>("Player", "dustAccelerationY");
 	player_->GetMoveEmitter()->SetAcceleration(acceleration);
 
 	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {

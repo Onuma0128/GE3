@@ -12,10 +12,17 @@
 
 #include "state/BaseState.h"
 #include "gameScene/animation/PlayerAnimation.h"
+#include "gameScene/collision/Collider.h"
 
-class Player
+class Player : public Collider
 {
 public:
+
+	void OnCollision(std::string& name)override;
+	Vector3 GetCenterPosition() const override;
+	std::string GetColliderName() const override;
+	float GetRadius()const override;
+
 
 	~Player();
 
@@ -29,6 +36,11 @@ public:
 
 	void SetIsShake(bool isShake) { isShake_ = isShake; }
 	bool GetIsShake()const { return isShake_; }
+
+	void SetIsAttack(bool isAttack) { isAttack_ = isAttack; }
+	bool GetIsAttack()const { return isAttack_; }
+
+	PlayerAnimation* GetPlayerAnima()const { return playerAnimation_.get(); }
 
 	/* ==================== モデル&トランスフォーム ==================== */
 
@@ -85,5 +97,6 @@ private:
 	Vector3 velocity_;
 	Vector3 acceleration_;
 	bool isShake_ = false;
+	bool isAttack_ = false;
 
 };

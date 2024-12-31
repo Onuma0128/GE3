@@ -23,6 +23,8 @@ void GamePlayScene::Initialize()
 	ground_ = std::make_unique<Object3d>();
 	ground_->Initialize("ground.obj", groundTransform_.get());
 	groundTransform_->scale_ = { 10.0f,1.0f,10.0f };
+	emitter_ = std::make_unique<ParticleEmitter>("field");
+	ParticleManager::GetInstance()->CreateParticleGroup("field", "white1x1.png", emitter_.get());
 
 	player_ = std::make_unique<Player>();
 	player_->Init();
@@ -30,11 +32,10 @@ void GamePlayScene::Initialize()
 	camera_->SetPlayer(player_.get());
 
 	enemyManager_ = std::make_unique<EnemyManager>();
-	enemyManager_->Init();
 	enemyManager_->SetPlayer(player_.get());
+	enemyManager_->Init();
 
-	emitter_ = std::make_unique<ParticleEmitter>("field");
-	ParticleManager::GetInstance()->CreateParticleGroup("field", "white1x1.png", emitter_.get());
+	collisionManager_ = std::make_unique<CollisionManager>();
 }
 
 void GamePlayScene::Finalize()
@@ -56,6 +57,9 @@ void GamePlayScene::Update()
 
 	enemyManager_->Debug_ImGui();
 	enemyManager_->Update();
+
+	// 全ての衝突判定
+	CheckAllCollisions();
 
 	// 全パーティクルの更新
 	ParticleManager::GetInstance()->Update();
@@ -84,4 +88,19 @@ void GamePlayScene::Draw()
 	// 全パーティクルの描画
 	ParticleManager::GetInstance()->Draw();
 
+}
+
+void GamePlayScene::CheckAllCollisions()
+{
+	collisionManager_->Reset();
+	
+	collisionManager_->AddCollider(player_.get());
+
+	collisionManager_->AddCollider(player_->GetPlayerAnima()->GetPlayerModels());
+
+	for (auto& enemy : enemyManager_->GetEnemys()) {
+		collisionManager_->AddCollider(enemy.get());
+	}
+
+	collisionManager_->CheckAllCollisions();
 }

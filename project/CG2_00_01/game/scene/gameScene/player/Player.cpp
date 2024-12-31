@@ -6,6 +6,31 @@
 
 #include "state/MoveState.h"
 
+void Player::OnCollision(std::string& name)
+{
+	// 衝突判定は1パターン
+
+	// 1 攻撃を食らった
+	if (name == "enemy") {
+
+	}
+}
+
+Vector3 Player::GetCenterPosition() const
+{
+	return Vector3{}.Transform(transform_->matWorld_);
+}
+
+std::string Player::GetColliderName() const
+{
+	return "player";
+}
+
+float Player::GetRadius() const
+{
+	return global_->GetValue<float>("Collider", "playerRadius");
+}
+
 Player::~Player()
 {
 	state_->Finalize();
@@ -99,6 +124,8 @@ void Player::GlobalInit()
 	global_->AddValue<float>("Player", "accelerationY", 0.1f);
 	global_->AddValue<float>("Player", "attackVelocityY", 0.05f);
 	global_->AddValue<float>("Player", "slerpSpeed", 0.1f);
+	global_->AddValue<float>("Player", "dustAccelerationY", 1.0f);
+	global_->AddValue<float>("Player", "dustAcceleration", -1.0f);
 
 	global_->AddValue<Vector3>("PlayerSwordParticle", "position", Vector3{});
 	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration", Vector3{});
@@ -107,4 +134,7 @@ void Player::GlobalInit()
 
 	global_->AddValue<float>("PlayerShadow", "scalePow", 25.0f);
 	global_->AddValue<float>("PlayerShadow", "alphaPow", 10.0f);
+
+
+	global_->AddValue<float>("Collider", "playerRadius", 1.0f);
 }

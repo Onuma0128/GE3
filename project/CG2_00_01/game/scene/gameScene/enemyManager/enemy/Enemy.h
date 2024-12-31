@@ -6,11 +6,19 @@
 #include "WorldTransform.h"
 #include "GlobalVariables.h"
 
+#include "gameScene/collision/Collider.h"
+
 class Player;
 
-class Enemy
+class Enemy : public Collider
 {
 public:
+
+	void OnCollision(std::string& name)override;
+	Vector3 GetCenterPosition() const override;
+	std::string GetColliderName() const override;
+	float GetRadius()const override;
+
 
 	~Enemy();
 

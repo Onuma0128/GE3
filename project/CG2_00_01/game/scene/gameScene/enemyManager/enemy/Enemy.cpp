@@ -2,6 +2,42 @@
 
 #include "gameScene/player/Player.h"
 
+void Enemy::OnCollision(std::string& name)
+{
+	// 衝突判定は3パターン
+
+	// 1 攻撃を与えた
+	if (name == "player") {
+
+	}
+
+	// 2 攻撃を食らった(1,2コンボ目)
+	if (name == "sword") {
+		if (player_->GetIsAttack() && player_->GetPlayerAnima()->GetCombo3Frame() == 0.0f) {
+			transform_->translation_ += (transform_->translation_ - player_->GetTransform()->translation_);
+		}
+		// 3 攻撃を食らった(3コンボ目)
+		else {
+			transform_->translation_ += (transform_->translation_ - player_->GetTransform()->translation_) * 3.0f;
+		}
+	}
+}
+
+Vector3 Enemy::GetCenterPosition() const
+{
+	return Vector3{}.Transform(transform_->matWorld_);
+}
+
+std::string Enemy::GetColliderName() const
+{
+	return "enemy";
+}
+
+float Enemy::GetRadius() const
+{
+	return global_->GetValue<float>("Collider", "enemyRadius");
+}
+
 Enemy::~Enemy()
 {
 }

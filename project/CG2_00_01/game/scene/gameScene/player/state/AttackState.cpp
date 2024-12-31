@@ -33,9 +33,11 @@ void AttackState::Update()
 		playerAnimation_->AttackCombo1();
 		player_->GetSwordEmitter()->SetIsCreate(true);
 		player_->GetSwordEmitter()->SetPosition(world);
+		player_->SetIsAttack(true);
 
 		if (playerAnimation_->GetCombo1Frame() < 1.1f || playerAnimation_->GetCombo1Frame() > 1.7f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
+			player_->SetIsAttack(false);
 		}
 
 		// 条件を達成したら次のコンボに移動
@@ -60,9 +62,11 @@ void AttackState::Update()
 		playerAnimation_->AttackCombo2();
 		player_->GetSwordEmitter()->SetIsCreate(true);
 		player_->GetSwordEmitter()->SetPosition(world);
+		player_->SetIsAttack(true);
 
 		if (playerAnimation_->GetCombo2Frame() < 1.0f || playerAnimation_->GetCombo2Frame() > 1.6f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
+			player_->SetIsAttack(false);
 		}
 
 		// 条件を達成したら次のコンボに移動
@@ -87,9 +91,11 @@ void AttackState::Update()
 		playerAnimation_->AttackCombo3();
 		player_->GetSwordEmitter()->SetIsCreate(true);
 		player_->GetSwordEmitter()->SetPosition(world);
+		player_->SetIsAttack(true);
 
 		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 2.5f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
+			player_->SetIsAttack(false);
 		}
 
 		// 攻撃が終了したらステートを変更
