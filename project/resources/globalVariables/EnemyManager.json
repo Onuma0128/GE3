@@ -1,0 +1,13 @@
+{
+    "EnemyManager": [
+        {
+            "enemyCount": 0
+        },
+        {
+            "isMove": false
+        },
+        {
+            "enemyCollisionRadius": 1.5
+        }
+    ]
+}

@@ -23,6 +23,8 @@ public:
 
 	void Debug_ImGui();
 
+	void CollisionEnemyToEnemy(Enemy* enemy);
+
 	// 敵のポインタを取得
 	std::vector<std::unique_ptr<Enemy>>& GetEnemys() { return enemys_; }
 
