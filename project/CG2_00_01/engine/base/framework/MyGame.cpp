@@ -68,6 +68,8 @@ void MyGame::Draw()
 
 void MyGame::LoadResource()
 {
+	ModelManager::GetInstance()->LoadModel("resources", "box.obj");
+
 	ModelManager::GetInstance()->LoadModel("resources/player/head", "player_head.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/body", "player_body.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/leftShoulder", "player_leftShoulder.obj");
@@ -75,4 +77,5 @@ void MyGame::LoadResource()
 	ModelManager::GetInstance()->LoadModel("resources/player/leftArm", "player_leftArm.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/rightArm", "player_rightArm.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/sword", "sword.obj");
+	ModelManager::GetInstance()->LoadModel("resources/player/shadow", "player_shadow.obj");
 }

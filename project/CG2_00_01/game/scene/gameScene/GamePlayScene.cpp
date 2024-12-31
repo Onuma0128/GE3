@@ -29,6 +29,10 @@ void GamePlayScene::Initialize()
 
 	camera_->SetPlayer(player_.get());
 
+	enemyManager_ = std::make_unique<EnemyManager>();
+	enemyManager_->Init();
+	enemyManager_->SetPlayer(player_.get());
+
 	emitter_ = std::make_unique<ParticleEmitter>("field");
 	ParticleManager::GetInstance()->CreateParticleGroup("field", "white1x1.png", emitter_.get());
 }
@@ -50,6 +54,9 @@ void GamePlayScene::Update()
 
 	player_->Update();
 
+	enemyManager_->Debug_ImGui();
+	enemyManager_->Update();
+
 	// 全パーティクルの更新
 	ParticleManager::GetInstance()->Update();
 }
@@ -62,6 +69,8 @@ void GamePlayScene::Draw()
 	ground_->Draw();
 
 	player_->Draw();
+
+	enemyManager_->Draw();
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();

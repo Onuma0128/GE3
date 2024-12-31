@@ -39,6 +39,8 @@ public:
 	// 項目の追加
 	template <typename T>
 	void AddValue(const std::string& groupName, const std::string& key, T value);
+	// 保存されていないキーの削除
+	void RemoveKey(const std::string& groupName, const std::string& key);
 	// グループの保存
 	void SaveFile(const std::string& groupName);
 	// ディレクトリの全ファイルの読み込み

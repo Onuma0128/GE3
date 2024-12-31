@@ -15,21 +15,17 @@ void Player::Init()
 {
 	GlobalInit();
 
-	ModelManager::GetInstance()->LoadModel("resources", "box.obj");
-	ModelManager::GetInstance()->LoadModel("resources", "attackParticle.obj");
-
 	// モデルの初期化
 	transform_ = std::make_unique<WorldTransform>();
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj", transform_.get());
-	model_->SetTexture("resources", "uvChecker.png");
 
+	// 影のモデル
 	shadowTransform_ = std::make_unique<WorldTransform>();
 	shadowModel_ = std::make_unique<Object3d>();
-	shadowModel_->Initialize("box.obj", shadowTransform_.get());
-	shadowModel_->SetColor(Vector4{ 0.0f,0.0f,0.0f,1.0f });
-	shadowTransform_->scale_ = Vector3{ 1.0f,0.01f,1.0f };
+	shadowModel_->Initialize("player_shadow.obj", shadowTransform_.get());
 
+	// プレイヤーのモデルパーツ
 	playerAnimation_ = std::make_unique<PlayerAnimation>();
 	playerAnimation_->SetPlayer(this);
 	playerAnimation_->Init();
@@ -56,28 +52,35 @@ void Player::Update()
 
 	model_->Update();
 
-	shadowModel_->Update();
+	ShadowUpdate();
 
 	LightManager::GetInstance()->SetPointLightPosition(transform_->translation_ + Vector3{ 0,4,0 });
 }
 
 void Player::ShadowUpdate()
 {
+	float translationY = playerAnimation_->GetPlayerModels()->GetBodyTrans()->translation_.y;
+
 	float scale = 
-		(global_->GetValue<float>("PlayerShadow", "scalePow") - 0.5f) / 
-		(global_->GetValue<float>("PlayerShadow", "scalePow") - transform_->translation_.y);
-	shadowTransform_->scale_ = Vector3{ scale,0.01f,scale };
+		(global_->GetValue<float>("PlayerShadow", "scalePow") - global_->GetValue<Vector3>("PlayerModelOffset", "head").y) /
+		(global_->GetValue<float>("PlayerShadow", "scalePow") - translationY);
+	shadowTransform_->scale_ = Vector3{ scale,1.0f,scale };
+	Quaternion bodyQ = Quaternion::ExtractYawQuaternion(playerAnimation_->GetPlayerModels()->GetBodyTrans()->rotation_);
+	shadowTransform_->rotation_ = transform_->rotation_ * bodyQ;
+	shadowTransform_->translation_ = transform_->translation_;
+	shadowTransform_->translation_.y = 0.01f;
+
 	float alpha =
-		(global_->GetValue<float>("PlayerShadow", "alphaPow") - transform_->translation_.y) / 
-		(global_->GetValue<float>("PlayerShadow", "alphaPow") - 0.5f);
+		(global_->GetValue<float>("PlayerShadow", "alphaPow") - translationY) /
+		(global_->GetValue<float>("PlayerShadow", "alphaPow") - global_->GetValue<Vector3>("PlayerModelOffset", "head").y);
 	shadowModel_->SetColor(Vector4{ 0.0f,0.0f,0.0f,alpha });
+
+	shadowModel_->Update();
 }
 
 void Player::Draw()
 {
 	state_->Draw();
-
-	//model_->Draw();
 
 	shadowModel_->Draw();
 }
