@@ -5,14 +5,17 @@
 #include "ParticleManager.h"
 
 #include "state/MoveState.h"
+#include "state/DamageState.h"
 
-void Player::OnCollision(std::string& name)
+void Player::OnCollision(const std::string& name, const Vector3& position)
 {
 	// 衝突判定は1パターン
 
 	// 1 攻撃を食らった
 	if (name == "enemy") {
-
+		velocity_ = (transform_->translation_ - position);
+		velocity_.y = 0.0f;
+		IsDamage();
 	}
 }
 
@@ -110,6 +113,21 @@ void Player::Draw()
 	shadowModel_->Draw();
 }
 
+void Player::IsDamage()
+{
+	if (velocity_.x != 0.0f || velocity_.z != 0.0f) {
+		velocity_.Normalize();
+	}
+	else {
+		velocity_ = -Vector3::ExprUnitZ;
+	}
+	playerAnimation_->Reset();
+	playerAnimation_->GetPlayerModels()->ModelOffset();
+	isAttack_ = false;
+	swordParticleEmitter_->SetIsCreate(false);
+	ChengeState(std::make_unique<DamageState>(this, playerAnimation_.get()));
+}
+
 void Player::ChengeState(std::unique_ptr<BaseState> newState)
 {
 	state_->Finalize();
@@ -126,6 +144,7 @@ void Player::GlobalInit()
 	global_->AddValue<float>("Player", "slerpSpeed", 0.1f);
 	global_->AddValue<float>("Player", "dustAccelerationY", 1.0f);
 	global_->AddValue<float>("Player", "dustAcceleration", -1.0f);
+	global_->AddValue<float>("Player", "knockbackFrame", 10.0f);
 
 	global_->AddValue<Vector3>("PlayerSwordParticle", "position", Vector3{});
 	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration", Vector3{});

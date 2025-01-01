@@ -4,7 +4,7 @@
 
 #include "gameScene/player/Player.h"
 
-void PlayerModels::OnCollision(std::string& name)
+void PlayerModels::OnCollision(const std::string& name, const Vector3& position)
 {
 	// 衝突判定は1パターン
 
@@ -30,7 +30,7 @@ float PlayerModels::GetRadius() const
 		return global_->GetValue<float>("Collider", "swordRadius");
 	}
 	else {
-		return global_->GetValue<float>("Collider", "swordRadius") * 5.0f;
+		return global_->GetValue<float>("Collider", "swordRadius2");
 	}
 }
 
@@ -112,6 +112,7 @@ void PlayerModels::GlobalInit()
 
 
 	global_->AddValue<float>("Collider", "swordRadius", 1.0f);
+	global_->AddValue<float>("Collider", "swordRadius2", 2.0f);
 }
 
 void PlayerModels::Update()

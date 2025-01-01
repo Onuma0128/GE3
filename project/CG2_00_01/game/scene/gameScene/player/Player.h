@@ -17,8 +17,8 @@
 class Player : public Collider
 {
 public:
-
-	void OnCollision(std::string& name)override;
+	// 衝突判定
+	void OnCollision(const std::string& name, const Vector3& position)override;
 	Vector3 GetCenterPosition() const override;
 	std::string GetColliderName() const override;
 	float GetRadius()const override;
@@ -34,9 +34,13 @@ public:
 
 	void Draw();
 
+	void IsDamage();
+
+	// カメラシェイク
 	void SetIsShake(bool isShake) { isShake_ = isShake; }
 	bool GetIsShake()const { return isShake_; }
 
+	// 今攻撃中か
 	void SetIsAttack(bool isAttack) { isAttack_ = isAttack; }
 	bool GetIsAttack()const { return isAttack_; }
 

@@ -48,8 +48,8 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
     }
 
     // 衝突の判定
-    if (distance <= (radiusA + radiusB) && nameA != nameB) {
-        colliderA->OnCollision(nameB);
-        colliderB->OnCollision(nameA);
+    if (distance <= (radiusA + radiusB)) {
+        colliderA->OnCollision(nameB, PosB);
+        colliderB->OnCollision(nameA, PosA);
     }
 }

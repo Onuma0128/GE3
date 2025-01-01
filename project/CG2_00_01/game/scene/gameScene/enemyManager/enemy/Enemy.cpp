@@ -1,8 +1,10 @@
 #include "Enemy.h"
 
 #include "gameScene/player/Player.h"
+#include "gameScene/enemyManager/enemy/state/MoveStateEnemy.h"
+#include "gameScene/enemyManager/enemy/state/DamageStateEnemy.h"
 
-void Enemy::OnCollision(std::string& name)
+void Enemy::OnCollision(const std::string& name, const Vector3& position)
 {
 	// 衝突判定は3パターン
 
@@ -12,20 +14,24 @@ void Enemy::OnCollision(std::string& name)
 	}
 
 	// 2 攻撃を食らった(1,2コンボ目)
-	if (name == "sword") {
-		if (player_->GetIsAttack() && player_->GetPlayerAnima()->GetCombo3Frame() == 0.0f) {
-			transform_->translation_ += (transform_->translation_ - player_->GetTransform()->translation_);
-		}
-		// 3 攻撃を食らった(3コンボ目)
-		else {
-			transform_->translation_ += (transform_->translation_ - player_->GetTransform()->translation_) * 3.0f;
-		}
+	// 3 攻撃を食らった(3コンボ目)
+	if (name == "sword" && player_->GetIsAttack() && !isDamage_) {
+		velocity_ = (transform_->translation_ - player_->GetTransform()->translation_) * 0.1f;
+		velocity_.y = 0.0f;
+		velocity_.Normalize();
+		isDamage_ = true;
+		ChengeState(std::make_unique<DamageStateEnemy>(this));
+	}
+
+	// 4 敵同士の当たり判定
+	if (name == "enemy") {
+		CollisionEnemy(position);
 	}
 }
 
 Vector3 Enemy::GetCenterPosition() const
 {
-	return Vector3{}.Transform(transform_->matWorld_);
+	return transform_->translation_;
 }
 
 std::string Enemy::GetColliderName() const
@@ -47,33 +53,22 @@ void Enemy::Init()
 	transform_ = std::make_unique<WorldTransform>();
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj", transform_.get());
+
+	state_ = std::make_unique<MoveStateEnemy>(this);
+	state_->Initialize();
 }
 
 void Enemy::Update()
 {
-	// 移動の処理
-	const float kSpeed = global_->GetValue<float>("Enemy", "moveSpeed");
-	Vector3 velocity = player_->GetTransform()->translation_ - transform_->translation_;
-	if (velocity.x != 0.0f || velocity.z != 0.0f) {
-		velocity.Normalize();
-	}
-	transform_->translation_ += velocity * kSpeed;
-
-	if (velocity.x != 0.0f || velocity.z != 0.0f) {
-		// 回転ベクトル
-		Vector3 targetDirection = { -velocity.x, 0.0f, velocity.z };
-		// ベクトルから回転行列を計算
-		Matrix4x4 rotationMatrix = Matrix4x4::DirectionToDirection(Vector3::ExprUnitZ, targetDirection);
-		Quaternion yRotation = Quaternion::FormRotationMatrix(rotationMatrix);
-		// 回転の処理
-		transform_->rotation_.Slerp(yRotation, global_->GetValue<float>("Enemy", "slerpSpeed"));
-	}
+	state_->Update();
 
 	model_->Update();
 }
 
 void Enemy::Draw()
 {
+	state_->Draw();
+
 	model_->Draw();
 }
 
@@ -84,10 +79,20 @@ void Enemy::Debug_Update()
 
 void Enemy::CollisionEnemy(const Vector3& translation)
 {
-	const float kSpeed = global_->GetValue<float>("Enemy", "moveSpeed") * 2.0f;
+	const float kSpeed = global_->GetValue<float>("Enemy", "moveSpeed") * 5.0f;
 	Vector3 velocity = transform_->translation_ - translation;
-	if (velocity.x != 0.0f || velocity.z != 0.0f) {
+	velocity.y = 0.0f;
+	float distance = velocity.Length();
+	if (distance > 0.0f) {
 		velocity.Normalize();
+		// 衝突距離に応じて速度をスケール
+		transform_->translation_ += velocity * kSpeed * (1.0f / distance);
 	}
-	transform_->translation_ += velocity * kSpeed;
+}
+
+void Enemy::ChengeState(std::unique_ptr<BaseStateEnemy> newState)
+{
+	state_->Finalize();
+	state_ = std::move(newState);
+	state_->Initialize();
 }

@@ -13,8 +13,8 @@ class Player;
 class PlayerModels : public Collider
 {
 public:
-
-	void OnCollision(std::string& name)override;
+	// 衝突判定
+	void OnCollision(const std::string& name, const Vector3& position) override;
 	Vector3 GetCenterPosition() const override;
 	std::string GetColliderName() const override;
 	float GetRadius()const override;

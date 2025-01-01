@@ -1,0 +1,16 @@
+{
+    "Collider": [
+        {
+            "playerRadius": 1.0
+        },
+        {
+            "swordRadius": 1.0
+        },
+        {
+            "swordRadius2": 4.0
+        },
+        {
+            "enemyRadius": 1.0
+        }
+    ]
+}
