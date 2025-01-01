@@ -79,7 +79,7 @@ void GamePlayScene::Draw()
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
 
-
+	player_->DrawSprite();
 
 	// Lineの描画準備
 	PrimitiveDrawer::GetInstance()->DrawBase();

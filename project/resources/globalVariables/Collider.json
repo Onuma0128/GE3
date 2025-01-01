@@ -11,6 +11,9 @@
         },
         {
             "enemyRadius": 1.0
+        },
+        {
+            "swordRadius3": 1.5
         }
     ]
 }

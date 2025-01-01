@@ -6,6 +6,7 @@
 #include "gameScene/animation/PlayerAnimation.h"
 
 #include "gameScene/player/state/AttackState.h"
+#include "gameScene/player/state/DashAttackState.h"
 
 MoveState::MoveState(Player* player, PlayerAnimation* playerAnimation) : BaseState(player, playerAnimation) {}
 
@@ -60,6 +61,11 @@ void MoveState::Update()
 	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
 		player_->GetMoveEmitter()->SetIsCreate(false);
 		player_->ChengeState(std::make_unique<AttackState>(player_, playerAnimation_));
+		return;
+	}
+	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_B)) {
+		player_->GetMoveEmitter()->SetIsCreate(false);
+		player_->ChengeState(std::make_unique<DashAttackState>(player_, playerAnimation_));
 		return;
 	}
 

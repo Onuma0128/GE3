@@ -31,10 +31,15 @@ public:
 	void AttackCombo1();
 	void AttackCombo2();
 	void AttackCombo3();
+
+	// 突撃攻撃のアニメーション
+	void DashAttack();
 	
+
 	const float GetCombo1Frame() { return combo1Frame_; }
 	const float GetCombo2Frame() { return combo2Frame_; }
 	const float GetCombo3Frame() { return combo3Frame_; }
+	const float GetDashFrame() { return dashFrame_; }
 
 	// 次のコンボに遷移用フラグ
 	const bool GetNextCombo() { return nextCombo_; }
@@ -43,6 +48,7 @@ public:
 	const bool GetCombo1Completion() { return combo1Completion_; }
 	const bool GetCombo2Completion() { return combo2Completion_; }
 	const bool GetCombo3Completion() { return combo3Completion_; }
+	const bool GetDashCompletion() { return dashCompletion_; }
 
 	// プレイヤーのポインタを取得
 	void SetPlayer(Player* player) { player_ = player; }
@@ -59,9 +65,11 @@ private:
 
 	// 新しいフレームを追加
 	void AddGlobalVariables(int comboNum,int frameNum);
+	void AddGlobalVariables(int frameNum);
 
 	// フレーム間のアニメーションを更新
 	void AnimationUpdate(int comboNum, int frameNum);
+	void AnimationUpdate(int frameNum);
 
 private:
 
@@ -81,6 +89,8 @@ private:
 	float combo2Frame_ = 0.0f;
 	// 攻撃3コンボのフレーム
 	float combo3Frame_ = 0.0f;
+	// ダッシュ攻撃のフレーム
+	float dashFrame_ = 0.0f;
 
 	// 次のコンボに遷移用フラグ
 	bool nextCombo_ = false;
@@ -89,5 +99,6 @@ private:
 	bool combo1Completion_ = false;
 	bool combo2Completion_ = false;
 	bool combo3Completion_ = false;
+	bool dashCompletion_ = false;
 
 };

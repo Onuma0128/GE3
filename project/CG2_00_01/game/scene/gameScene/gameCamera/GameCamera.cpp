@@ -1,5 +1,7 @@
 #include "GameCamera.h"
 
+#include <numbers>
+
 #include "CameraManager.h"
 #include "Vector3.h"
 
@@ -34,8 +36,8 @@ void GameCamera::Update()
 {
 	const float rotationY = Input::GetInstance()->GetGamepadRightStickX() * -0.03f;
 	Vector3 rotation = camera_->GetRotate();
-	rotation.y += rotationY;
-
+	destinationAngleY += rotationY;
+	rotation.y = LerpShortAngle(rotation.y, destinationAngleY, 0.1f);
 	camera_->SetRotate(rotation);
 
 	Matrix4x4 rotateMatrix = Matrix4x4::Rotate(rotation);
@@ -54,4 +56,28 @@ void GameCamera::Update()
 			time_ = 0.0f;
 		}
 	}*/
+}
+
+float GameCamera::LerpShortAngle(float a, float b, float t)
+{
+	float diff = b - a;
+
+	// 角度を [-2PI, +2PI] に補正する
+	while (diff > 2 * std::numbers::pi_v<float>) {
+		diff -= 2 * std::numbers::pi_v<float>;
+	}
+	while (diff < -2 * std::numbers::pi) {
+		diff += 2 * std::numbers::pi_v<float>;
+	}
+
+	// 角度を [-PI, +PI] に補正する
+	if (diff > std::numbers::pi) {
+		diff -= 2 * std::numbers::pi_v<float>;
+	}
+	else if (diff < -std::numbers::pi_v<float>) {
+		diff += 2 * std::numbers::pi_v<float>;
+	}
+
+	// 線形補間を行う
+	return a + t * diff;
 }

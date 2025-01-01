@@ -19,11 +19,14 @@ public:
 
 	void SetPlayer(Player* player) { player_ = player; }
 
+	float LerpShortAngle(float a, float b, float t);
+
 private:
 
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 
 	std::unique_ptr<Camera> camera_ = nullptr;
+	float destinationAngleY = 0.0f;
 
 	Player* player_ = nullptr;
 

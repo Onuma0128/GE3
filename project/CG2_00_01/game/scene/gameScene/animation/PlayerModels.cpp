@@ -16,7 +16,15 @@ void PlayerModels::OnCollision(const std::string& name, const Vector3& position)
 
 Vector3 PlayerModels::GetCenterPosition() const
 {
-	return Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(swordTrans_->matWorld_);
+	if (player_->GetPlayerAnima()->GetCombo3Frame() == 0.0f) {
+		if (player_->GetPlayerAnima()->GetDashFrame() != 0.0f) {
+			return Vector3{ Vector3::ExprUnitY + Vector3::ExprUnitZ }.Transform(player_->GetTransform()->matWorld_);
+		}
+		return Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(swordTrans_->matWorld_);
+	}
+	else {
+		return Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(swordTrans_->matWorld_);
+	}
 }
 
 std::string PlayerModels::GetColliderName() const
@@ -27,6 +35,9 @@ std::string PlayerModels::GetColliderName() const
 float PlayerModels::GetRadius() const
 {
 	if (player_->GetPlayerAnima()->GetCombo3Frame() == 0.0f) {
+		if (player_->GetPlayerAnima()->GetDashFrame() != 0.0f) {
+			return global_->GetValue<float>("Collider", "swordRadius3");
+		}
 		return global_->GetValue<float>("Collider", "swordRadius");
 	}
 	else {
@@ -110,9 +121,12 @@ void PlayerModels::GlobalInit()
 	global_->AddValue<Vector3>("PlayerModelOffset", "rightArmAngle", Vector3{});
 	global_->AddValue<Vector3>("PlayerModelOffset", "swordAngle", Vector3{});
 
-
+	// 攻撃コンボ1,2
 	global_->AddValue<float>("Collider", "swordRadius", 1.0f);
+	// 攻撃コンボ3
 	global_->AddValue<float>("Collider", "swordRadius2", 2.0f);
+	// 突撃攻撃
+	global_->AddValue<float>("Collider", "swordRadius3", 1.5f);
 }
 
 void PlayerModels::Update()

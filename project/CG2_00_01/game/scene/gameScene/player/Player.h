@@ -4,6 +4,7 @@
 
 #include "Input.h"
 #include "Object3d.h"
+#include "Sprite.h"
 #include "WorldTransform.h"
 #include "GlobalVariables.h"
 #include "ParticleEmitter.h"
@@ -33,6 +34,7 @@ public:
 	void ShadowUpdate();
 
 	void Draw();
+	void DrawSprite();
 
 	void IsDamage();
 
@@ -43,6 +45,9 @@ public:
 	// 今攻撃中か
 	void SetIsAttack(bool isAttack) { isAttack_ = isAttack; }
 	bool GetIsAttack()const { return isAttack_; }
+
+	int GetHP()const { return hp_; }
+	void SetHP(int hp) { hp_ = hp; }
 
 	PlayerAnimation* GetPlayerAnima()const { return playerAnimation_.get(); }
 
@@ -81,6 +86,8 @@ private:
 	// モデル
 	std::unique_ptr<Object3d> model_ = nullptr;
 	std::unique_ptr<WorldTransform> transform_ = nullptr;
+	// HP表示
+	std::list<std::unique_ptr<Sprite>> hpSprites_;
 	// プレイヤーの影
 	std::unique_ptr<Object3d> shadowModel_ = nullptr;
 	std::unique_ptr<WorldTransform> shadowTransform_ = nullptr;
@@ -98,9 +105,12 @@ private:
 	std::unique_ptr<BaseState> state_;
 
 	// 変数
+	int hp_ = 5;
 	Vector3 velocity_;
 	Vector3 acceleration_;
+	// カメラシェイク
 	bool isShake_ = false;
+	// 攻撃中か
 	bool isAttack_ = false;
 
 };

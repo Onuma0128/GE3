@@ -48,6 +48,15 @@ void Player::Init()
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj", transform_.get());
 
+	for (int i = 0; i < 5; ++i) {
+		std::unique_ptr<Sprite> hp = std::make_unique<Sprite>();
+		hp->Initialize("player/texture/heart.png");
+		hp->SetAnchorPoint(Vector2{ 0.5f,0.5f });
+		hp->SetSize(Vector2{ 50.0f,50.0f });
+		hp->SetPosition(Vector2{ static_cast<float>(i) * 58.0f + 41.0f,679.0f });
+		hpSprites_.push_back(std::move(hp));
+	}
+
 	// 影のモデル
 	shadowTransform_ = std::make_unique<WorldTransform>();
 	shadowModel_ = std::make_unique<Object3d>();
@@ -79,6 +88,10 @@ void Player::Update()
 	state_->Update();
 
 	model_->Update();
+
+	for (auto& hp : hpSprites_) {
+		hp->Update();
+	}
 
 	ShadowUpdate();
 
@@ -113,6 +126,13 @@ void Player::Draw()
 	shadowModel_->Draw();
 }
 
+void Player::DrawSprite()
+{
+	for (auto& hp : hpSprites_) {
+		hp->Draw();
+	}
+}
+
 void Player::IsDamage()
 {
 	if (velocity_.x != 0.0f || velocity_.z != 0.0f) {
@@ -126,6 +146,10 @@ void Player::IsDamage()
 	isAttack_ = false;
 	swordParticleEmitter_->SetIsCreate(false);
 	ChengeState(std::make_unique<DamageState>(this, playerAnimation_.get()));
+	if (hp_ > 0) {
+		hpSprites_.pop_back();
+	}
+	--hp_;
 }
 
 void Player::ChengeState(std::unique_ptr<BaseState> newState)
@@ -145,11 +169,13 @@ void Player::GlobalInit()
 	global_->AddValue<float>("Player", "dustAccelerationY", 1.0f);
 	global_->AddValue<float>("Player", "dustAcceleration", -1.0f);
 	global_->AddValue<float>("Player", "knockbackFrame", 10.0f);
+	global_->AddValue<float>("Player", "dashPow", 3.0f);
 
 	global_->AddValue<Vector3>("PlayerSwordParticle", "position", Vector3{});
 	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration", Vector3{});
 	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration2", Vector3{});
 	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration3", Vector3{});
+	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration4", Vector3{});
 
 	global_->AddValue<float>("PlayerShadow", "scalePow", 25.0f);
 	global_->AddValue<float>("PlayerShadow", "alphaPow", 10.0f);

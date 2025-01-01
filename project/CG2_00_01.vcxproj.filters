@@ -372,6 +372,9 @@
     <ClCompile Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\DamageStateEnemy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\player\state\DashAttackState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -600,6 +603,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\DamageStateEnemy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\player\state\DashAttackState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

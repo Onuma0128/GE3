@@ -1,10 +1,10 @@
 #include "AttackState.h"
 
-#include "ParticleManager.h"
 #include "gameScene/player/Player.h"
 #include "gameScene/animation/PlayerAnimation.h"
 
 #include "gameScene/player/state/MoveState.h"
+#include "gameScene/player/state/DashAttackState.h"
 
 AttackState::AttackState(Player* player, PlayerAnimation* playerAnimation) : BaseState(player, playerAnimation) {}
 
@@ -18,6 +18,10 @@ void AttackState::Initialize()
 	player_->GetSwordEmitter()->SetIsCreate(false);
 	player_->GetSwordEmitter()->SetPosition(world);
 	player_->GetSwordEmitter()->SetAcceleration(acceleration);
+	if (playerAnimation_->GetCombo2Frame() >= 2.0f) {
+		nowCombo_ = AttackCombo::Combo3;
+	}
+	playerAnimation_->Reset();
 }
 
 void AttackState::Update()
@@ -75,6 +79,15 @@ void AttackState::Update()
 			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration3") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
 			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo3;
+			return;
+		}
+		// 2コンボ目から突撃攻撃に派生
+		if (input_->PushGamepadButton(XINPUT_GAMEPAD_B) && playerAnimation_->GetNextCombo()) {
+			//playerAnimation_->Reset();
+			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration4") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
+			player_->GetSwordEmitter()->SetAcceleration(acceleration);
+			nowCombo_ = AttackCombo::Combo3;
+			player_->ChengeState(std::make_unique<DashAttackState>(player_, playerAnimation_));
 			return;
 		}
 
