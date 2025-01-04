@@ -23,7 +23,7 @@ Audio::~Audio()
 
 void Audio::SoundPlayWave(const std::string& filePath)
 {
-    const AudioManager::SoundData& soundData = AudioManager::GetInstance()->GetSoundData(filePath);
+    const auto& soundData = AudioManager::GetInstance()->GetSoundData(filePath);
 
     IXAudio2SourceVoice* sourceVoice = nullptr;
     HRESULT hr = xAudio2_->CreateSourceVoice(&sourceVoice, &soundData.wfex);

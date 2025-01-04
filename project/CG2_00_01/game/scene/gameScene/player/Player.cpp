@@ -43,6 +43,8 @@ void Player::Init()
 {
 	GlobalInit();
 
+	audio_ = std::make_unique<Audio>();
+
 	// モデルの初期化
 	transform_ = std::make_unique<WorldTransform>();
 	model_ = std::make_unique<Object3d>();
@@ -60,7 +62,6 @@ void Player::Init()
 
 	state_ = std::move(std::make_unique<MoveState>(this, playerAnimation_.get()));
 	state_->Initialize();
-
 
 	// 移動時パーティクルの初期化
 	moveParticleEmitter_ = std::make_unique<ParticleEmitter>("playerDust");

@@ -2,6 +2,7 @@
 #include <memory>
 #include <list>
 
+#include "Audio.h"
 #include "Input.h"
 #include "Object3d.h"
 #include "Sprite.h"
@@ -50,6 +51,7 @@ public:
 	int GetHP()const { return hp_; }
 	void SetHP(int hp) { hp_ = hp; }
 
+	Audio* GetAudio()const { return audio_.get(); }
 	PlayerAnimation* GetPlayerAnima()const { return playerAnimation_.get(); }
 
 	/* ==================== モデル&トランスフォーム ==================== */
@@ -83,6 +85,7 @@ private:
 
 	Input* input_ = Input::GetInstance();
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
+	std::unique_ptr<Audio> audio_ = nullptr;
 
 	// モデル
 	std::unique_ptr<Object3d> model_ = nullptr;

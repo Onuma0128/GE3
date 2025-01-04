@@ -37,8 +37,5 @@ private:
 	// 現在のコンボ
 	AttackCombo nowCombo_ = AttackCombo::Combo1;
 
-	// 攻撃Audio
-	std::unique_ptr<Audio> attackAudio_ = nullptr;
-
 };
 

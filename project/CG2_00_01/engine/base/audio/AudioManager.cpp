@@ -17,6 +17,9 @@ void AudioManager::Finalize()
     for (auto& pair : soundDataMap_) {
         SoundUnload(&pair.second);
     }
+
+	delete instance_;
+	instance_ = nullptr;
 }
 
 void AudioManager::LoadAudioFile(const std::string& directoryPath, const std::string& filePath)

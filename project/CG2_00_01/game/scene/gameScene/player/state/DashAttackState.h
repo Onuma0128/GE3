@@ -28,7 +28,4 @@ private:
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 
 	Vector3 velocity_;
-
-	// 攻撃Audio
-	std::unique_ptr<Audio> attackAudio_ = nullptr;
 };

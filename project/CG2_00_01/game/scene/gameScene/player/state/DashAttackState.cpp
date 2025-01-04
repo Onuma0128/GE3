@@ -21,8 +21,6 @@ void DashAttackState::Initialize()
 	player_->GetSwordEmitter()->SetIsCreate(false);
 	player_->GetSwordEmitter()->SetPosition(world);
 	player_->GetSwordEmitter()->SetAcceleration(acceleration);
-
-	attackAudio_ = std::make_unique<Audio>();
 }
 
 void DashAttackState::Update()
@@ -42,7 +40,7 @@ void DashAttackState::Update()
 	// 効果音
 	if (playerAnimation_->GetDashFrame() >= 1.0f &&
 		playerAnimation_->GetDashFrame() < 1.0f + (1.0f / global_->GetValue<float>("DashAttack", "frame2") * 2.0f)) {
-		attackAudio_->SoundPlayWave("Dash.wav");
+		player_->GetAudio()->SoundPlayWave("Dash.wav");
 	}
 
 	if (playerAnimation_->GetDashFrame() > 1.0f && playerAnimation_->GetDashFrame() < 2.0f) {
