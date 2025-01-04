@@ -1,7 +1,10 @@
 #pragma once
 
+#include <memory>
+
 #include "Input.h"
 #include "GlobalVariables.h"
+#include "Audio.h"
 
 #include "gameScene/player/state/BaseState.h"
 #include "ParticleEmitter.h"
@@ -34,7 +37,8 @@ private:
 	// 現在のコンボ
 	AttackCombo nowCombo_ = AttackCombo::Combo1;
 
-	// コンボ終了後のフレームを管理
-	
+	// 攻撃Audio
+	std::unique_ptr<Audio> attackAudio_ = nullptr;
+
 };
 

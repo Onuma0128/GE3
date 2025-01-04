@@ -186,6 +186,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\game\scene\gameScene\animation\PlayerModels.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\gameScene\animation\PlayerAnimation.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\MoveStateEnemy.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\player\ui\PlayerUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\BaseStateEnemy.h" />
@@ -265,6 +266,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\game\scene\gameScene\animation\PlayerModels.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameScene\animation\PlayerAnimation.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\MoveStateEnemy.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\player\ui\PlayerUI.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

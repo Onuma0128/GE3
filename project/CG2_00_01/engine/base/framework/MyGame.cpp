@@ -6,6 +6,7 @@
 #include "ParticleManager.h"
 #include "SceneFactory.h"
 #include "GlobalVariables.h"
+#include "AudioManager.h"
 
 void MyGame::Initialize()
 {
@@ -69,7 +70,6 @@ void MyGame::Draw()
 void MyGame::LoadResource()
 {
 	ModelManager::GetInstance()->LoadModel("resources", "box.obj");
-
 	ModelManager::GetInstance()->LoadModel("resources/player/head", "player_head.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/body", "player_body.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/leftShoulder", "player_leftShoulder.obj");
@@ -78,4 +78,9 @@ void MyGame::LoadResource()
 	ModelManager::GetInstance()->LoadModel("resources/player/rightArm", "player_rightArm.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/sword", "sword.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/shadow", "player_shadow.obj");
+
+	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Combo1.wav");
+	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Combo2.wav");
+	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Combo3.wav");
+	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Dash.wav");
 }

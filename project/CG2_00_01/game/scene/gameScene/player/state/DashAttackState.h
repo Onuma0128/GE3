@@ -1,7 +1,10 @@
 #pragma once
 
+#include <memory>
+
 #include "Input.h"
 #include "GlobalVariables.h"
+#include "Audio.h"
 
 #include "gameScene/player/state/BaseState.h"
 
@@ -23,4 +26,9 @@ private:
 
 	Input* input_ = Input::GetInstance();
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
+
+	Vector3 velocity_;
+
+	// 攻撃Audio
+	std::unique_ptr<Audio> attackAudio_ = nullptr;
 };

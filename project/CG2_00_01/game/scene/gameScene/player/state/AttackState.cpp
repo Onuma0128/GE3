@@ -1,5 +1,7 @@
 #include "AttackState.h"
 
+#include "AudioManager.h"
+
 #include "gameScene/player/Player.h"
 #include "gameScene/animation/PlayerAnimation.h"
 
@@ -22,6 +24,9 @@ void AttackState::Initialize()
 		nowCombo_ = AttackCombo::Combo3;
 	}
 	playerAnimation_->Reset();
+
+	attackAudio_ = std::make_unique<Audio>();
+
 }
 
 void AttackState::Update()
@@ -39,14 +44,19 @@ void AttackState::Update()
 		player_->GetSwordEmitter()->SetPosition(world);
 		player_->SetIsAttack(true);
 
-		if (playerAnimation_->GetCombo1Frame() < 1.1f || playerAnimation_->GetCombo1Frame() > 1.7f) {
+		if (playerAnimation_->GetCombo1Frame() < 1.0f || playerAnimation_->GetCombo1Frame() > 1.7f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
 			player_->SetIsAttack(false);
+		}
+		// 効果音
+		if (playerAnimation_->GetCombo1Frame() >= 1.0f &&
+			playerAnimation_->GetCombo1Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo1", "frame2") * 2.0f)) {
+			attackAudio_->SoundPlayWave("Combo1.wav");
 		}
 
 		// 条件を達成したら次のコンボに移動
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
-			playerAnimation_->Reset();
+			//playerAnimation_->Reset();
 			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration2") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
 			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo2;
@@ -72,10 +82,15 @@ void AttackState::Update()
 			player_->GetSwordEmitter()->SetIsCreate(false);
 			player_->SetIsAttack(false);
 		}
+		// 効果音
+		if (playerAnimation_->GetCombo2Frame() >= 1.0f &&
+			playerAnimation_->GetCombo2Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo2", "frame2") * 2.0f)) {
+			attackAudio_->SoundPlayWave("Combo2.wav");
+		}
 
 		// 条件を達成したら次のコンボに移動
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
-			playerAnimation_->Reset();
+			//playerAnimation_->Reset();
 			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration3") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
 			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo3;
@@ -109,6 +124,11 @@ void AttackState::Update()
 		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 2.5f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
 			player_->SetIsAttack(false);
+		}
+		// 効果音
+		if (playerAnimation_->GetCombo3Frame() >= 2.0f &&
+			playerAnimation_->GetCombo3Frame() < 2.0f + (1.0f / global_->GetValue<float>("AttackCombo3", "frame3") * 3.0f)) {
+			attackAudio_->SoundPlayWave("Combo3.wav");
 		}
 
 		// 攻撃が終了したらステートを変更

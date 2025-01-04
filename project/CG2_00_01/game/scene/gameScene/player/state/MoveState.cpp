@@ -36,9 +36,9 @@ void MoveState::Update()
 
 	if (velocity.x != 0.0f || velocity.z != 0.0f) {
 		player_->GetMoveEmitter()->SetIsCreate(true);
+		velocity = velocity.Transform(rotateMatrix);
 		velocity.Normalize();
 		velocity *= global_->GetValue<float>("Player", "moveSpeed");
-		velocity = velocity.Transform(rotateMatrix);
 		player_->SetVelocity(velocity);
 
 		// ベクトルから回転行列を計算

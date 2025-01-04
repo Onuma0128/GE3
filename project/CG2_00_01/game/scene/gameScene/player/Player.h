@@ -14,6 +14,7 @@
 #include "state/BaseState.h"
 #include "gameScene/animation/PlayerAnimation.h"
 #include "gameScene/collision/Collider.h"
+#include "gameScene/player/ui/PlayerUI.h"
 
 class Player : public Collider
 {
@@ -86,23 +87,21 @@ private:
 	// モデル
 	std::unique_ptr<Object3d> model_ = nullptr;
 	std::unique_ptr<WorldTransform> transform_ = nullptr;
-	// HP表示
-	std::list<std::unique_ptr<Sprite>> hpSprites_;
 	// プレイヤーの影
 	std::unique_ptr<Object3d> shadowModel_ = nullptr;
 	std::unique_ptr<WorldTransform> shadowTransform_ = nullptr;
-
 	// プレイヤーのモデル
 	std::unique_ptr<PlayerAnimation> playerAnimation_ = nullptr;
+	// プレイヤーのUI
+	std::unique_ptr<PlayerUI> playerUI_ = nullptr;
+	// 状態
+	std::unique_ptr<BaseState> state_;
+
 
 	// 移動時のパーティクル
 	std::unique_ptr<ParticleEmitter> moveParticleEmitter_ = nullptr;
-
 	// 攻撃時剣先のパーティクル
 	std::unique_ptr<ParticleEmitter> swordParticleEmitter_ = nullptr;
-
-	// 状態
-	std::unique_ptr<BaseState> state_;
 
 	// 変数
 	int hp_ = 5;

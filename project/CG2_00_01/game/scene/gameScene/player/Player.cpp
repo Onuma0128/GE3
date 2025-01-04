@@ -48,15 +48,6 @@ void Player::Init()
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj", transform_.get());
 
-	for (int i = 0; i < 5; ++i) {
-		std::unique_ptr<Sprite> hp = std::make_unique<Sprite>();
-		hp->Initialize("player/texture/heart.png");
-		hp->SetAnchorPoint(Vector2{ 0.5f,0.5f });
-		hp->SetSize(Vector2{ 50.0f,50.0f });
-		hp->SetPosition(Vector2{ static_cast<float>(i) * 58.0f + 41.0f,679.0f });
-		hpSprites_.push_back(std::move(hp));
-	}
-
 	// 影のモデル
 	shadowTransform_ = std::make_unique<WorldTransform>();
 	shadowModel_ = std::make_unique<Object3d>();
@@ -67,6 +58,10 @@ void Player::Init()
 	playerAnimation_->SetPlayer(this);
 	playerAnimation_->Init();
 
+	state_ = std::move(std::make_unique<MoveState>(this, playerAnimation_.get()));
+	state_->Initialize();
+
+
 	// 移動時パーティクルの初期化
 	moveParticleEmitter_ = std::make_unique<ParticleEmitter>("playerDust");
 	ParticleManager::GetInstance()->CreateParticleGroup("playerDust", "white1x1.png", moveParticleEmitter_.get());
@@ -76,9 +71,9 @@ void Player::Init()
 	ParticleManager::GetInstance()->CreateParticleGroup("sword", "circle.png", swordParticleEmitter_.get());
 	swordParticleEmitter_->SetIsCreate(false);
 
-
-	state_ = std::move(std::make_unique<MoveState>(this, playerAnimation_.get()));
-	state_->Initialize();
+	playerUI_ = std::make_unique<PlayerUI>();
+	playerUI_->Init();
+	playerUI_->SetPlayer(this);
 }
 
 void Player::Update()
@@ -89,11 +84,9 @@ void Player::Update()
 
 	model_->Update();
 
-	for (auto& hp : hpSprites_) {
-		hp->Update();
-	}
-
 	ShadowUpdate();
+
+	playerUI_->Update();
 
 	LightManager::GetInstance()->SetPointLightPosition(transform_->translation_ + Vector3{ 0,4,0 });
 }
@@ -128,9 +121,7 @@ void Player::Draw()
 
 void Player::DrawSprite()
 {
-	for (auto& hp : hpSprites_) {
-		hp->Draw();
-	}
+	playerUI_->Draw();
 }
 
 void Player::IsDamage()
@@ -147,7 +138,7 @@ void Player::IsDamage()
 	swordParticleEmitter_->SetIsCreate(false);
 	ChengeState(std::make_unique<DamageState>(this, playerAnimation_.get()));
 	if (hp_ > 0) {
-		hpSprites_.pop_back();
+		playerUI_->DeleteHP();
 	}
 	--hp_;
 }

@@ -13,9 +13,16 @@ void DashAttackState::Initialize()
 	// 剣のワールド座標を取得
 	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
 	Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration4") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
+	// プレイヤーのz方向ベクトル
+	Vector3 localDirection = Vector3::ExprUnitZ;
+	Vector3 globalDirection = Quaternion::RotateVector(localDirection, player_->GetTransform()->rotation_);
+	velocity_ = globalDirection.Normalize();
+	// パーティクルの初期化
 	player_->GetSwordEmitter()->SetIsCreate(false);
 	player_->GetSwordEmitter()->SetPosition(world);
 	player_->GetSwordEmitter()->SetAcceleration(acceleration);
+
+	attackAudio_ = std::make_unique<Audio>();
 }
 
 void DashAttackState::Update()
@@ -29,21 +36,26 @@ void DashAttackState::Update()
 	player_->GetSwordEmitter()->SetPosition(world);
 	player_->SetIsAttack(true);
 
-	if (playerAnimation_->GetDashFrame() < 1.0f || playerAnimation_->GetDashFrame() > 1.6f) {
+	if (playerAnimation_->GetDashFrame() < 1.0f || playerAnimation_->GetDashFrame() > 1.8f) {
 		player_->GetSwordEmitter()->SetIsCreate(false);
 	}
+	// 効果音
+	if (playerAnimation_->GetDashFrame() >= 1.0f &&
+		playerAnimation_->GetDashFrame() < 1.0f + (1.0f / global_->GetValue<float>("DashAttack", "frame2") * 2.0f)) {
+		attackAudio_->SoundPlayWave("Dash.wav");
+	}
+
 	if (playerAnimation_->GetDashFrame() > 1.0f && playerAnimation_->GetDashFrame() < 2.0f) {
 		Vector3 translation = player_->GetTransform()->translation_;
-		translation += player_->GetVelocity() * global_->GetValue<float>("Player", "dashPow") * (2.0f - playerAnimation_->GetDashFrame());
+		translation += velocity_ * global_->GetValue<float>("Player", "dashPow") * (2.0f - playerAnimation_->GetDashFrame());
 		player_->GetTransform()->translation_ = translation;
 	}
 	else {
 		player_->SetIsAttack(false);
 	}
 
-
-	// コンボアタックに遷移
-	if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
+	// コンボアタックから自動で3コンボ目に遷移
+	if (playerAnimation_->GetCombo2Frame() >= 2.0f && playerAnimation_->GetNextCombo()) {
 		player_->ChengeState(std::make_unique<AttackState>(player_, playerAnimation_));
 		return;
 	}
