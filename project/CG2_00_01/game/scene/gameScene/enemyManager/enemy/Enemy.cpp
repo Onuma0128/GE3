@@ -21,6 +21,7 @@ void Enemy::OnCollision(const std::string& name, const Vector3& position)
 		velocity_.Normalize();
 		isDamage_ = true;
 		ChengeState(std::make_unique<DamageStateEnemy>(this));
+		audio_->SoundPlayWave("EnemyDamage.wav", 0.1f);
 	}
 
 	// 4 敵同士の当たり判定
@@ -50,7 +51,11 @@ Enemy::~Enemy()
 
 void Enemy::Init()
 {
+	audio_ = std::make_unique<Audio>();
+
 	transform_ = std::make_unique<WorldTransform>();
+	float angle = static_cast<float>(std::numbers::pi);
+	transform_->rotation_ = Quaternion::MakeRotateAxisAngleQuaternion(Vector3::ExprUnitY, angle);
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj", transform_.get());
 

@@ -40,7 +40,7 @@ void DashAttackState::Update()
 	// 効果音
 	if (playerAnimation_->GetDashFrame() >= 1.0f &&
 		playerAnimation_->GetDashFrame() < 1.0f + (1.0f / global_->GetValue<float>("DashAttack", "frame2") * 2.0f)) {
-		player_->GetAudio()->SoundPlayWave("Dash.wav");
+		player_->GetAudio()->SoundPlayWave("Dash.wav", 0.25f);
 	}
 
 	if (playerAnimation_->GetDashFrame() > 1.0f && playerAnimation_->GetDashFrame() < 2.0f) {

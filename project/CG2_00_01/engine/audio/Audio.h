@@ -13,7 +13,7 @@ public:
 	Audio();
 	~Audio();
 
-	void SoundPlayWave(const std::string& filePath);
+	void SoundPlayWave(const std::string& filePath, float volume);
 
 private:
 	ComPtr<IXAudio2> xAudio2_;

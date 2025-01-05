@@ -35,6 +35,9 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
     Vector3 subtract = PosB - PosA;
 
     float distance = subtract.Length();
+    if (distance >= 5.0f) {
+        return;
+    }
 
     float radiusA = colliderA->GetRadius();
     float radiusB = colliderB->GetRadius();

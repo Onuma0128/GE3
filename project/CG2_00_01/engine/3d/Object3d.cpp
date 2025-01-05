@@ -18,6 +18,8 @@ void Object3d::Initialize(const std::string& filePath, WorldTransform* transform
     SetModel(filePath);
 
     MakeMaterialData();
+
+    Update();
 }
 
 void Object3d::Update()

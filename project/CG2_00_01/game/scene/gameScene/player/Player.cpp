@@ -16,6 +16,7 @@ void Player::OnCollision(const std::string& name, const Vector3& position)
 		velocity_ = (transform_->translation_ - position);
 		velocity_.y = 0.0f;
 		IsDamage();
+		audio_->SoundPlayWave("PlayerDamage.wav", 0.5f);
 	}
 }
 
@@ -47,6 +48,7 @@ void Player::Init()
 
 	// モデルの初期化
 	transform_ = std::make_unique<WorldTransform>();
+	transform_->translation_ = global_->GetValue<Vector3>("Player", "position");
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj", transform_.get());
 
@@ -153,6 +155,7 @@ void Player::ChengeState(std::unique_ptr<BaseState> newState)
 
 void Player::GlobalInit()
 {
+	global_->AddValue<Vector3>("Player", "position", Vector3{});
 	global_->AddValue<float>("Player", "moveSpeed", 0.1f);
 	global_->AddValue<float>("Player", "velocityY", 1.0f);
 	global_->AddValue<float>("Player", "accelerationY", 0.1f);

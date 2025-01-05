@@ -48,7 +48,7 @@ void AttackState::Update()
 		// 効果音
 		if (playerAnimation_->GetCombo1Frame() >= 1.0f &&
 			playerAnimation_->GetCombo1Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo1", "frame2") * 2.0f)) {
-			player_->GetAudio()->SoundPlayWave("Combo1.wav");
+			player_->GetAudio()->SoundPlayWave("Combo1.wav", 0.25f);
 		}
 
 		// 条件を達成したら次のコンボに移動
@@ -82,7 +82,7 @@ void AttackState::Update()
 		// 効果音
 		if (playerAnimation_->GetCombo2Frame() >= 1.0f &&
 			playerAnimation_->GetCombo2Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo2", "frame2") * 2.0f)) {
-			player_->GetAudio()->SoundPlayWave("Combo2.wav");
+			player_->GetAudio()->SoundPlayWave("Combo2.wav", 0.25f);
 		}
 
 		// 条件を達成したら次のコンボに移動
@@ -125,7 +125,7 @@ void AttackState::Update()
 		// 効果音
 		if (playerAnimation_->GetCombo3Frame() >= 2.0f &&
 			playerAnimation_->GetCombo3Frame() < 2.0f + (1.0f / global_->GetValue<float>("AttackCombo3", "frame3") * 3.0f)) {
-			player_->GetAudio()->SoundPlayWave("Combo3.wav");
+			player_->GetAudio()->SoundPlayWave("Combo3.wav", 0.25f);
 		}
 
 		// 攻撃が終了したらステートを変更

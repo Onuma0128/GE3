@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "Audio.h"
 #include "Object3d.h"
 #include "WorldTransform.h"
 #include "GlobalVariables.h"
@@ -53,6 +54,7 @@ private:
 
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 	Player* player_ = nullptr;
+	std::unique_ptr<Audio> audio_ = nullptr;
 
 	std::unique_ptr<BaseStateEnemy> state_ = nullptr;
 

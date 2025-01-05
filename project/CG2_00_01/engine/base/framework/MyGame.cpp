@@ -83,4 +83,6 @@ void MyGame::LoadResource()
 	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Combo2.wav");
 	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Combo3.wav");
 	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Dash.wav");
+	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "PlayerDamage.wav");
+	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "EnemyDamage.wav");
 }

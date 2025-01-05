@@ -1,6 +1,7 @@
 #include "Audio.h"
 
 #include <cassert>
+#include <algorithm>
 
 #include "AudioManager.h"
 
@@ -21,8 +22,10 @@ Audio::~Audio()
     xAudio2_.Reset();
 }
 
-void Audio::SoundPlayWave(const std::string& filePath)
+void Audio::SoundPlayWave(const std::string& filePath, float volume)
 {
+    volume = std::clamp(volume, 0.0f, 1.0f);
+
     const auto& soundData = AudioManager::GetInstance()->GetSoundData(filePath);
 
     IXAudio2SourceVoice* sourceVoice = nullptr;
@@ -37,6 +40,11 @@ void Audio::SoundPlayWave(const std::string& filePath)
     hr = sourceVoice->SubmitSourceBuffer(&buffer);
     assert(SUCCEEDED(hr));
 
+    // 音量を設定
+    hr = sourceVoice->SetVolume(volume);
+    assert(SUCCEEDED(hr));
+
     hr = sourceVoice->Start();
     assert(SUCCEEDED(hr));
 }
+
