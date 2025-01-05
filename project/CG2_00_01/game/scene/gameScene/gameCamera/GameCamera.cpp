@@ -44,8 +44,9 @@ void GameCamera::Update()
 	Vector3 translation = global_->GetValue<Vector3>("CameraOffset", "translation").Transform(rotateMatrix);
 
 	camera_->SetTranslate(player_->GetTransform()->translation_ + translation);
+	offset_ = camera_->GetTranslate();
 
-	/*if (player_->GetIsShake()) {
+	if (player_->GetIsShake()) {
 		time_ += deltaTime_;
 		duration_ = global_->GetValue<float>("CameraShake", "duration");
 		intensity_ = global_->GetValue<float>("CameraShake", "intensity");
@@ -55,7 +56,7 @@ void GameCamera::Update()
 			player_->SetIsShake(false);
 			time_ = 0.0f;
 		}
-	}*/
+	}
 }
 
 float GameCamera::LerpShortAngle(float a, float b, float t)

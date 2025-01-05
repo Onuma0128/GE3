@@ -17,6 +17,7 @@ void Player::OnCollision(const std::string& name, const Vector3& position)
 		velocity_.y = 0.0f;
 		IsDamage();
 		audio_->SoundPlayWave("PlayerDamage.wav", 0.5f);
+		isShake_ = true;
 	}
 }
 
