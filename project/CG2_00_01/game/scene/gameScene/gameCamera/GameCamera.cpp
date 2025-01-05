@@ -17,7 +17,7 @@ void GameCamera::Init()
 	camera_->SetRotate(global_->GetValue<Vector3>("CameraOffset", "rotation"));
 	Matrix4x4 rotateMatrix = Matrix4x4::Rotate(camera_->GetRotate());
 	Vector3 translation = global_->GetValue<Vector3>("CameraOffset", "translation").Transform(rotateMatrix);
-	camera_->SetTranslate(translation);
+	camera_->SetTranslate(translation + global_->GetValue<Vector3>("Player", "position"));
 	CameraManager::GetInstance()->SetCamera(camera_.get());
 	CameraManager::GetInstance()->SetActiveCamera(0);
 	camera_->Update();
