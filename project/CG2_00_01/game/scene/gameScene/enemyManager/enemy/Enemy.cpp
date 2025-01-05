@@ -21,7 +21,7 @@ void Enemy::OnCollision(const std::string& name, const Vector3& position)
 		velocity_.Normalize();
 		isDamage_ = true;
 		ChengeState(std::make_unique<DamageStateEnemy>(this));
-		audio_->SoundPlayWave("EnemyDamage.wav", 0.1f);
+		audio_->SoundPlayWave("EnemyDamage.wav", 0.01f);
 	}
 
 	// 4 敵同士の当たり判定

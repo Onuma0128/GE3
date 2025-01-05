@@ -81,7 +81,7 @@ void AttackState::Update()
 		}
 		// 効果音
 		if (playerAnimation_->GetCombo2Frame() >= 1.0f &&
-			playerAnimation_->GetCombo2Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo2", "frame2") * 2.0f)) {
+			playerAnimation_->GetCombo2Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo2", "frame2") * 1.5f)) {
 			player_->GetAudio()->SoundPlayWave("Combo2.wav", 0.25f);
 		}
 
@@ -118,13 +118,13 @@ void AttackState::Update()
 		player_->GetSwordEmitter()->SetPosition(world);
 		player_->SetIsAttack(true);
 
-		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 2.5f) {
+		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 2.8f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
 			player_->SetIsAttack(false);
 		}
 		// 効果音
 		if (playerAnimation_->GetCombo3Frame() >= 2.0f &&
-			playerAnimation_->GetCombo3Frame() < 2.0f + (1.0f / global_->GetValue<float>("AttackCombo3", "frame3") * 3.0f)) {
+			playerAnimation_->GetCombo3Frame() < 2.0f + (1.0f / global_->GetValue<float>("AttackCombo3", "frame3") * 2.0f)) {
 			player_->GetAudio()->SoundPlayWave("Combo3.wav", 0.25f);
 		}
 		if (playerAnimation_->GetCombo3Frame() >= 2.5f &&
