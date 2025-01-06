@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "enemy/Enemy.h"
+#include "gameScene/fade/FadeScene.h"
 
 class Player;
 
@@ -20,6 +21,7 @@ public:
 	void Update();
 
 	void Draw();
+	void DrawSprite();
 
 	void Debug_ImGui();
 
@@ -39,6 +41,7 @@ private:
 	Player* player_ = nullptr;
 
 	std::vector<std::unique_ptr<Enemy>> enemys_;
+	std::unique_ptr<FadeScene> fade_ = nullptr;
 
 };
 

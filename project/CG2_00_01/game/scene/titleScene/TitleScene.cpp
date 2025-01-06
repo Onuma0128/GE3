@@ -22,6 +22,9 @@ void TitleScene::Initialize()
 	camera_ = std::make_unique<Camera>();
 	camera_->Initialize();
 	CameraManager::GetInstance()->SetCamera(camera_.get());
+
+	fade_ = std::make_unique<FadeScene>();
+	fade_->Init(0.0f);
 }
 
 void TitleScene::Finalize()
@@ -32,7 +35,10 @@ void TitleScene::Finalize()
 void TitleScene::Update()
 {
 	if (Input::GetInstance()->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
-		SceneManager::GetInstance()->ChangeScene("Game");
+		isFade_ = true;
+	}
+	if (isFade_) {
+		fade_->FadeIn("Game", Vector3{ 0.0f,0.0f,0.0f }, 120.0f);
 	}
 }
 
@@ -47,7 +53,7 @@ void TitleScene::Draw()
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
 	
-
+	fade_->Draw();
 
 
 	// Lineの描画準備

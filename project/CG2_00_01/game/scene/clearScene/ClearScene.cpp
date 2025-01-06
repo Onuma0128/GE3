@@ -18,6 +18,12 @@ void ClearScene::Initialize()
 	camera_ = std::make_unique<Camera>();
 	camera_->Initialize();
 	CameraManager::GetInstance()->SetCamera(camera_.get());
+
+	sprite_ = std::make_unique<Sprite>();
+	sprite_->Initialize("ui/GameClear.png");
+
+	fade_ = std::make_unique<FadeScene>();
+	fade_->Init(0.0f);
 }
 
 void ClearScene::Finalize()
@@ -26,6 +32,14 @@ void ClearScene::Finalize()
 
 void ClearScene::Update()
 {
+	if (Input::GetInstance()->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
+		isFade_ = true;
+	}
+	if (isFade_) {
+		fade_->FadeIn("Title", Vector3{ 0.0f,0.0f,0.0f }, 120.0f);
+	}
+
+	sprite_->Update();
 }
 
 void ClearScene::Draw()
@@ -39,8 +53,9 @@ void ClearScene::Draw()
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
 
+	sprite_->Draw();
 
-
+	fade_->Draw();
 
 	// Lineの描画準備
 	PrimitiveDrawer::GetInstance()->DrawBase();

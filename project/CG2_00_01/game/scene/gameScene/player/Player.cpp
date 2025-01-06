@@ -2,6 +2,7 @@
 
 #include "LightManager.h"
 #include "ModelManager.h"
+#include "SceneManager.h"
 
 #include "state/MoveState.h"
 #include "state/DamageState.h"
@@ -11,12 +12,13 @@ void Player::OnCollision(const std::string& name, const Vector3& position)
 	// 衝突判定は1パターン
 
 	// 1 攻撃を食らった
-	if (name == "enemy" && hp_ > 0) {
+	if (name == "enemy" && hp_ > 0 && !isDamage_) {
 		velocity_ = (transform_->translation_ - position);
 		velocity_.y = 0.0f;
 		IsDamage();
 		audio_->SoundPlayWave("PlayerDamage.wav", 0.5f);
 		isShake_ = true;
+		isDamage_ = true;
 	}
 }
 
@@ -74,6 +76,9 @@ void Player::Init()
 	playerParticle_ = std::make_unique<PlayerParticle>();
 	playerParticle_->Init();
 
+	fade_ = std::make_unique<FadeScene>();
+	fade_->Init(0.0f);
+
 }
 
 void Player::Update()
@@ -81,6 +86,7 @@ void Player::Update()
 	playerAnimation_->Debug_ImGui();
 
 	state_->Update();
+	DamageUpdate();
 
 	model_->Update();
 
@@ -90,7 +96,11 @@ void Player::Update()
 
 	playerParticle_->Update();
 
-	LightManager::GetInstance()->SetPointLightPosition(transform_->translation_ + Vector3{ 0,4,0 });
+	SetLight();
+
+	if (hp_ <= 0) {
+		fade_->FadeIn("GameOver", Vector3{ 0.0f,0.0f,0.0f }, 120.0f);
+	}
 }
 
 void Player::ShadowUpdate()
@@ -126,6 +136,8 @@ void Player::Draw()
 void Player::DrawSprite()
 {
 	playerUI_->Draw();
+
+	fade_->Draw();
 }
 
 void Player::IsDamage()
@@ -145,6 +157,29 @@ void Player::IsDamage()
 		playerUI_->DeleteHP();
 	}
 	--hp_;
+}
+
+void Player::DamageUpdate()
+{
+	if (isDamage_) {
+		damageFrame_ += 1.0f / 150.0f;
+	}
+	if (damageFrame_ >= 1.0f) {
+		isDamage_ = false;
+		damageFrame_ = 0.0f;
+	}
+}
+
+void Player::SetLight()
+{
+	if (static_cast<int>(damageFrame_ * 120.0f) % 10 == 0) {
+		LightManager::GetInstance()->GetPointLightData()->intensity = 1.0f;
+	}
+	else {
+		LightManager::GetInstance()->GetPointLightData()->intensity = 0.1f;
+	}
+
+	LightManager::GetInstance()->SetPointLightPosition(transform_->translation_ + Vector3{ 0,4,0 });
 }
 
 void Player::ChengeState(std::unique_ptr<BaseState> newState)

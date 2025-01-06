@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "SceneManager.h"
 #include "imgui.h"
 
 #include "gameScene/player/Player.h"
@@ -24,6 +25,9 @@ void EnemyManager::Init()
 		enemys_.push_back(std::move(enemy));
 		++count;
 	}
+
+	fade_ = std::make_unique<FadeScene>();
+	fade_->Init(0.0f);
 }
 
 void EnemyManager::GlobalInit()
@@ -44,9 +48,11 @@ void EnemyManager::GlobalInit()
 void EnemyManager::Update()
 {
 	// 敵の更新
+	bool isActive = false;
 	if (global_->GetValue<bool>("EnemyManager", "isMove")) {
 		for (auto& enemy : enemys_) {
 			enemy->Update();
+			isActive = true;
 		}
 		for (auto it = enemys_.begin(); it != enemys_.end();) {
 			if ((*it)->GetHP() <= 0 && (*it)->GetTransform()->scale_.x <= 0.1f) {
@@ -55,6 +61,9 @@ void EnemyManager::Update()
 			else {
 				++it;
 			}
+		}
+		if(!isActive){
+			fade_->FadeIn("Clear", Vector3{ 1.0f,1.0f,1.0f }, 120.0f);
 		}
 	}
 	else {
@@ -74,6 +83,11 @@ void EnemyManager::Draw()
 	for (auto& enemy : enemys_) {
 		enemy->Draw();
 	}
+}
+
+void EnemyManager::DrawSprite()
+{
+	fade_->Draw();
 }
 
 void EnemyManager::Debug_ImGui()

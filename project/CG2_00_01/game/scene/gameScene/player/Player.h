@@ -17,6 +17,7 @@
 #include "gameScene/collision/Collider.h"
 #include "gameScene/player/ui/PlayerUI.h"
 #include "gameScene/player/particle/PlayerParticle.h"
+#include "gameScene/fade/FadeScene.h"
 
 class Player : public Collider
 {
@@ -40,6 +41,9 @@ public:
 	void DrawSprite();
 
 	void IsDamage();
+	void DamageUpdate();
+
+	void SetLight();
 
 	// カメラシェイク
 	void SetIsShake(bool isShake) { isShake_ = isShake; }
@@ -48,6 +52,10 @@ public:
 	// 今攻撃中か
 	void SetIsAttack(bool isAttack) { isAttack_ = isAttack; }
 	bool GetIsAttack()const { return isAttack_; }
+
+	// 今ダメージを受けているか
+	void SetIsDamage(bool isDamage) { isDamage_ = isDamage; }
+	bool GetIsDamage()const { return isDamage_; }
 
 	int GetHP()const { return hp_; }
 	void SetHP(int hp) { hp_ = hp; }
@@ -103,6 +111,8 @@ private:
 	std::unique_ptr<PlayerParticle> playerParticle_ = nullptr;
 	// 状態
 	std::unique_ptr<BaseState> state_;
+	// シーンのフェード
+	std::unique_ptr<FadeScene> fade_ = nullptr;
 
 	// 変数
 	int hp_ = 5;
@@ -112,5 +122,7 @@ private:
 	bool isShake_ = false;
 	// 攻撃中か
 	bool isAttack_ = false;
-
+	// ダメージを食らっているか
+	bool isDamage_ = false;
+	float damageFrame_ = 0.0f;
 };

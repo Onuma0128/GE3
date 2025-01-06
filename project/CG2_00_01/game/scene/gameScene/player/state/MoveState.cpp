@@ -58,12 +58,12 @@ void MoveState::Update()
 	acceleration.y = global_->GetValue<float>("Player", "dustAccelerationY");
 	player_->GetMoveEmitter()->SetAcceleration(acceleration);
 
-	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
+	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_A) && player_->GetHP() > 0) {
 		player_->GetMoveEmitter()->SetIsCreate(false);
 		player_->ChengeState(std::make_unique<AttackState>(player_, playerAnimation_));
 		return;
 	}
-	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_B)) {
+	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_B) && player_->GetHP() > 0) {
 		player_->GetMoveEmitter()->SetIsCreate(false);
 		player_->ChengeState(std::make_unique<DashAttackState>(player_, playerAnimation_));
 		return;

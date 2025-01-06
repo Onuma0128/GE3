@@ -190,6 +190,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\game\scene\gameScene\player\ui\PlayerUI.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\gameScene\player\particle\PlayerParticle.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\gameOverScene\GameOverScene.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\fade\FadeScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\BaseStateEnemy.h" />
@@ -273,6 +274,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\game\scene\gameScene\player\ui\PlayerUI.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameScene\player\particle\PlayerParticle.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameOverScene\GameOverScene.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\fade\FadeScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

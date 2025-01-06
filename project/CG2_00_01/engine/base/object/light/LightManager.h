@@ -80,6 +80,7 @@ public:
 
 	ID3D12Resource* GetSpotLightResource()const { return spotLightResource_.Get(); }
 
+	PointLight* GetPointLightData()const { return pointLightData_; }
 	void SetPointLightPosition(const Vector3& position) { pointLightData_->position = position; }
 
 private:

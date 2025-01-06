@@ -45,10 +45,6 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	if (Input::GetInstance()->PushKey(DIK_P)) {
-		SceneManager::GetInstance()->ChangeScene("Title");
-	}
-
 	ground_->Update();
 
 	camera_->Update();
@@ -80,6 +76,8 @@ void GamePlayScene::Draw()
 	SpriteBase::GetInstance()->DrawBase();
 
 	player_->DrawSprite();
+
+	enemyManager_->DrawSprite();
 
 	// Lineの描画準備
 	PrimitiveDrawer::GetInstance()->DrawBase();
