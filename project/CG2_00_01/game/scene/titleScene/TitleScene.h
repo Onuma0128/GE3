@@ -5,6 +5,7 @@
 
 #include "Audio.h"
 #include "Camera.h"
+#include "Sprite.h"
 #include "gameScene/fade/FadeScene.h"
 
 class TitleScene : public BaseScene
@@ -22,6 +23,8 @@ public:
 private:
 
 	std::unique_ptr<Camera> camera_ = nullptr;
+
+	std::unique_ptr<Sprite> sprite_ = nullptr;
 
 	std::unique_ptr<Audio> audio_ = nullptr;
 	std::unique_ptr<FadeScene> fade_ = nullptr;

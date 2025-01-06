@@ -23,6 +23,9 @@ void TitleScene::Initialize()
 	camera_->Initialize();
 	CameraManager::GetInstance()->SetCamera(camera_.get());
 
+	sprite_ = std::make_unique<Sprite>();
+	sprite_->Initialize("ui/Title.png");
+
 	audio_ = std::make_unique<Audio>();
 
 	fade_ = std::make_unique<FadeScene>();
@@ -43,6 +46,8 @@ void TitleScene::Update()
 	if (isFade_) {
 		fade_->FadeIn("Game", Vector3{ 0.0f,0.0f,0.0f }, 120.0f);
 	}
+
+	sprite_->Update();
 }
 
 void TitleScene::Draw()
@@ -56,8 +61,9 @@ void TitleScene::Draw()
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
 	
-	fade_->Draw();
+	sprite_->Draw();
 
+	fade_->Draw();
 
 	// Lineの描画準備
 	PrimitiveDrawer::GetInstance()->DrawBase();
