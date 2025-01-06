@@ -172,7 +172,7 @@ void Player::DamageUpdate()
 
 void Player::SetLight()
 {
-	if (static_cast<int>(damageFrame_ * 120.0f) % 10 == 0) {
+	if (static_cast<int>(damageFrame_ * 150.0f) % 10 == 0) {
 		LightManager::GetInstance()->GetPointLightData()->intensity = 1.0f;
 	}
 	else {
