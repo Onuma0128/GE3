@@ -2,7 +2,6 @@
 
 #include "LightManager.h"
 #include "ModelManager.h"
-#include "ParticleManager.h"
 
 #include "state/MoveState.h"
 #include "state/DamageState.h"
@@ -12,7 +11,7 @@ void Player::OnCollision(const std::string& name, const Vector3& position)
 	// 衝突判定は1パターン
 
 	// 1 攻撃を食らった
-	if (name == "enemy") {
+	if (name == "enemy" && hp_ > 0) {
 		velocity_ = (transform_->translation_ - position);
 		velocity_.y = 0.0f;
 		IsDamage();
@@ -66,18 +65,15 @@ void Player::Init()
 	state_ = std::move(std::make_unique<MoveState>(this, playerAnimation_.get()));
 	state_->Initialize();
 
-	// 移動時パーティクルの初期化
-	moveParticleEmitter_ = std::make_unique<ParticleEmitter>("playerDust");
-	ParticleManager::GetInstance()->CreateParticleGroup("playerDust", "white1x1.png", moveParticleEmitter_.get());
-
-	// 攻撃時パーティクルの初期化
-	swordParticleEmitter_ = std::make_unique<ParticleEmitter>("sword");
-	ParticleManager::GetInstance()->CreateParticleGroup("sword", "circle.png", swordParticleEmitter_.get());
-	swordParticleEmitter_->SetIsCreate(false);
-
+	// プレイヤーのUI
 	playerUI_ = std::make_unique<PlayerUI>();
 	playerUI_->Init();
 	playerUI_->SetPlayer(this);
+
+	// プレイヤー周りのパーティクル
+	playerParticle_ = std::make_unique<PlayerParticle>();
+	playerParticle_->Init();
+
 }
 
 void Player::Update()
@@ -91,6 +87,8 @@ void Player::Update()
 	ShadowUpdate();
 
 	playerUI_->Update();
+
+	playerParticle_->Update();
 
 	LightManager::GetInstance()->SetPointLightPosition(transform_->translation_ + Vector3{ 0,4,0 });
 }
@@ -121,6 +119,8 @@ void Player::Draw()
 	state_->Draw();
 
 	shadowModel_->Draw();
+
+	playerParticle_->Draw();
 }
 
 void Player::DrawSprite()
@@ -139,7 +139,7 @@ void Player::IsDamage()
 	playerAnimation_->Reset();
 	playerAnimation_->GetPlayerModels()->ModelOffset();
 	isAttack_ = false;
-	swordParticleEmitter_->SetIsCreate(false);
+	playerParticle_->GetSwordEmitter()->SetIsCreate(false);
 	ChengeState(std::make_unique<DamageState>(this, playerAnimation_.get()));
 	if (hp_ > 0) {
 		playerUI_->DeleteHP();

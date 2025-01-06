@@ -1,0 +1,25 @@
+{
+    "PlayerAttackParitcle": [
+        {
+            "randomSize": 11
+        },
+        {
+            "velocityPow": 0.05000000074505806
+        },
+        {
+            "accelerationY": 0.20000000298023224
+        },
+        {
+            "offsetVelocityY": 2.0
+        },
+        {
+            "particleSize": 0.4000000059604645
+        },
+        {
+            "particleCount": 10
+        },
+        {
+            "alpha": 0.009999999776482582
+        }
+    ]
+}

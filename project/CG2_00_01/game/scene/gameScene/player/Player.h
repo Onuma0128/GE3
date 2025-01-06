@@ -16,6 +16,7 @@
 #include "gameScene/animation/PlayerAnimation.h"
 #include "gameScene/collision/Collider.h"
 #include "gameScene/player/ui/PlayerUI.h"
+#include "gameScene/player/particle/PlayerParticle.h"
 
 class Player : public Collider
 {
@@ -64,8 +65,9 @@ public:
 
 	/* ==================== パーティクル ==================== */
 
-	ParticleEmitter* GetMoveEmitter()const { return moveParticleEmitter_.get(); }
-	ParticleEmitter* GetSwordEmitter()const { return swordParticleEmitter_.get(); }
+	ParticleEmitter* GetMoveEmitter()const { return playerParticle_->GetMoveEmitter(); }
+	ParticleEmitter* GetSwordEmitter()const { return playerParticle_->GetSwordEmitter(); }
+	PlayerParticle* GetPlayerParticle()const { return playerParticle_.get(); }
 
 	/* ==================== playerの変数 ==================== */
 
@@ -97,14 +99,10 @@ private:
 	std::unique_ptr<PlayerAnimation> playerAnimation_ = nullptr;
 	// プレイヤーのUI
 	std::unique_ptr<PlayerUI> playerUI_ = nullptr;
+	// プレイヤーのパーティクル
+	std::unique_ptr<PlayerParticle> playerParticle_ = nullptr;
 	// 状態
 	std::unique_ptr<BaseState> state_;
-
-
-	// 移動時のパーティクル
-	std::unique_ptr<ParticleEmitter> moveParticleEmitter_ = nullptr;
-	// 攻撃時剣先のパーティクル
-	std::unique_ptr<ParticleEmitter> swordParticleEmitter_ = nullptr;
 
 	// 変数
 	int hp_ = 5;

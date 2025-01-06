@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+#include "GameOverScene.h"
 
 #include "CameraManager.h"
 #include "SceneManager.h"
@@ -8,11 +8,7 @@
 #include "SpriteBase.h"
 #include "PrimitiveDrawer.h"
 
-#include "Quaternion.h"
-
-#include "imgui.h"
-
-void TitleScene::Initialize()
+void GameOverScene::Initialize()
 {
 	// Cameraの初期化
 	// ===============
@@ -24,29 +20,25 @@ void TitleScene::Initialize()
 	CameraManager::GetInstance()->SetCamera(camera_.get());
 }
 
-void TitleScene::Finalize()
+void GameOverScene::Finalize()
 {
-	
 }
 
-void TitleScene::Update()
+void GameOverScene::Update()
 {
-	if (Input::GetInstance()->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
-		SceneManager::GetInstance()->ChangeScene("Game");
-	}
 }
 
-void TitleScene::Draw()
+void GameOverScene::Draw()
 {
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
-	
+
 
 
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
-	
+
 
 
 

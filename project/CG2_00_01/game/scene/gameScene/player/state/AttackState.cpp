@@ -128,8 +128,9 @@ void AttackState::Update()
 			player_->GetAudio()->SoundPlayWave("Combo3.wav", 0.25f);
 		}
 		if (playerAnimation_->GetCombo3Frame() >= 2.5f &&
-			playerAnimation_->GetCombo3Frame() < 2.5f + (1.0f / global_->GetValue<float>("AttackCombo3", "frame3") * 2.0f)) {
+			playerAnimation_->GetCombo3Frame() < 2.5f + (1.0f / global_->GetValue<float>("AttackCombo3", "frame3"))) {
 			player_->SetIsShake(true);
+			player_->GetPlayerParticle()->CreateParticle(Vector3{ world.x,0.0f,world.z });
 		}
 
 		// 攻撃が終了したらステートを変更

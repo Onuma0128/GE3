@@ -35,6 +35,13 @@ void DamageStateEnemy::Update()
 			enemy_->GetTransform()->translation_.y = 0.5f;
 		}
 	}
+	if (enemy_->GetPlayer()->GetPlayerAnima()->GetCombo3Frame() == 0.0f && enemy_->GetTransform()->translation_.y > 0.5f) {
+		velocityY -= 0.1f;
+		enemy_->GetTransform()->translation_.y += velocityY;
+		if (enemy_->GetTransform()->translation_.y <= 0.5f) {
+			enemy_->GetTransform()->translation_.y = 0.5f;
+		}
+	}
 
 	if (damageFrame_ >= 1.0f) {
 		damageFrame_ = 0.0f;
