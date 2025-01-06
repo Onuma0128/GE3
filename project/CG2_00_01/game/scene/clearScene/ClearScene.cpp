@@ -19,6 +19,8 @@ void ClearScene::Initialize()
 	camera_->Initialize();
 	CameraManager::GetInstance()->SetCamera(camera_.get());
 
+	audio_ = std::make_unique<Audio>();
+
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize("ui/GameClear.png");
 
@@ -32,8 +34,9 @@ void ClearScene::Finalize()
 
 void ClearScene::Update()
 {
-	if (Input::GetInstance()->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
+	if (Input::GetInstance()->TriggerGamepadButton(XINPUT_GAMEPAD_A) && !isFade_) {
 		isFade_ = true;
+		audio_->SoundPlayWave("Button.wav", 0.5f);
 	}
 	if (isFade_) {
 		fade_->FadeIn("Title", Vector3{ 0.0f,0.0f,0.0f }, 120.0f);

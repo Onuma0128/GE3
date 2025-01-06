@@ -3,6 +3,7 @@
 
 #include "BaseScene.h"
 
+#include "Audio.h"
 #include "Sprite.h"
 #include "Camera.h"
 
@@ -23,6 +24,8 @@ public:
 private:
 
 	std::unique_ptr<Camera> camera_ = nullptr;
+
+	std::unique_ptr<Audio> audio_ = nullptr;
 
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 

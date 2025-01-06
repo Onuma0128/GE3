@@ -59,6 +59,10 @@ void Enemy::Init()
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("box.obj", transform_.get());
 
+	shadowTransform_ = std::make_unique<WorldTransform>();
+	shadowModel_ = std::make_unique<Object3d>();
+	shadowModel_->Initialize("box.obj", shadowTransform_.get());
+
 	state_ = std::make_unique<MoveStateEnemy>(this);
 	state_->Initialize();
 }
@@ -68,6 +72,28 @@ void Enemy::Update()
 	state_->Update();
 
 	model_->Update();
+
+	ShadowUpdate();
+}
+
+void Enemy::ShadowUpdate()
+{
+	float translationY = transform_->translation_.y;
+
+	float scale =
+		(global_->GetValue<float>("EnemyShadow", "scalePow") - 0.5f) /
+		(global_->GetValue<float>("EnemyShadow", "scalePow") - translationY) * transform_->scale_.x;
+	shadowTransform_->scale_ = Vector3{ scale,0.01f,scale };
+	shadowTransform_->rotation_ = transform_->rotation_;
+	shadowTransform_->translation_ = transform_->translation_;
+	shadowTransform_->translation_.y = 0.01f;
+
+	float alpha =
+		(global_->GetValue<float>("EnemyShadow", "alphaPow") - translationY) /
+		(global_->GetValue<float>("EnemyShadow", "alphaPow") - 0.5f);
+	shadowModel_->SetColor(Vector4{ 0.0f,0.0f,0.0f,alpha });
+
+	shadowModel_->Update();
 }
 
 void Enemy::Draw()
@@ -75,6 +101,8 @@ void Enemy::Draw()
 	state_->Draw();
 
 	model_->Draw();
+
+	shadowModel_->Draw();
 }
 
 void Enemy::Debug_Update()

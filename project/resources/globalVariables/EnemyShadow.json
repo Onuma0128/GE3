@@ -1,0 +1,10 @@
+{
+    "EnemyShadow": [
+        {
+            "scalePow": 25.0
+        },
+        {
+            "alphaPow": 6.0
+        }
+    ]
+}

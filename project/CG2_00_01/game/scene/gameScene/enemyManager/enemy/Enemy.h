@@ -27,6 +27,7 @@ public:
 	void Init();
 
 	void Update();
+	void ShadowUpdate();
 
 	void Draw();
 
@@ -58,8 +59,12 @@ private:
 
 	std::unique_ptr<BaseStateEnemy> state_ = nullptr;
 
+	// モデル
 	std::unique_ptr<Object3d> model_ = nullptr;
 	std::unique_ptr<WorldTransform> transform_ = nullptr;
+	// 敵の影
+	std::unique_ptr<Object3d> shadowModel_ = nullptr;
+	std::unique_ptr<WorldTransform> shadowTransform_ = nullptr;
 
 	Vector3 velocity_;
 	int hp_ = 5;

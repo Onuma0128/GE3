@@ -85,4 +85,5 @@ void MyGame::LoadResource()
 	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Dash.wav");
 	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "PlayerDamage.wav");
 	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "EnemyDamage.wav");
+	AudioManager::GetInstance()->LoadAudioFile("resources/audio", "Button.wav");
 }

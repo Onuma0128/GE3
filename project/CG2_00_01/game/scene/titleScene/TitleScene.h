@@ -3,6 +3,7 @@
 
 #include "BaseScene.h"
 
+#include "Audio.h"
 #include "Camera.h"
 #include "gameScene/fade/FadeScene.h"
 
@@ -22,6 +23,7 @@ private:
 
 	std::unique_ptr<Camera> camera_ = nullptr;
 
+	std::unique_ptr<Audio> audio_ = nullptr;
 	std::unique_ptr<FadeScene> fade_ = nullptr;
 	bool isFade_ = false;
 

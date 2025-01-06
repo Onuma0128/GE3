@@ -41,6 +41,8 @@ void EnemyManager::GlobalInit()
 	global_->AddValue<float>("Enemy", "slerpSpeed", 0.1f);
 	global_->AddValue<float>("Enemy", "damageFrame", 10.0f);
 
+	global_->AddValue<float>("EnemyShadow", "scalePow", 25.0f);
+	global_->AddValue<float>("EnemyShadow", "alphaPow", 10.0f);
 
 	global_->AddValue<float>("Collider", "enemyRadius", 1.0f);
 }

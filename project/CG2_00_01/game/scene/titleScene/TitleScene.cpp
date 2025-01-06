@@ -23,6 +23,8 @@ void TitleScene::Initialize()
 	camera_->Initialize();
 	CameraManager::GetInstance()->SetCamera(camera_.get());
 
+	audio_ = std::make_unique<Audio>();
+
 	fade_ = std::make_unique<FadeScene>();
 	fade_->Init(0.0f);
 }
@@ -34,8 +36,9 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	if (Input::GetInstance()->TriggerGamepadButton(XINPUT_GAMEPAD_A)) {
+	if (Input::GetInstance()->TriggerGamepadButton(XINPUT_GAMEPAD_A) && !isFade_) {
 		isFade_ = true;
+		audio_->SoundPlayWave("Button.wav", 0.5f);
 	}
 	if (isFade_) {
 		fade_->FadeIn("Game", Vector3{ 0.0f,0.0f,0.0f }, 120.0f);
