@@ -25,6 +25,12 @@ void DamageStateEnemy::Update()
 	if (enemy_->GetHP() <= 0) {
 		enemy_->GetTransform()->scale_ = Vector3{ 1.0f,1.0f,1.0f } * (1.0f - damageFrame_);
 	}
+	else {
+		float pi = static_cast<float>(std::numbers::pi) * 1.5f;
+		enemy_->GetTransform()->scale_.x = 1.0f + -std::cos(damageFrame_ * pi) * global_->GetValue<float>("Enemy", "damageScale");
+		enemy_->GetTransform()->scale_.y = 1.0f + std::cos(damageFrame_ * pi) * global_->GetValue<float>("Enemy", "damageScale");
+		enemy_->GetTransform()->scale_.z = 1.0f + -std::cos(damageFrame_ * pi) * global_->GetValue<float>("Enemy", "damageScale");
+	}
 
 	enemy_->GetTransform()->translation_ += enemy_->GetVelocity() * (1.0f - damageFrame_);
 

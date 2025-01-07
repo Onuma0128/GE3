@@ -5,6 +5,8 @@
 #include "ParticleManager.h"
 #include "imgui.h"
 
+#include "gameScene/player/Player.h"
+
 void PlayerParticle::Init()
 {
 	GlobalInit();
@@ -17,6 +19,12 @@ void PlayerParticle::Init()
 	swordParticleEmitter_ = std::make_unique<ParticleEmitter>("sword");
 	ParticleManager::GetInstance()->CreateParticleGroup("sword", "circle.png", swordParticleEmitter_.get());
 	swordParticleEmitter_->SetIsCreate(false);
+
+	transform_ = std::make_unique<WorldTransform>();
+	model_ = std::make_unique<Object3d>();
+	model_->Initialize("crack.obj", transform_.get());
+	model_->SetTexture("resources","crack.png");
+
 }
 
 void PlayerParticle::GlobalInit()
@@ -28,16 +36,13 @@ void PlayerParticle::GlobalInit()
 	global_->AddValue<float>("PlayerAttackParitcle", "offsetVelocityY", 1.0f);
 	global_->AddValue<float>("PlayerAttackParitcle", "particleSize", 1.0f);
 	global_->AddValue<float>("PlayerAttackParitcle", "alpha", 0.1f);
+
+	global_->AddValue<Vector3>("PlayerAttackParitcle", "offsetPosition", Vector3{});
+	global_->AddValue<float>("PlayerAttackParitcle", "offsetSize", 1.0f);
 }
 
 void PlayerParticle::Update()
 {
-	/*ImGui::Begin("Combo3Particle");
-	if (ImGui::Button("CreateParticle")) {
-		CreateParticle();
-	}
-	ImGui::End();*/
-
 	for (auto& particle : combo3Particles_) {
 		if (particle.transform_->translation_.y >= 0.0f) {
 			Quaternion rotateX = Quaternion::MakeRotateAxisAngleQuaternion(Vector3::ExprUnitX, particle.velocity_.x);
@@ -61,12 +66,21 @@ void PlayerParticle::Update()
 			++it;
 		}
 	}
+	if (combo3Particles_.size() > 0) {
+		alpha_ -= global_->GetValue<float>("PlayerAttackParitcle", "alpha");
+		model_->SetColor(Vector4{ 1.0f,1.0f,1.0f,alpha_ });
+	}
+
+	model_->Update();
 }
 
 void PlayerParticle::Draw()
 {
 	for (auto& particle : combo3Particles_) {
 		particle.model_->Draw();
+	}
+	if (combo3Particles_.size() > 0) {
+		model_->Draw();
 	}
 }
 
@@ -75,7 +89,8 @@ void PlayerParticle::CreateParticle(const Vector3& position)
 	for (int i = 0; i < global_->GetValue<int>("PlayerAttackParitcle", "particleCount"); ++i) {
 		Combo3Particle particle{};
 		particle.transform_ = std::make_unique<WorldTransform>();
-		float scale = global_->GetValue<float>("PlayerAttackParitcle", "particleSize");
+		float scale = global_->GetValue<float>("PlayerAttackParitcle", "particleSize") +
+			static_cast<float>(rand() % 3 + 1) * 0.1f;
 		particle.transform_->scale_ = { scale ,scale ,scale };
 		particle.transform_->translation_ = position;
 		particle.model_ = std::make_unique<Object3d>();
@@ -89,4 +104,10 @@ void PlayerParticle::CreateParticle(const Vector3& position)
 		particle.alpha_ = 1.0f;
 		combo3Particles_.push_back(std::move(particle));
 	}
+
+	alpha_ = 1.0f;
+	float offsetScale = global_->GetValue<float>("PlayerAttackParitcle", "offsetSize");
+	transform_->scale_ = { offsetScale ,offsetScale ,offsetScale };
+	transform_->rotation_ = player_->GetTransform()->rotation_;
+	transform_->translation_ = position + global_->GetValue<Vector3>("PlayerAttackParitcle", "offsetPosition");
 }

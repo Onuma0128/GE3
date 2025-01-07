@@ -8,6 +8,15 @@
         },
         {
             "damageFrame": 30.0
+        },
+        {
+            "damageScale": 0.30000001192092896
+        },
+        {
+            "attackFrame": 60.0
+        },
+        {
+            "attackScale": 0.10000000149011612
         }
     ]
 }

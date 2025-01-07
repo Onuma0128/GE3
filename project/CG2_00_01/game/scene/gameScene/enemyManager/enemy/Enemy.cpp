@@ -3,14 +3,15 @@
 #include "gameScene/player/Player.h"
 #include "gameScene/enemyManager/enemy/state/MoveStateEnemy.h"
 #include "gameScene/enemyManager/enemy/state/DamageStateEnemy.h"
+#include "gameScene/enemyManager/enemy/state/AttackStateEnemy.h"
 
 void Enemy::OnCollision(const std::string& name, const Vector3& position)
 {
 	// 衝突判定は3パターン
 
 	// 1 攻撃を与えた
-	if (name == "player") {
-
+	if (name == "player" && player_->GetDamageFrame() == 0.0f) {
+		ChengeState(std::make_unique<AttackStateEnemy>(this));
 	}
 
 	// 2 攻撃を食らった(1,2コンボ目)
@@ -57,11 +58,11 @@ void Enemy::Init()
 	float angle = static_cast<float>(std::numbers::pi);
 	transform_->rotation_ = Quaternion::MakeRotateAxisAngleQuaternion(Vector3::ExprUnitY, angle);
 	model_ = std::make_unique<Object3d>();
-	model_->Initialize("box.obj", transform_.get());
+	model_->Initialize("enemy.obj", transform_.get());
 
 	shadowTransform_ = std::make_unique<WorldTransform>();
 	shadowModel_ = std::make_unique<Object3d>();
-	shadowModel_->Initialize("box.obj", shadowTransform_.get());
+	shadowModel_->Initialize("enemy.obj", shadowTransform_.get());
 
 	state_ = std::make_unique<MoveStateEnemy>(this);
 	state_->Initialize();
@@ -84,7 +85,7 @@ void Enemy::ShadowUpdate()
 		(global_->GetValue<float>("EnemyShadow", "scalePow") - 0.5f) /
 		(global_->GetValue<float>("EnemyShadow", "scalePow") - translationY) * transform_->scale_.x;
 	shadowTransform_->scale_ = Vector3{ scale,0.01f,scale };
-	shadowTransform_->rotation_ = transform_->rotation_;
+	shadowTransform_->rotation_ = Quaternion::ExtractYawQuaternion(transform_->rotation_);
 	shadowTransform_->translation_ = transform_->translation_;
 	shadowTransform_->translation_.y = 0.01f;
 
@@ -108,6 +109,8 @@ void Enemy::Draw()
 void Enemy::Debug_Update()
 {
 	model_->Update();
+
+	ShadowUpdate();
 }
 
 void Enemy::CollisionEnemy(const Vector3& translation)

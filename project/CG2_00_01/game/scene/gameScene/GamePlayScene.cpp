@@ -26,6 +26,12 @@ void GamePlayScene::Initialize()
 	emitter_ = std::make_unique<ParticleEmitter>("field");
 	ParticleManager::GetInstance()->CreateParticleGroup("field", "white1x1.png", emitter_.get());
 
+	skydomeTransform_ = std::make_unique<WorldTransform>();
+	skydome_ = std::make_unique<Object3d>();
+	skydome_->Initialize("skydome.obj", skydomeTransform_.get());
+	skydome_->SetLight(false);
+	skydomeTransform_->scale_ = { 100,100,100 };
+
 	player_ = std::make_unique<Player>();
 	player_->Init();
 
@@ -46,6 +52,7 @@ void GamePlayScene::Finalize()
 void GamePlayScene::Update()
 {
 	ground_->Update();
+	skydome_->Update();
 
 	camera_->Update();
 
@@ -67,6 +74,7 @@ void GamePlayScene::Draw()
 	Object3dBase::GetInstance()->DrawBase();
 
 	ground_->Draw();
+	skydome_->Draw();
 
 	player_->Draw();
 

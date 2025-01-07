@@ -56,6 +56,7 @@ public:
 	// 今ダメージを受けているか
 	void SetIsDamage(bool isDamage) { isDamage_ = isDamage; }
 	bool GetIsDamage()const { return isDamage_; }
+	float GetDamageFrame()const { return damageFrame_; }
 
 	int GetHP()const { return hp_; }
 	void SetHP(int hp) { hp_ = hp; }

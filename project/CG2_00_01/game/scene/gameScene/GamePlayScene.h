@@ -28,10 +28,16 @@ public:
 	void CheckAllCollisions();
 
 private:
+	/* ==================== マップ ==================== */
 
 	std::unique_ptr<Object3d> ground_;
 	std::unique_ptr<WorldTransform> groundTransform_;
 	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
+
+	/* ==================== 天球 ==================== */
+
+	std::unique_ptr<Object3d> skydome_;
+	std::unique_ptr<WorldTransform> skydomeTransform_;
 
 	/* ==================== カメラ ==================== */
 

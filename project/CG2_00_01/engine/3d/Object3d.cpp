@@ -57,6 +57,11 @@ void Object3d::SetColor(const Vector4& color)
     materialData_->color = color;
 }
 
+void Object3d::SetLight(bool isLight)
+{
+    materialData_->enableLighting = isLight;
+}
+
 void Object3d::MakeMaterialData()
 {
     // マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する

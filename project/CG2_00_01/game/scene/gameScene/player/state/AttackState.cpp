@@ -120,6 +120,8 @@ void AttackState::Update()
 
 		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 2.8f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
+		}
+		if (playerAnimation_->GetCombo3Frame() < 2.5f || playerAnimation_->GetCombo3Frame() > 2.8f) {
 			player_->SetIsAttack(false);
 		}
 		// 効果音

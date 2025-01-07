@@ -48,6 +48,7 @@ public:
 	void SetModel(const std::string& filePath);
 	void SetTexture(const std::string& directoryPath, const std::string& filePath);
 	void SetColor(const Vector4& color);
+	void SetLight(bool isLight);
 
 private:
 

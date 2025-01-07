@@ -26,6 +26,7 @@ void DashAttackState::Initialize()
 void DashAttackState::Update()
 {
 	playerAnimation_->DashAttack();
+	player_->GetMoveEmitter()->SetIsCreate(false);
 	player_->GetSwordEmitter()->SetIsCreate(false);
 	// 剣のワールド座標を取得
 	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
@@ -44,6 +45,7 @@ void DashAttackState::Update()
 	}
 
 	if (playerAnimation_->GetDashFrame() > 1.0f && playerAnimation_->GetDashFrame() < 2.0f) {
+		player_->GetMoveEmitter()->SetIsCreate(true);
 		Vector3 translation = player_->GetTransform()->translation_;
 		translation += velocity_ * global_->GetValue<float>("Player", "dashPow") * (2.0f - playerAnimation_->GetDashFrame());
 		player_->GetTransform()->translation_ = translation;
@@ -64,6 +66,12 @@ void DashAttackState::Update()
 		player_->ChengeState(std::make_unique<MoveState>(player_, playerAnimation_));
 		return;
 	}
+
+	// エミッターの処理
+	player_->GetMoveEmitter()->SetPosition(player_->GetTransform()->translation_);
+	Vector3 acceleration = player_->GetVelocity() * global_->GetValue<float>("Player", "dustAcceleration");
+	acceleration.y = global_->GetValue<float>("Player", "dustAccelerationY");
+	player_->GetMoveEmitter()->SetAcceleration(acceleration);
 
 	playerAnimation_->Update();
 }

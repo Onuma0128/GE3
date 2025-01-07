@@ -75,6 +75,7 @@ void Player::Init()
 	// プレイヤー周りのパーティクル
 	playerParticle_ = std::make_unique<PlayerParticle>();
 	playerParticle_->Init();
+	playerParticle_->SetPlayer(this);
 
 	fade_ = std::make_unique<FadeScene>();
 	fade_->Init(0.0f);

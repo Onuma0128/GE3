@@ -8,6 +8,8 @@
 #include "ParticleEmitter.h"
 #include "GlobalVariables.h"
 
+class Player;
+
 class PlayerParticle
 {
 public:
@@ -29,12 +31,16 @@ public:
 
 	void CreateParticle(const Vector3& position);
 
+	void SetPlayer(Player* player) { player_ = player; }
+
 	ParticleEmitter* GetMoveEmitter()const { return moveParticleEmitter_.get(); }
 	ParticleEmitter* GetSwordEmitter()const { return swordParticleEmitter_.get(); }
 
 private:
 
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
+
+	Player* player_ = nullptr;
 
 	// 移動時のパーティクル
 	std::unique_ptr<ParticleEmitter> moveParticleEmitter_ = nullptr;
@@ -43,4 +49,7 @@ private:
 
 	// 3コンボ目のパーティクル
 	std::list<Combo3Particle> combo3Particles_;
+	std::unique_ptr<Object3d> model_ = nullptr;
+	std::unique_ptr<WorldTransform> transform_ = nullptr;
+	float alpha_ = 1.0f;
 };

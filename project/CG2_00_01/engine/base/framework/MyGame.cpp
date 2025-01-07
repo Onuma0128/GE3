@@ -70,6 +70,9 @@ void MyGame::Draw()
 void MyGame::LoadResource()
 {
 	ModelManager::GetInstance()->LoadModel("resources", "box.obj");
+	ModelManager::GetInstance()->LoadModel("resources", "crack.obj");
+	ModelManager::GetInstance()->LoadModel("resources/skydome", "skydome.obj");
+	ModelManager::GetInstance()->LoadModel("resources/enemy", "enemy.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/head", "player_head.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/body", "player_body.obj");
 	ModelManager::GetInstance()->LoadModel("resources/player/leftShoulder", "player_leftShoulder.obj");
