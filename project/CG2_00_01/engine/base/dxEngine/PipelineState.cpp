@@ -596,3 +596,133 @@ ComPtr<ID3D12PipelineState> PipelineState::CreateParticlePipelineState()
 
 	return newPipelineState_;
 }
+
+ComPtr<ID3D12RootSignature> PipelineState::CreateTrailEffectRootSignature()
+{
+	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+	descriptionRootSignature.Flags =
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+	//RootParameterの作成。複数設定できるので配列。今回は結果1つだけなので長さ1の配列
+	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderで使う
+	rootParameters[0].Descriptor.ShaderRegister = 0;
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; //VertexShaderで使う
+	rootParameters[1].Descriptor.ShaderRegister = 0;
+	descriptionRootSignature.pParameters = rootParameters;
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
+
+	ID3DBlob* signatureBlob = nullptr;
+	ID3DBlob* errorBlob = nullptr;
+
+	hr_ = D3D12SerializeRootSignature(&descriptionRootSignature,
+		D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+	assert(SUCCEEDED(hr_));
+
+	// バイナリを元に戻す
+	hr_ = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&newRootSignature_));
+	assert(SUCCEEDED(hr_));
+
+	return newRootSignature_;
+}
+
+void PipelineState::TrailEffectInputLayout(D3D12_INPUT_ELEMENT_DESC* inputElementDescs, D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc)
+{
+	const UINT numElements = 1;
+
+	inputElementDescs[0].SemanticName = "POSITION";
+	inputElementDescs[0].SemanticIndex = 0;
+	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+	inputLayoutDesc.pInputElementDescs = inputElementDescs;
+	inputLayoutDesc.NumElements = numElements;
+}
+
+void PipelineState::TrailEffectBlendState(D3D12_BLEND_DESC& blendDesc)
+{
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+}
+
+void PipelineState::TrailEffectRasterizerState(D3D12_RASTERIZER_DESC& rasterizerDesc)
+{
+	//D3D12_CULL_MODE_BACK
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+
+	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+}
+
+void PipelineState::TrailEffectShader(ComPtr<IDxcBlob>& vertexShader, ComPtr<IDxcBlob>& pixelShader)
+{
+	vertexShader = CompileShader(L"resources/shaders/TrailEffect.VS.hlsl", L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_.Get());
+	assert(vertexShader != nullptr);
+
+	pixelShader = CompileShader(L"resources/shaders/TrailEffect.PS.hlsl", L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_.Get());
+	assert(pixelShader != nullptr);
+}
+
+void PipelineState::TrailEffectDepthStencilState(D3D12_DEPTH_STENCIL_DESC& depthStencilDesc)
+{
+	//Depthの機能を有効化する
+	depthStencilDesc.DepthEnable = true;
+	//書き込みします
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	//比較関数はLessEqual。つまり、近ければ描画される
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+}
+
+ComPtr<ID3D12PipelineState> PipelineState::CreateTrailEffectPipelineState()
+{
+	// インプットレイアウト
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[1]{};
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+	TrailEffectInputLayout(inputElementDescs, inputLayoutDesc);
+
+	// ブレンド
+	D3D12_BLEND_DESC blendDesc{};
+	TrailEffectBlendState(blendDesc);
+
+	// ラスタライザ
+	D3D12_RASTERIZER_DESC rasterizerDesc{};
+	TrailEffectRasterizerState(rasterizerDesc);
+
+	// シェーダーのコンパイル
+	ComPtr<IDxcBlob> vertexShaderBlob;
+	ComPtr<IDxcBlob> pixelShaderBlob;
+	TrailEffectShader(vertexShaderBlob, pixelShaderBlob);
+
+	// デスクリプターステンシル
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+	TrailEffectDepthStencilState(depthStencilDesc);
+
+	// パイプラインステートの設定
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
+	psoDesc.pRootSignature = newRootSignature_.Get();
+	psoDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };
+	psoDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };
+	psoDesc.InputLayout = inputLayoutDesc;
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	psoDesc.SampleDesc.Count = 1;
+	psoDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+	psoDesc.RasterizerState = rasterizerDesc;
+	psoDesc.BlendState = blendDesc;
+	psoDesc.NumRenderTargets = 1;
+	psoDesc.DepthStencilState = depthStencilDesc;
+	psoDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	// 新しいパイプラインステートオブジェクトの作成
+	hr_ = device_->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&newPipelineState_));
+	assert(SUCCEEDED(hr_));
+
+	return newPipelineState_;
+}

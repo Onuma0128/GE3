@@ -39,6 +39,7 @@ public:
 
 	void Draw();
 	void DrawSprite();
+	void DrawTrail();
 
 	void IsDamage();
 	void DamageUpdate();

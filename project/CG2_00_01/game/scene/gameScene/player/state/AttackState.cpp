@@ -1,6 +1,7 @@
 #include "AttackState.h"
 
 #include "AudioManager.h"
+#include "TrailEffect.h"
 
 #include "gameScene/player/Player.h"
 #include "gameScene/animation/PlayerAnimation.h"
@@ -31,7 +32,7 @@ void AttackState::Update()
 	player_->GetSwordEmitter()->SetIsCreate(false);
 	// 剣のワールド座標を取得
 	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
-
+	Vector3 swordWorld = Vector3{ 0.0f,0.5f,0.0f }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
 	switch (nowCombo_)
 	{
 	case AttackState::AttackCombo::Combo1:
@@ -45,6 +46,9 @@ void AttackState::Update()
 			player_->GetSwordEmitter()->SetIsCreate(false);
 			player_->SetIsAttack(false);
 		}
+		else {
+			CreateSwordEffect(world, swordWorld);
+		}
 		// 効果音
 		if (playerAnimation_->GetCombo1Frame() >= 1.0f &&
 			playerAnimation_->GetCombo1Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo1", "frame2") * 2.0f)) {
@@ -54,6 +58,7 @@ void AttackState::Update()
 		// 条件を達成したら次のコンボに移動
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
 			//playerAnimation_->Reset();
+			trailPositions_.clear();
 			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration2") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
 			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo2;
@@ -63,6 +68,7 @@ void AttackState::Update()
 		// 攻撃が終了したらステートを変更
 		if (playerAnimation_->GetCombo1Completion()) {
 			playerAnimation_->Reset();
+			trailPositions_.clear();
 			player_->ChengeState(std::make_unique<MoveState>(player_, playerAnimation_));
 			return;
 		}
@@ -79,6 +85,9 @@ void AttackState::Update()
 			player_->GetSwordEmitter()->SetIsCreate(false);
 			player_->SetIsAttack(false);
 		}
+		else {
+			CreateSwordEffect(world, swordWorld);
+		}
 		// 効果音
 		if (playerAnimation_->GetCombo2Frame() >= 1.0f &&
 			playerAnimation_->GetCombo2Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo2", "frame2") * 1.5f)) {
@@ -88,6 +97,7 @@ void AttackState::Update()
 		// 条件を達成したら次のコンボに移動
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
 			//playerAnimation_->Reset();
+			trailPositions_.clear();
 			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration3") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
 			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo3;
@@ -96,6 +106,7 @@ void AttackState::Update()
 		// 2コンボ目から突撃攻撃に派生
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_B) && playerAnimation_->GetNextCombo()) {
 			//playerAnimation_->Reset();
+			trailPositions_.clear();
 			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration4") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
 			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo3;
@@ -105,6 +116,7 @@ void AttackState::Update()
 
 		// 攻撃が終了したらステートを変更
 		if (playerAnimation_->GetCombo2Completion()) {
+			trailPositions_.clear();
 			playerAnimation_->Reset();
 			player_->ChengeState(std::make_unique<MoveState>(player_, playerAnimation_));
 			return;
@@ -118,8 +130,11 @@ void AttackState::Update()
 		player_->GetSwordEmitter()->SetPosition(world);
 		player_->SetIsAttack(true);
 
-		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 2.8f) {
+		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 3.0f) {
 			player_->GetSwordEmitter()->SetIsCreate(false);
+		}
+		else {
+			CreateSwordEffect(world, swordWorld);
 		}
 		if (playerAnimation_->GetCombo3Frame() < 2.5f || playerAnimation_->GetCombo3Frame() > 2.8f) {
 			player_->SetIsAttack(false);
@@ -137,6 +152,7 @@ void AttackState::Update()
 
 		// 攻撃が終了したらステートを変更
 		if (playerAnimation_->GetCombo3Completion()) {
+			trailPositions_.clear();
 			playerAnimation_->Reset();
 			player_->ChengeState(std::make_unique<MoveState>(player_, playerAnimation_));
 			return;
@@ -157,4 +173,19 @@ void AttackState::Draw()
 
 void AttackState::Finalize()
 {
+}
+
+void AttackState::CreateSwordEffect(const Vector3& pos1, const Vector3& pos2)
+{
+	trailPositions_.push_back(pos1);
+	trailPositions_.push_back(pos2);
+	if (trailPositions_.size() >= 4) {
+		PlayerParticle::SwordEffect trail;
+		trail.effect_ = std::make_unique<TrailEffect>();
+		trail.effect_->Init(trailPositions_);
+		trail.alpha_ = 1.0f;
+		player_->GetPlayerParticle()->GetTrailEffects().push_back(std::move(trail));
+		trailPositions_.erase(trailPositions_.begin());
+		trailPositions_.erase(trailPositions_.begin());
+	}
 }

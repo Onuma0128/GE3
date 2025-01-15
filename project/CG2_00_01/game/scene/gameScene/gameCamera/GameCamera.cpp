@@ -34,7 +34,7 @@ void GameCamera::GlobalInit()
 
 void GameCamera::Update()
 {
-	const float rotationY = Input::GetInstance()->GetGamepadRightStickX() * -0.03f;
+	const float rotationY = Input::GetInstance()->GetGamepadRightStickX() * 0.03f;
 	Vector3 rotation = camera_->GetRotate();
 	destinationAngleY += rotationY;
 	rotation.y = LerpShortAngle(rotation.y, destinationAngleY, 0.1f);

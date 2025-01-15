@@ -39,6 +39,8 @@ void PlayerParticle::GlobalInit()
 
 	global_->AddValue<Vector3>("PlayerAttackParitcle", "offsetPosition", Vector3{});
 	global_->AddValue<float>("PlayerAttackParitcle", "offsetSize", 1.0f);
+
+	global_->AddValue<float>("PlayerTrailEffect", "alpha", 0.1f);
 }
 
 void PlayerParticle::Update()
@@ -72,6 +74,21 @@ void PlayerParticle::Update()
 	}
 
 	model_->Update();
+
+
+	for (auto& trail : trailEffects_) {
+		trail.alpha_ -= global_->GetValue<float>("PlayerTrailEffect", "alpha");
+		//trail.effect_->SetAlpha(trail.alpha_);
+		trail.effect_->Update();
+	}
+	for (auto it = trailEffects_.begin(); it != trailEffects_.end();) {
+		if ((it)->alpha_ <= 0.0f) {
+			it = trailEffects_.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
 }
 
 void PlayerParticle::Draw()
@@ -81,6 +98,13 @@ void PlayerParticle::Draw()
 	}
 	if (combo3Particles_.size() > 0) {
 		model_->Draw();
+	}
+}
+
+void PlayerParticle::DrawTrail()
+{
+	for (auto& trail : trailEffects_) {
+		trail.effect_->Draw();
 	}
 }
 

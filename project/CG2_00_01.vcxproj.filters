@@ -393,6 +393,12 @@
     <ClCompile Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\AttackStateEnemy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\3d\TrailEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2_00_01\engine\base\object\model\TrailEffectBase.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -644,6 +650,12 @@
     <ClInclude Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\AttackStateEnemy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\3d\TrailEffect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\engine\base\object\model\TrailEffectBase.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -683,5 +695,7 @@
     <FxCompile Include="resources\shaders\Primitive.VS.hlsl">
       <Filter>シェーダー ファイル\リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\TrailEffect.VS.hlsl" />
+    <FxCompile Include="resources\shaders\TrailEffect.PS.hlsl" />
   </ItemGroup>
 </Project>

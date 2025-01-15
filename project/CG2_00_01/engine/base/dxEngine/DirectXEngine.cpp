@@ -18,6 +18,7 @@
 #include "PrimitiveDrawer.h"
 #include "ParticleManager.h"
 #include "AudioManager.h"
+#include "TrailEffectBase.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -33,6 +34,7 @@ DirectXEngine::~DirectXEngine()
 	PrimitiveDrawer::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
 	AudioManager::GetInstance()->Finalize();
+	TrailEffectBase::GetInstance()->Finalize();
 
 	delete stringUtility_;
 	delete pipelineState_;
@@ -109,6 +111,9 @@ void DirectXEngine::Initialize(WinApp* winApp)
 
 	ParticleManager::GetInstance()->Initialize(this);
 
+	/*==================== トレイルエフェクト ====================*/
+
+	TrailEffectBase::GetInstance()->Initialize(this);
 }
 
 void DirectXEngine::DeviceInitialize()

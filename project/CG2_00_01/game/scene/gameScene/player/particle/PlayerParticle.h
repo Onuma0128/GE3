@@ -4,6 +4,7 @@
 #include <list>
 
 #include "Object3d.h"
+#include "TrailEffect.h"
 #include "WorldTransform.h"
 #include "ParticleEmitter.h"
 #include "GlobalVariables.h"
@@ -20,6 +21,11 @@ public:
 		Vector3 velocity_;
 		float alpha_;
 	};
+	struct SwordEffect {
+		std::unique_ptr<TrailEffect> effect_;
+		float alpha_;
+	};
+
 
 	void Init();
 
@@ -28,6 +34,7 @@ public:
 	void Update();
 
 	void Draw();
+	void DrawTrail();
 
 	void CreateParticle(const Vector3& position);
 
@@ -35,6 +42,8 @@ public:
 
 	ParticleEmitter* GetMoveEmitter()const { return moveParticleEmitter_.get(); }
 	ParticleEmitter* GetSwordEmitter()const { return swordParticleEmitter_.get(); }
+
+	std::list<SwordEffect>& GetTrailEffects() { return trailEffects_; }
 
 private:
 
@@ -52,4 +61,9 @@ private:
 	std::unique_ptr<Object3d> model_ = nullptr;
 	std::unique_ptr<WorldTransform> transform_ = nullptr;
 	float alpha_ = 1.0f;
+
+	// 剣のエフェクト
+	std::list<SwordEffect> trailEffects_;
+
+
 };

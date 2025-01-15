@@ -8,6 +8,7 @@
 #include "Object3dBase.h"
 #include "SpriteBase.h"
 #include "PrimitiveDrawer.h"
+#include "TrailEffectBase.h"
 
 #include "imgui.h"
 #include "titleScene/TitleScene.h"
@@ -89,6 +90,13 @@ void GamePlayScene::Draw()
 
 	// Lineの描画準備
 	PrimitiveDrawer::GetInstance()->DrawBase();
+
+
+
+	// TrailEffectの描画準備
+	TrailEffectBase::GetInstance()->DrawBase();
+
+	player_->DrawTrail();
 
 
 	// 全パーティクルの描画

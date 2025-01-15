@@ -7,10 +7,7 @@
 #include "Object3dBase.h"
 #include "SpriteBase.h"
 #include "PrimitiveDrawer.h"
-
-#include "Quaternion.h"
-
-#include "imgui.h"
+#include "TrailEffectBase.h"
 
 void TitleScene::Initialize()
 {
@@ -70,5 +67,7 @@ void TitleScene::Draw()
 
 
 
+
+	TrailEffectBase::GetInstance()->DrawBase();
 
 }

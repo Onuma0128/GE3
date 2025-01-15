@@ -141,6 +141,11 @@ void Player::DrawSprite()
 	fade_->Draw();
 }
 
+void Player::DrawTrail()
+{
+	playerParticle_->DrawTrail();
+}
+
 void Player::IsDamage()
 {
 	if (velocity_.x != 0.0f || velocity_.z != 0.0f) {

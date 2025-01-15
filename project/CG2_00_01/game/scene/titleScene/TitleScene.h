@@ -6,6 +6,7 @@
 #include "Audio.h"
 #include "Camera.h"
 #include "Sprite.h"
+#include "TrailEffect.h"
 #include "gameScene/fade/FadeScene.h"
 
 class TitleScene : public BaseScene
@@ -29,6 +30,8 @@ private:
 	std::unique_ptr<Audio> audio_ = nullptr;
 	std::unique_ptr<FadeScene> fade_ = nullptr;
 	bool isFade_ = false;
+
+	std::unique_ptr<TrailEffect> effect_ = nullptr;
 
 };
 
