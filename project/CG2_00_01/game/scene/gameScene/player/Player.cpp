@@ -77,6 +77,11 @@ void Player::Init()
 	playerParticle_->Init();
 	playerParticle_->SetPlayer(this);
 
+	// プレイヤーのエフェクト
+	playerEffect_ = std::make_unique<PlayerEffect>();
+	playerEffect_->Init();
+	playerEffect_->SetPlayer(this);
+
 	fade_ = std::make_unique<FadeScene>();
 	fade_->Init(0.0f);
 
@@ -96,6 +101,8 @@ void Player::Update()
 	playerUI_->Update();
 
 	playerParticle_->Update();
+
+	playerEffect_->Update();
 
 	SetLight();
 
@@ -143,7 +150,7 @@ void Player::DrawSprite()
 
 void Player::DrawTrail()
 {
-	playerParticle_->DrawTrail();
+	playerEffect_->DrawTrail();
 }
 
 void Player::IsDamage()

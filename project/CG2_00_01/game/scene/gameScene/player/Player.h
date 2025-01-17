@@ -17,6 +17,7 @@
 #include "gameScene/collision/Collider.h"
 #include "gameScene/player/ui/PlayerUI.h"
 #include "gameScene/player/particle/PlayerParticle.h"
+#include "gameScene/player/effect/PlayerEffect.h"
 #include "gameScene/fade/FadeScene.h"
 
 class Player : public Collider
@@ -73,11 +74,12 @@ public:
 	Object3d* GetShadowModel()const { return shadowModel_.get(); }
 	WorldTransform* GetShadowTransform()const { return shadowTransform_.get(); }
 
-	/* ==================== パーティクル ==================== */
+	/* ==================== パーティクル、エフェクト ==================== */
 
 	ParticleEmitter* GetMoveEmitter()const { return playerParticle_->GetMoveEmitter(); }
 	ParticleEmitter* GetSwordEmitter()const { return playerParticle_->GetSwordEmitter(); }
 	PlayerParticle* GetPlayerParticle()const { return playerParticle_.get(); }
+	PlayerEffect* GetPlayerEffect()const { return playerEffect_.get(); }
 
 	/* ==================== playerの変数 ==================== */
 
@@ -111,6 +113,8 @@ private:
 	std::unique_ptr<PlayerUI> playerUI_ = nullptr;
 	// プレイヤーのパーティクル
 	std::unique_ptr<PlayerParticle> playerParticle_ = nullptr;
+	// プレイヤーのエフェクト
+	std::unique_ptr<PlayerEffect> playerEffect_ = nullptr;
 	// 状態
 	std::unique_ptr<BaseState> state_;
 	// シーンのフェード

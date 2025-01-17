@@ -24,7 +24,11 @@ public:
 	void Draw();
 
 
-	void SetColor(const Vector4& color) { *materialData_ = color; }
+	void SetColor(const Vector3& color) { 
+		materialData_->x = color.x;
+		materialData_->y = color.y;
+		materialData_->z = color.z;
+	}
 	void SetAlpha(const float alpha) { materialData_->w = alpha; }
 
 private:

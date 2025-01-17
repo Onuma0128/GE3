@@ -30,7 +30,8 @@ void DashAttackState::Update()
 	player_->GetSwordEmitter()->SetIsCreate(false);
 	// 剣のワールド座標を取得
 	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
-	
+	Vector3 swordWorld = Vector3{ 0.0f,0.5f,0.0f }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
+
 	player_->GetSwordEmitter()->SetIsCreate(true);
 	player_->GetSwordEmitter()->SetPosition(world);
 	player_->SetIsAttack(true);
@@ -49,6 +50,7 @@ void DashAttackState::Update()
 		Vector3 translation = player_->GetTransform()->translation_;
 		translation += velocity_ * global_->GetValue<float>("Player", "dashPow") * (2.0f - playerAnimation_->GetDashFrame());
 		player_->GetTransform()->translation_ = translation;
+		CreateSwordEffect(world, swordWorld);
 	}
 	else {
 		player_->SetIsAttack(false);
@@ -83,4 +85,19 @@ void DashAttackState::Draw()
 
 void DashAttackState::Finalize()
 {
+}
+
+void DashAttackState::CreateSwordEffect(const Vector3& pos1, const Vector3& pos2)
+{
+	trailPositions_.push_back(pos1);
+	trailPositions_.push_back(pos2);
+	if (trailPositions_.size() >= 4) {
+		PlayerEffect::SwordEffect trail;
+		trail.effect_ = std::make_unique<TrailEffect>();
+		trail.effect_->Init(trailPositions_);
+		trail.alpha_ = 1.0f;
+		player_->GetPlayerEffect()->GetTrailEffects().push_back(std::move(trail));
+		trailPositions_.erase(trailPositions_.begin());
+		trailPositions_.erase(trailPositions_.begin());
+	}
 }

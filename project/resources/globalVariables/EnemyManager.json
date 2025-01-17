@@ -4,7 +4,7 @@
             "enemyCount": 25
         },
         {
-            "isMove": true
+            "isMove": false
         },
         {
             "enemyCollisionRadius": 1.5

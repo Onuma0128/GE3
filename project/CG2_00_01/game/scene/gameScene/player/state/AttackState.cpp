@@ -180,11 +180,11 @@ void AttackState::CreateSwordEffect(const Vector3& pos1, const Vector3& pos2)
 	trailPositions_.push_back(pos1);
 	trailPositions_.push_back(pos2);
 	if (trailPositions_.size() >= 4) {
-		PlayerParticle::SwordEffect trail;
+		PlayerEffect::SwordEffect trail;
 		trail.effect_ = std::make_unique<TrailEffect>();
 		trail.effect_->Init(trailPositions_);
 		trail.alpha_ = 1.0f;
-		player_->GetPlayerParticle()->GetTrailEffects().push_back(std::move(trail));
+		player_->GetPlayerEffect()->GetTrailEffects().push_back(std::move(trail));
 		trailPositions_.erase(trailPositions_.begin());
 		trailPositions_.erase(trailPositions_.begin());
 	}
