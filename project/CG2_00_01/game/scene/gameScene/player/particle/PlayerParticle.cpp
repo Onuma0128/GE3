@@ -20,10 +20,26 @@ void PlayerParticle::Init()
 	ParticleManager::GetInstance()->CreateParticleGroup("sword", "circle.png", swordParticleEmitter_.get());
 	swordParticleEmitter_->SetIsCreate(false);
 
+
+	for (int i = 0; i < 50; ++i) {
+		Combo3Particle particle{};
+		// Transformの初期化
+		particle.transform_ = std::make_unique<WorldTransform>();
+		// モデルを初期化
+		particle.model_ = std::make_unique<Object3d>();
+		particle.model_->Initialize("box.obj", particle.transform_.get());
+		// 速度の初期化
+		particle.velocity_ = {};
+		particle.alpha_ = 0.0f;
+		combo3Particles_.push_back(std::move(particle));
+	}
+	// 地面のひび割れ
 	transform_ = std::make_unique<WorldTransform>();
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize("crack.obj", transform_.get());
 	model_->SetTexture("resources","crack.png");
+	model_->SetColor(Vector4{ 1.0f,1.0f,1.0f,0.0f });
+	alpha_ = 0.0f;
 
 }
 
@@ -52,22 +68,22 @@ void PlayerParticle::Update()
 			particle.transform_->translation_ += particle.velocity_ * global_->GetValue<float>("PlayerAttackParitcle", "velocityPow");
 			particle.model_->Update();
 		}
-		else {
+		else if (particle.alpha_ > 0.0f) {
 			particle.alpha_ -= global_->GetValue<float>("PlayerAttackParitcle", "alpha");
 			particle.model_->SetColor(Vector4{ 1.0f,1.0f,1.0f,particle.alpha_ });
 			particle.model_->Update();
 		}
-	}
-	for (auto it = combo3Particles_.begin(); it != combo3Particles_.end();) {
-		if ((it)->alpha_ <= 0.0f) {
-			it = combo3Particles_.erase(it);
-		}
 		else {
-			++it;
+			particle.alpha_ = 0.0f;
+			particle.model_->SetColor(Vector4{ 1.0f,1.0f,1.0f,particle.alpha_ });
 		}
 	}
-	if (combo3Particles_.size() > 0) {
+	if (alpha_ > 0.0f) {
 		alpha_ -= global_->GetValue<float>("PlayerAttackParitcle", "alpha");
+		model_->SetColor(Vector4{ 1.0f,1.0f,1.0f,alpha_ });
+	}
+	else {
+		alpha_ = 0.0f;
 		model_->SetColor(Vector4{ 1.0f,1.0f,1.0f,alpha_ });
 	}
 
@@ -77,32 +93,40 @@ void PlayerParticle::Update()
 void PlayerParticle::Draw()
 {
 	for (auto& particle : combo3Particles_) {
-		particle.model_->Draw();
+		if (particle.alpha_ > 0.0f) {
+			particle.model_->Draw();
+		}
 	}
-	if (combo3Particles_.size() > 0) {
-		model_->Draw();
-	}
+	
+	model_->Draw();
 }
 
 void PlayerParticle::CreateParticle(const Vector3& position)
 {
-	for (int i = 0; i < global_->GetValue<int>("PlayerAttackParitcle", "particleCount"); ++i) {
-		Combo3Particle particle{};
-		particle.transform_ = std::make_unique<WorldTransform>();
-		float scale = global_->GetValue<float>("PlayerAttackParitcle", "particleSize") +
-			static_cast<float>(rand() % 3 + 1) * 0.1f;
-		particle.transform_->scale_ = { scale ,scale ,scale };
-		particle.transform_->translation_ = position;
-		particle.model_ = std::make_unique<Object3d>();
-		particle.model_->Initialize("box.obj", particle.transform_.get());
-		int size = global_->GetValue<int>("PlayerAttackParitcle", "randomSize");
-		particle.velocity_ = { 
-			static_cast<float>(rand() % size - (size - 1) / 2),
-			global_->GetValue<float>("PlayerAttackParitcle", "offsetVelocityY"),
-			static_cast<float>(rand() % size - (size - 1) / 2) };
-		particle.velocity_.Normalize();
-		particle.alpha_ = 1.0f;
-		combo3Particles_.push_back(std::move(particle));
+	int num = global_->GetValue<int>("PlayerAttackParitcle", "particleCount");
+	int count = 0;
+
+	for (auto& particle : combo3Particles_) {
+		if (particle.alpha_ == 0.0f) {
+			// Transformの初期化
+			float scale = global_->GetValue<float>("PlayerAttackParitcle", "particleSize") + static_cast<float>(rand() % 3 + 1) * 0.1f;
+			particle.transform_->scale_ = { scale ,scale ,scale };
+			particle.transform_->translation_ = position;
+			// 速度の初期化
+			int size = global_->GetValue<int>("PlayerAttackParitcle", "randomSize");
+			particle.velocity_ = {
+				static_cast<float>(rand() % size - (size - 1) / 2),
+				global_->GetValue<float>("PlayerAttackParitcle", "offsetVelocityY"),
+				static_cast<float>(rand() % size - (size - 1) / 2) };
+			particle.velocity_.Normalize();
+			particle.alpha_ = 1.0f;
+
+			// カウントを加算
+			++count;
+			if (num == count) {
+				break;
+			}
+		}
 	}
 
 	alpha_ = 1.0f;

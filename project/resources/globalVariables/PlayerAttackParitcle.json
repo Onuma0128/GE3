@@ -4,22 +4,22 @@
             "randomSize": 11
         },
         {
-            "velocityPow": 0.05999999865889549
+            "velocityPow": 0.10000000149011612
         },
         {
             "accelerationY": 0.5
         },
         {
-            "offsetVelocityY": 2.0
+            "offsetVelocityY": 1.0
         },
         {
-            "particleSize": 0.4000000059604645
+            "particleSize": 0.6000000238418579
         },
         {
-            "particleCount": 20
+            "particleCount": 10
         },
         {
-            "alpha": 0.009999999776482582
+            "alpha": 0.004999999888241291
         },
         {
             "offsetPosition": [
@@ -29,7 +29,7 @@
             ]
         },
         {
-            "offsetSize": 1.0
+            "offsetSize": 1.4900000095367432
         }
     ]
 }

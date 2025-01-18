@@ -2,6 +2,8 @@
 
 #include "DirectXEngine.h"
 #include "TrailEffectBase.h"
+#include "TextureManager.h"
+#include "SrvManager.h"
 
 #include "Camera.h"
 #include "CameraManager.h"
@@ -11,7 +13,9 @@ void TrailEffect::Init(std::vector<Vector3> pos)
 	trailEffectBase_ = TrailEffectBase::GetInstance();
 	positions_ = pos;
 
-	CreateBufferResource(vertexResource_, sizeof(Vector4) * 4);
+	SetTexture("resources", "white1x1.png");
+
+	CreateBufferResource(vertexResource_, sizeof(VertexData) * 4);
 	CreateVertexBufferView();
 	CreateVertexData();
 
@@ -41,8 +45,31 @@ void TrailEffect::Draw()
 	commandList->IASetIndexBuffer(&indexBufferView_);
 	commandList->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textureData_.textureIndex);
 
 	commandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+}
+
+void TrailEffect::SetPosition(std::vector<Vector3> pos)
+{
+	vertexData_[0].position = { pos[0].x,pos[0].y,pos[0].z,1.0f };
+	vertexData_[1].position = { pos[1].x,pos[1].y,pos[1].z,1.0f };
+	vertexData_[2].position = { pos[2].x,pos[2].y,pos[2].z,1.0f };
+	vertexData_[3].position = { pos[3].x,pos[3].y,pos[3].z,1.0f };
+
+	vertexData_[0].texcoord = { 0.0f,0.0f };
+	vertexData_[1].texcoord = { 1.0f,0.0f };
+	vertexData_[2].texcoord = { 0.0f,1.0f };
+	vertexData_[3].texcoord = { 1.0f,1.0f };
+}
+
+void TrailEffect::SetTexture(const std::string& directoryPath, const std::string& filePath)
+{
+	textureData_.directoryPath = directoryPath;
+	textureData_.filePath = filePath;
+
+	TextureManager::GetInstance()->LoadTexture(textureData_.directoryPath + "/" + textureData_.filePath);
+	textureData_.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureData_.directoryPath + "/" + textureData_.filePath);
 }
 
 void TrailEffect::CreateBufferResource(ComPtr<ID3D12Resource>& resource, size_t size)
@@ -76,8 +103,8 @@ void TrailEffect::CreateBufferResource(ComPtr<ID3D12Resource>& resource, size_t 
 void TrailEffect::CreateVertexBufferView()
 {
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexBufferView_.SizeInBytes = sizeof(Vector4) * 4;
-	vertexBufferView_.StrideInBytes = sizeof(Vector4);
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 4;
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 }
 
 void TrailEffect::CreateIndexBufferView()
@@ -91,15 +118,20 @@ void TrailEffect::CreateVertexData()
 {
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 
-	vertexData_[0] = { positions_[0].x,positions_[0].y,positions_[0].z,1.0f };
-	vertexData_[1] = { positions_[1].x,positions_[1].y,positions_[1].z,1.0f };
-	vertexData_[2] = { positions_[2].x,positions_[2].y,positions_[2].z,1.0f };
-	vertexData_[3] = { positions_[3].x,positions_[3].y,positions_[3].z,1.0f };
+	vertexData_[0].position = { positions_[0].x,positions_[0].y,positions_[0].z,1.0f };
+	vertexData_[1].position = { positions_[1].x,positions_[1].y,positions_[1].z,1.0f };
+	vertexData_[2].position = { positions_[2].x,positions_[2].y,positions_[2].z,1.0f };
+	vertexData_[3].position = { positions_[3].x,positions_[3].y,positions_[3].z,1.0f };
 
-	/*vertexData_[0] = { -0.5f,-0.5f,0.0f,1.0f };
-	vertexData_[1] = { -0.5f,0.5f,0.0f,1.0f };
-	vertexData_[2] = { 0.5f,-0.5f,0.0f,1.0f };
-	vertexData_[3] = { 0.5f,0.5f,0.0f,1.0f };*/
+	vertexData_[0].texcoord = { 0.0f,0.0f };
+	vertexData_[1].texcoord = { 1.0f,0.0f };
+	vertexData_[2].texcoord = { 0.0f,1.0f };
+	vertexData_[3].texcoord = { 1.0f,1.0f };
+
+	/*vertexData_[0] = { -0.5f,-0.5f,0.0f,1.0f };*/
+	/*vertexData_[1] = { -0.5f,0.5f,0.0f,1.0f };*/
+	/*vertexData_[2] = { 0.5f,-0.5f,0.0f,1.0f };*/
+	/*vertexData_[3] = { 0.5f,0.5f,0.0f,1.0f };*/
 }
 
 void TrailEffect::CreateIndexData()

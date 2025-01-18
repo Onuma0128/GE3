@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <list>
+#include <vector>
 
 #include "TrailEffect.h"
 #include "GlobalVariables.h"

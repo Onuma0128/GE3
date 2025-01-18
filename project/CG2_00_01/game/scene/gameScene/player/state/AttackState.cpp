@@ -32,7 +32,11 @@ void AttackState::Update()
 	player_->GetSwordEmitter()->SetIsCreate(false);
 	// 剣のワールド座標を取得
 	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
-	Vector3 swordWorld = Vector3{ 0.0f,0.5f,0.0f }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
+	// 剣のトレイル座標
+	Matrix4x4 worldMatrix = playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_;
+	Vector3 pos1 = Vector3{ global_->GetValue<Vector3>("PlayerTrailEffect", "position0") }.Transform(worldMatrix);
+	Vector3 pos2 = Vector3{ global_->GetValue<Vector3>("PlayerTrailEffect", "position1") }.Transform(worldMatrix);
+
 	switch (nowCombo_)
 	{
 	case AttackState::AttackCombo::Combo1:
@@ -47,7 +51,7 @@ void AttackState::Update()
 			player_->SetIsAttack(false);
 		}
 		else {
-			CreateSwordEffect(world, swordWorld);
+			CreateSwordEffect(pos1, pos2);
 		}
 		// 効果音
 		if (playerAnimation_->GetCombo1Frame() >= 1.0f &&
@@ -86,7 +90,7 @@ void AttackState::Update()
 			player_->SetIsAttack(false);
 		}
 		else {
-			CreateSwordEffect(world, swordWorld);
+			CreateSwordEffect(pos1, pos2);
 		}
 		// 効果音
 		if (playerAnimation_->GetCombo2Frame() >= 1.0f &&
@@ -134,7 +138,7 @@ void AttackState::Update()
 			player_->GetSwordEmitter()->SetIsCreate(false);
 		}
 		else {
-			CreateSwordEffect(world, swordWorld);
+			CreateSwordEffect(pos1, pos2);
 		}
 		if (playerAnimation_->GetCombo3Frame() < 2.5f || playerAnimation_->GetCombo3Frame() > 2.8f) {
 			player_->SetIsAttack(false);
@@ -180,12 +184,14 @@ void AttackState::CreateSwordEffect(const Vector3& pos1, const Vector3& pos2)
 	trailPositions_.push_back(pos1);
 	trailPositions_.push_back(pos2);
 	if (trailPositions_.size() >= 4) {
-		PlayerEffect::SwordEffect trail;
-		trail.effect_ = std::make_unique<TrailEffect>();
-		trail.effect_->Init(trailPositions_);
-		trail.alpha_ = 1.0f;
-		player_->GetPlayerEffect()->GetTrailEffects().push_back(std::move(trail));
-		trailPositions_.erase(trailPositions_.begin());
-		trailPositions_.erase(trailPositions_.begin());
+		for (auto& trail : player_->GetPlayerEffect()->GetTrailEffects()) {
+			if (trail.alpha_ <= 0.0f) {
+				trail.effect_->SetPosition(trailPositions_);
+				trail.alpha_ = 1.0f;
+				trailPositions_.erase(trailPositions_.begin());
+				trailPositions_.erase(trailPositions_.begin());
+				break;
+			}
+		}
 	}
 }

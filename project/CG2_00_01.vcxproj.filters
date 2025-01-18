@@ -678,6 +678,7 @@
     <None Include="resources\shaders\Primitive.hlsli">
       <Filter>シェーダー ファイル\リソース ファイル</Filter>
     </None>
+    <None Include="resources\shaders\TrailEffect.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\BasicGeometryShader.hlsl">

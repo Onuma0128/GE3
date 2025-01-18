@@ -221,9 +221,11 @@ void Player::GlobalInit()
 	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration3", Vector3{});
 	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration4", Vector3{});
 
+	global_->AddValue<Vector3>("PlayerTrailEffect", "position0", Vector3{});
+	global_->AddValue<Vector3>("PlayerTrailEffect", "position1", Vector3{});
+
 	global_->AddValue<float>("PlayerShadow", "scalePow", 25.0f);
 	global_->AddValue<float>("PlayerShadow", "alphaPow", 10.0f);
-
 
 	global_->AddValue<float>("Collider", "playerRadius", 1.0f);
 }

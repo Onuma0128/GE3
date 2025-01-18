@@ -92,12 +92,14 @@ void DashAttackState::CreateSwordEffect(const Vector3& pos1, const Vector3& pos2
 	trailPositions_.push_back(pos1);
 	trailPositions_.push_back(pos2);
 	if (trailPositions_.size() >= 4) {
-		PlayerEffect::SwordEffect trail;
-		trail.effect_ = std::make_unique<TrailEffect>();
-		trail.effect_->Init(trailPositions_);
-		trail.alpha_ = 1.0f;
-		player_->GetPlayerEffect()->GetTrailEffects().push_back(std::move(trail));
-		trailPositions_.erase(trailPositions_.begin());
-		trailPositions_.erase(trailPositions_.begin());
+		for (auto& trail : player_->GetPlayerEffect()->GetTrailEffects()) {
+			if (trail.alpha_ <= 0.0f) {
+				trail.effect_->SetPosition(trailPositions_);
+				trail.alpha_ = 1.0f;
+				trailPositions_.erase(trailPositions_.begin());
+				trailPositions_.erase(trailPositions_.begin());
+				break;
+			}
+		}
 	}
 }

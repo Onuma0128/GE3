@@ -3,7 +3,9 @@
 #pragma comment(lib,"d3d12.lib")
 #include "wrl.h"
 #include <vector>
+#include <string>
 
+#include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4.h"
@@ -17,13 +19,24 @@ class TrailEffect
 {
 public:
 
+	struct VertexData {
+		Vector4 position;
+		Vector2 texcoord;
+	};
+	struct TextureData {
+		std::string directoryPath;
+		std::string filePath;
+		uint32_t textureIndex = 0;
+	};
+
 	void Init(std::vector<Vector3> pos);
 
 	void Update();
 
 	void Draw();
 
-
+	void SetPosition(std::vector<Vector3> pos);
+	void SetTexture(const std::string& directoryPath, const std::string& filePath);
 	void SetColor(const Vector3& color) { 
 		materialData_->x = color.x;
 		materialData_->y = color.y;
@@ -51,7 +64,7 @@ private:
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-	Vector4* vertexData_ = nullptr;
+	VertexData* vertexData_ = nullptr;
 
 	/* =============== index頂点 =============== */
 	
@@ -63,6 +76,8 @@ private:
 
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
 	Vector4* materialData_ = nullptr;
+	// TextureData
+	TextureData textureData_;
 
 	/* =============== 座標変換行列 =============== */
 
