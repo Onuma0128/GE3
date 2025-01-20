@@ -15,12 +15,7 @@ void AttackState::Initialize()
 {
 	nowCombo_ = AttackCombo::Combo1;
 
-	// 剣のワールド座標を取得
-	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
-	Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
-	player_->GetSwordEmitter()->SetIsCreate(false);
-	player_->GetSwordEmitter()->SetPosition(world);
-	player_->GetSwordEmitter()->SetAcceleration(acceleration);
+	// 2コンボ目の続きなら3コンボ目にする
 	if (playerAnimation_->GetCombo2Frame() >= 2.0f) {
 		nowCombo_ = AttackCombo::Combo3;
 	}
@@ -29,9 +24,6 @@ void AttackState::Initialize()
 
 void AttackState::Update()
 {
-	player_->GetSwordEmitter()->SetIsCreate(false);
-	// 剣のワールド座標を取得
-	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
 	// 剣のトレイル座標
 	Matrix4x4 worldMatrix = playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_;
 	Vector3 pos1 = Vector3{ global_->GetValue<Vector3>("PlayerTrailEffect", "position0") }.Transform(worldMatrix);
@@ -42,12 +34,9 @@ void AttackState::Update()
 	case AttackState::AttackCombo::Combo1:
 		// 2コンボ目のアニメーションを更新
 		playerAnimation_->AttackCombo1();
-		player_->GetSwordEmitter()->SetIsCreate(true);
-		player_->GetSwordEmitter()->SetPosition(world);
 		player_->SetIsAttack(true);
 
 		if (playerAnimation_->GetCombo1Frame() < 1.0f || playerAnimation_->GetCombo1Frame() > 1.7f) {
-			player_->GetSwordEmitter()->SetIsCreate(false);
 			player_->SetIsAttack(false);
 		}
 		else {
@@ -63,8 +52,6 @@ void AttackState::Update()
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
 			//playerAnimation_->Reset();
 			trailPositions_.clear();
-			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration2") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
-			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo2;
 			return;
 		}
@@ -81,12 +68,9 @@ void AttackState::Update()
 	case AttackState::AttackCombo::Combo2:
 		// 2コンボ目のアニメーションを更新
 		playerAnimation_->AttackCombo2();
-		player_->GetSwordEmitter()->SetIsCreate(true);
-		player_->GetSwordEmitter()->SetPosition(world);
 		player_->SetIsAttack(true);
 
 		if (playerAnimation_->GetCombo2Frame() < 1.0f || playerAnimation_->GetCombo2Frame() > 1.6f) {
-			player_->GetSwordEmitter()->SetIsCreate(false);
 			player_->SetIsAttack(false);
 		}
 		else {
@@ -102,8 +86,6 @@ void AttackState::Update()
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
 			//playerAnimation_->Reset();
 			trailPositions_.clear();
-			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration3") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
-			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo3;
 			return;
 		}
@@ -111,8 +93,6 @@ void AttackState::Update()
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_B) && playerAnimation_->GetNextCombo()) {
 			//playerAnimation_->Reset();
 			trailPositions_.clear();
-			Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration4") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
-			player_->GetSwordEmitter()->SetAcceleration(acceleration);
 			nowCombo_ = AttackCombo::Combo3;
 			player_->ChengeState(std::make_unique<DashAttackState>(player_, playerAnimation_));
 			return;
@@ -130,12 +110,9 @@ void AttackState::Update()
 	case AttackState::AttackCombo::Combo3:
 		// 3コンボ目のアニメーションを更新
 		playerAnimation_->AttackCombo3();
-		player_->GetSwordEmitter()->SetIsCreate(true);
-		player_->GetSwordEmitter()->SetPosition(world);
 		player_->SetIsAttack(true);
 
 		if (playerAnimation_->GetCombo3Frame() < 1.9f || playerAnimation_->GetCombo3Frame() > 3.0f) {
-			player_->GetSwordEmitter()->SetIsCreate(false);
 		}
 		else {
 			CreateSwordEffect(pos1, pos2);
@@ -151,7 +128,7 @@ void AttackState::Update()
 		if (playerAnimation_->GetCombo3Frame() >= 2.5f &&
 			playerAnimation_->GetCombo3Frame() < 2.5f + (1.0f / global_->GetValue<float>("AttackCombo3", "frame3"))) {
 			player_->SetIsShake(true);
-			player_->GetPlayerParticle()->CreateParticle(Vector3{ world.x,0.0f,world.z });
+			player_->GetPlayerParticle()->CreateParticle(Vector3{ pos2.x,0.0f,pos2.z });
 		}
 
 		// 攻撃が終了したらステートを変更
@@ -185,8 +162,9 @@ void AttackState::CreateSwordEffect(const Vector3& pos1, const Vector3& pos2)
 	trailPositions_.push_back(pos2);
 	if (trailPositions_.size() >= 4) {
 		for (auto& trail : player_->GetPlayerEffect()->GetTrailEffects()) {
-			if (trail.alpha_ <= 0.0f) {
+			if (trail.alpha_ == 0.0f) {
 				trail.effect_->SetPosition(trailPositions_);
+				trail.effect_->SetTexture("resources", "trailTexture.png");
 				trail.alpha_ = 1.0f;
 				trailPositions_.erase(trailPositions_.begin());
 				trailPositions_.erase(trailPositions_.begin());

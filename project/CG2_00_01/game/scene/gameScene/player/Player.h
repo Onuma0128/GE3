@@ -76,10 +76,9 @@ public:
 
 	/* ==================== パーティクル、エフェクト ==================== */
 
-	ParticleEmitter* GetMoveEmitter()const { return playerParticle_->GetMoveEmitter(); }
-	ParticleEmitter* GetSwordEmitter()const { return playerParticle_->GetSwordEmitter(); }
-	PlayerParticle* GetPlayerParticle()const { return playerParticle_.get(); }
-	PlayerEffect* GetPlayerEffect()const { return playerEffect_.get(); }
+	ParticleEmitter* GetMoveEmitter()const { return particle_->GetMoveEmitter(); }
+	PlayerParticle* GetPlayerParticle()const { return particle_.get(); }
+	PlayerEffect* GetPlayerEffect()const { return effect_.get(); }
 
 	/* ==================== playerの変数 ==================== */
 
@@ -112,9 +111,9 @@ private:
 	// プレイヤーのUI
 	std::unique_ptr<PlayerUI> playerUI_ = nullptr;
 	// プレイヤーのパーティクル
-	std::unique_ptr<PlayerParticle> playerParticle_ = nullptr;
+	std::unique_ptr<PlayerParticle> particle_ = nullptr;
 	// プレイヤーのエフェクト
-	std::unique_ptr<PlayerEffect> playerEffect_ = nullptr;
+	std::unique_ptr<PlayerEffect> effect_ = nullptr;
 	// 状態
 	std::unique_ptr<BaseState> state_;
 	// シーンのフェード

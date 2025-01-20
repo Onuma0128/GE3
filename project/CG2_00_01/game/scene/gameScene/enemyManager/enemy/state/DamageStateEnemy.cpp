@@ -16,15 +16,16 @@ void DamageStateEnemy::Initialize()
 
 	int count = 0;
 	for (auto& effect : enemy_->GetEnemyEffect()->GetHitEffects()) {
-		Vector3 randomPosition;
-		do {
-			randomPosition = {
-				static_cast<float>(rand() % 11 - 5) * 0.1f,
-				static_cast<float>(rand() % 11 - 5) * 0.1f,
-				static_cast<float>(rand() % 11 - 5) * 0.1f,
-			};
-		} while (randomPosition.Length() == 0.0f);
 		if (effect.alpha_ == 0.0f) {
+			Vector3 randomPosition;
+			do {
+				randomPosition = {
+					static_cast<float>(rand() % 11 - 5) * 0.1f,
+					static_cast<float>(rand() % 11 - 5) * 0.1f,
+					static_cast<float>(rand() % 11 - 5) * 0.1f,
+				};
+			} while (randomPosition.Length() == 0.0f);
+
 			Transform transform = effect.effect_->GetTransform();
 			// サイズ
 			int randomScale = rand() % 2;
@@ -32,15 +33,16 @@ void DamageStateEnemy::Initialize()
 				transform.scale = global_->GetValue<Vector3>("EnemyHitEffect", "scale");
 			}
 			else {
-				transform.scale = { 0.05f,0.05f ,0.05f };
+				float scale = global_->GetValue<Vector3>("EnemyHitEffect", "scale").x;
+				transform.scale = { scale,scale,scale };
 			}
 			// 座標
 			transform.translate = randomPosition + enemy_->GetTransform()->translation_;
 			// 回転
-			Vector3 velocity = (transform.translate - enemy_->GetTransform()->translation_).Normalize();
+			Vector3 velocity = (transform.translate - enemy_->GetTransform()->GetWorldPosition()).Normalize();
 			transform.rotate.y = std::atan2(velocity.x, velocity.z);
-			Matrix4x4 rotateMatrixY = Matrix4x4::RotateY(transform.rotate.y);
-			Vector3 velocityZ = velocity.Transform(rotateMatrixY);
+			Matrix4x4 rotateMatrixY = Matrix4x4::RotateY(-transform.rotate.y);
+			Vector3 velocityZ = Vector3{ velocity }.Transform(rotateMatrixY);
 			transform.rotate.x = std::atan2(-velocityZ.y, velocityZ.z);
 			effect.effect_->SetTransform(transform);
 			// 速度を初期化

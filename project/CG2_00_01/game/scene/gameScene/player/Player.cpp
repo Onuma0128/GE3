@@ -73,14 +73,14 @@ void Player::Init()
 	playerUI_->SetPlayer(this);
 
 	// プレイヤー周りのパーティクル
-	playerParticle_ = std::make_unique<PlayerParticle>();
-	playerParticle_->Init();
-	playerParticle_->SetPlayer(this);
+	particle_ = std::make_unique<PlayerParticle>();
+	particle_->Init();
+	particle_->SetPlayer(this);
 
 	// プレイヤーのエフェクト
-	playerEffect_ = std::make_unique<PlayerEffect>();
-	playerEffect_->Init();
-	playerEffect_->SetPlayer(this);
+	effect_ = std::make_unique<PlayerEffect>();
+	effect_->Init();
+	effect_->SetPlayer(this);
 
 	fade_ = std::make_unique<FadeScene>();
 	fade_->Init(0.0f);
@@ -100,9 +100,9 @@ void Player::Update()
 
 	playerUI_->Update();
 
-	playerParticle_->Update();
+	particle_->Update();
 
-	playerEffect_->Update();
+	effect_->Update();
 
 	SetLight();
 
@@ -138,7 +138,7 @@ void Player::Draw()
 
 	shadowModel_->Draw();
 
-	playerParticle_->Draw();
+	particle_->Draw();
 }
 
 void Player::DrawSprite()
@@ -150,7 +150,7 @@ void Player::DrawSprite()
 
 void Player::DrawTrail()
 {
-	playerEffect_->DrawTrail();
+	effect_->DrawTrail();
 }
 
 void Player::IsDamage()
@@ -164,7 +164,6 @@ void Player::IsDamage()
 	playerAnimation_->Reset();
 	playerAnimation_->GetPlayerModels()->ModelOffset();
 	isAttack_ = false;
-	playerParticle_->GetSwordEmitter()->SetIsCreate(false);
 	ChengeState(std::make_unique<DamageState>(this, playerAnimation_.get()));
 	if (hp_ > 0) {
 		playerUI_->DeleteHP();
@@ -214,12 +213,6 @@ void Player::GlobalInit()
 	global_->AddValue<float>("Player", "dustAcceleration", -1.0f);
 	global_->AddValue<float>("Player", "knockbackFrame", 10.0f);
 	global_->AddValue<float>("Player", "dashPow", 3.0f);
-
-	global_->AddValue<Vector3>("PlayerSwordParticle", "position", Vector3{});
-	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration", Vector3{});
-	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration2", Vector3{});
-	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration3", Vector3{});
-	global_->AddValue<Vector3>("PlayerSwordParticle", "acceleration4", Vector3{});
 
 	global_->AddValue<Vector3>("PlayerTrailEffect", "position0", Vector3{});
 	global_->AddValue<Vector3>("PlayerTrailEffect", "position1", Vector3{});

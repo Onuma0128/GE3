@@ -6,10 +6,10 @@ void EnemyEffect::Init()
 {
 	GlobalInit();
 
-	for (int i = 0; i < 30; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		HitEffect hitEffect;
 		hitEffect.effect_ = std::make_unique<TrailEffect>();
-		hitEffect.effect_->InitSphere(16);
+		hitEffect.effect_->InitSphere(8);
 		hitEffect.alpha_ = 0.0f;
 		hitEffects_.push_back(std::move(hitEffect));
 	}

@@ -34,7 +34,6 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 
 	ParticleEmitter* GetMoveEmitter()const { return moveParticleEmitter_.get(); }
-	ParticleEmitter* GetSwordEmitter()const { return swordParticleEmitter_.get(); }
 
 private:
 
@@ -44,8 +43,6 @@ private:
 
 	// 移動時のパーティクル
 	std::unique_ptr<ParticleEmitter> moveParticleEmitter_ = nullptr;
-	// 攻撃時剣先のパーティクル
-	std::unique_ptr<ParticleEmitter> swordParticleEmitter_ = nullptr;
 
 	// 3コンボ目のパーティクル
 	std::list<Combo3Particle> combo3Particles_;

@@ -15,12 +15,6 @@ void PlayerParticle::Init()
 	moveParticleEmitter_ = std::make_unique<ParticleEmitter>("playerDust");
 	ParticleManager::GetInstance()->CreateParticleGroup("playerDust", "white1x1.png", moveParticleEmitter_.get());
 
-	// 攻撃時パーティクルの初期化
-	swordParticleEmitter_ = std::make_unique<ParticleEmitter>("sword");
-	ParticleManager::GetInstance()->CreateParticleGroup("sword", "circle.png", swordParticleEmitter_.get());
-	swordParticleEmitter_->SetIsCreate(false);
-
-
 	for (int i = 0; i < 50; ++i) {
 		Combo3Particle particle{};
 		// Transformの初期化

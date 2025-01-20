@@ -20,10 +20,10 @@ Vector3 PlayerModels::GetCenterPosition() const
 		if (player_->GetPlayerAnima()->GetDashFrame() != 0.0f) {
 			return Vector3{ Vector3::ExprUnitY + Vector3::ExprUnitZ }.Transform(player_->GetTransform()->matWorld_);
 		}
-		return Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(swordTrans_->matWorld_);
+		return Vector3{ global_->GetValue<Vector3>("PlayerTrailEffect", "position1") }.Transform(swordTrans_->matWorld_);
 	}
 	else {
-		return Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(swordTrans_->matWorld_);
+		return Vector3{ global_->GetValue<Vector3>("PlayerTrailEffect", "position1") }.Transform(swordTrans_->matWorld_);
 	}
 }
 

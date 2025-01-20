@@ -90,11 +90,6 @@ void TrailEffect::SetPosition(std::vector<Vector3> pos)
 	vertexData_[1].position = { pos[1].x,pos[1].y,pos[1].z,1.0f };
 	vertexData_[2].position = { pos[2].x,pos[2].y,pos[2].z,1.0f };
 	vertexData_[3].position = { pos[3].x,pos[3].y,pos[3].z,1.0f };
-
-	vertexData_[0].texcoord = { 0.0f,0.0f };
-	vertexData_[1].texcoord = { 1.0f,0.0f };
-	vertexData_[2].texcoord = { 0.0f,1.0f };
-	vertexData_[3].texcoord = { 1.0f,1.0f };
 }
 
 void TrailEffect::SetTexture(const std::string& directoryPath, const std::string& filePath)

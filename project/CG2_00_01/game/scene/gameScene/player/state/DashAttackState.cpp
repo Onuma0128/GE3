@@ -10,35 +10,23 @@ DashAttackState::DashAttackState(Player* player, PlayerAnimation* playerAnimatio
 
 void DashAttackState::Initialize()
 {
-	// 剣のワールド座標を取得
-	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
-	Vector3 acceleration = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "acceleration4") }.Transform(Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_));
 	// プレイヤーのz方向ベクトル
 	Vector3 localDirection = Vector3::ExprUnitZ;
 	Vector3 globalDirection = Quaternion::RotateVector(localDirection, player_->GetTransform()->rotation_);
 	velocity_ = globalDirection.Normalize();
-	// パーティクルの初期化
-	player_->GetSwordEmitter()->SetIsCreate(false);
-	player_->GetSwordEmitter()->SetPosition(world);
-	player_->GetSwordEmitter()->SetAcceleration(acceleration);
 }
 
 void DashAttackState::Update()
 {
 	playerAnimation_->DashAttack();
 	player_->GetMoveEmitter()->SetIsCreate(false);
-	player_->GetSwordEmitter()->SetIsCreate(false);
-	// 剣のワールド座標を取得
-	Vector3 world = Vector3{ global_->GetValue<Vector3>("PlayerSwordParticle", "position") }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
-	Vector3 swordWorld = Vector3{ 0.0f,0.5f,0.0f }.Transform(playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_);
+	// 剣のトレイル座標
+	Matrix4x4 worldMatrix = playerAnimation_->GetPlayerModels()->GetSwordTrans()->matWorld_;
+	Vector3 pos1 = Vector3{ global_->GetValue<Vector3>("PlayerTrailEffect", "position0") }.Transform(worldMatrix);
+	Vector3 pos2 = Vector3{ global_->GetValue<Vector3>("PlayerTrailEffect", "position1") }.Transform(worldMatrix);
 
-	player_->GetSwordEmitter()->SetIsCreate(true);
-	player_->GetSwordEmitter()->SetPosition(world);
 	player_->SetIsAttack(true);
 
-	if (playerAnimation_->GetDashFrame() < 1.0f || playerAnimation_->GetDashFrame() > 1.8f) {
-		player_->GetSwordEmitter()->SetIsCreate(false);
-	}
 	// 効果音
 	if (playerAnimation_->GetDashFrame() >= 1.0f &&
 		playerAnimation_->GetDashFrame() < 1.0f + (1.0f / global_->GetValue<float>("DashAttack", "frame2") * 2.0f)) {
@@ -50,7 +38,7 @@ void DashAttackState::Update()
 		Vector3 translation = player_->GetTransform()->translation_;
 		translation += velocity_ * global_->GetValue<float>("Player", "dashPow") * (2.0f - playerAnimation_->GetDashFrame());
 		player_->GetTransform()->translation_ = translation;
-		CreateSwordEffect(world, swordWorld);
+		CreateSwordEffect(pos1, pos2);
 	}
 	else {
 		player_->SetIsAttack(false);

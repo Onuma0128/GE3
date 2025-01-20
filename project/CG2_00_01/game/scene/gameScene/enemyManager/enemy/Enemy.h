@@ -53,7 +53,7 @@ public:
 
 	void SetIsDamage(bool isDamage) { isDamage_ = isDamage; }
 
-	EnemyEffect* GetEnemyEffect()const { return enemyEffect_.get(); }
+	EnemyEffect* GetEnemyEffect()const { return effect_.get(); }
 
 private:
 
@@ -70,7 +70,7 @@ private:
 	std::unique_ptr<Object3d> shadowModel_ = nullptr;
 	std::unique_ptr<WorldTransform> shadowTransform_ = nullptr;
 	// ダメージヒット時のエフェクト
-	std::unique_ptr<EnemyEffect> enemyEffect_ = nullptr;
+	std::unique_ptr<EnemyEffect> effect_ = nullptr;
 
 	Vector3 velocity_;
 	int hp_ = 5;

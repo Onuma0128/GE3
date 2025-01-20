@@ -10,7 +10,7 @@ void Enemy::OnCollision(const std::string& name, const Vector3& position)
 	// 衝突判定は3パターン
 
 	// 1 攻撃を与えた
-	if (name == "player" && player_->GetDamageFrame() == 0.0f) {
+	if (name == "player" && player_->GetDamageFrame() == 0.0f && !isDamage_) {
 		ChengeState(std::make_unique<AttackStateEnemy>(this));
 	}
 
@@ -67,19 +67,19 @@ void Enemy::Init()
 	state_ = std::make_unique<MoveStateEnemy>(this);
 	state_->Initialize();
 
-	enemyEffect_ = std::make_unique<EnemyEffect>();
-	enemyEffect_->Init();
+	effect_ = std::make_unique<EnemyEffect>();
+	effect_->Init();
 }
 
 void Enemy::Update()
 {
 	state_->Update();
 
+	effect_->Update();
+
 	model_->Update();
 
 	ShadowUpdate();
-
-	enemyEffect_->Update();
 }
 
 void Enemy::ShadowUpdate()
@@ -113,7 +113,7 @@ void Enemy::Draw()
 
 void Enemy::DrawEffect()
 {
-	enemyEffect_->Draw();
+	effect_->Draw();
 }
 
 void Enemy::Debug_Update()

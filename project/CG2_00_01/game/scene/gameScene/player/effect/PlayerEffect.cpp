@@ -29,12 +29,12 @@ void PlayerEffect::Update()
 			trail.alpha_ -= global_->GetValue<float>("PlayerTrailEffect", "alpha");
 			trail.effect_->SetColor(global_->GetValue<Vector3>("PlayerTrailEffect", "color"));
 			trail.effect_->SetAlpha(trail.alpha_);
-			trail.effect_->Update();
 		}
 		else {
 			trail.alpha_ = 0.0f;
 			trail.effect_->SetAlpha(trail.alpha_);
 		}
+		trail.effect_->Update();
 	}
 }
 
