@@ -56,10 +56,10 @@ void DamageStateEnemy::Initialize()
 
 void DamageStateEnemy::Update()
 {
-	/*if (damageFrame_ == 0.0f) {
+	if (damageFrame_ == 0.0f) {
 		int hp = enemy_->GetHP() - 1;
 		enemy_->SetHP(hp);
-	}*/
+	}
 
 	damageFrame_ += 1.0f / global_->GetValue<float>("Enemy", "damageFrame");
 
