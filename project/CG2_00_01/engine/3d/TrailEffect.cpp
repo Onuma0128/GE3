@@ -1,5 +1,7 @@
 #include "TrailEffect.h"
 
+#include <numbers>
+
 #include "DirectXEngine.h"
 #include "TrailEffectBase.h"
 #include "TextureManager.h"
@@ -16,7 +18,7 @@ void TrailEffect::Init(std::vector<Vector3> pos)
 	SetTexture("resources", "white1x1.png");
 
 	CreateBufferResource(vertexResource_, sizeof(VertexData) * 4);
-	CreateVertexBufferView();
+	CreateVertexBufferView(4);
 	CreateVertexData();
 
 	CreateBufferResource(indexResource_, sizeof(uint32_t) * 6);
@@ -48,6 +50,38 @@ void TrailEffect::Draw()
 	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textureData_.textureIndex);
 
 	commandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+}
+
+void TrailEffect::InitSphere(uint32_t kSubdivision)
+{
+	kSubdivision_ = kSubdivision;
+	trailEffectBase_ = TrailEffectBase::GetInstance();
+
+	SetTexture("resources", "white1x1.png");
+
+	uint32_t startIndex = kSubdivision * kSubdivision * 6;
+	CreateBufferResource(vertexResource_, sizeof(VertexData) * startIndex);
+	CreateVertexBufferView(startIndex);
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+	vertexData_ = CreateSphereVertexData(vertexData_, kSubdivision);
+
+	CreateBufferResource(materialResource_, sizeof(Vector4));
+	CreateMaterialData();
+
+	CreateBufferResource(wvpResource_, sizeof(Matrix4x4));
+	CreateWVPData();
+}
+
+void TrailEffect::DrawSphere()
+{
+	auto commandList = trailEffectBase_->GetDxEngine()->GetCommandList();
+
+	commandList->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	commandList->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+	SrvManager::GetInstance()->SetGraphicsRootDescriptorTable(2, textureData_.textureIndex);
+
+	commandList->DrawInstanced(kSubdivision_ * kSubdivision_ * 6, 1, 0, 0);
 }
 
 void TrailEffect::SetPosition(std::vector<Vector3> pos)
@@ -100,10 +134,10 @@ void TrailEffect::CreateBufferResource(ComPtr<ID3D12Resource>& resource, size_t 
 	assert(SUCCEEDED(hr)); // エラーチェック
 }
 
-void TrailEffect::CreateVertexBufferView()
+void TrailEffect::CreateVertexBufferView(uint32_t kVertexSize)
 {
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 4;
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * kVertexSize;
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 }
 
@@ -154,5 +188,40 @@ void TrailEffect::CreateWVPData()
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
 
 	*wvpData_ = Matrix4x4::Identity();
+}
+
+TrailEffect::VertexData* TrailEffect::CreateSphereVertexData(VertexData* vertexData, uint32_t kSubdivision)
+{
+	const float pi = static_cast<float>(std::numbers::pi);
+	const float kLonEvery = 2 * pi / float(kSubdivision); // 経度
+	const float kLatEvery = pi / float(kSubdivision);     // 緯度
+
+	for (uint32_t latIndex = 0; latIndex < kSubdivision; latIndex++) {
+		float lat0 = -pi / 2.0f + kLatEvery * latIndex; // 緯度の方向に分割
+		float lat1 = lat0 + kLatEvery;
+		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; lonIndex++) {
+			uint32_t start = (latIndex * kSubdivision + lonIndex) * 6;
+			float lon0 = kLonEvery * lonIndex; // 経度の方向に分割
+			float lon1 = lon0 + kLonEvery;
+			float u0 = float(lonIndex) / float(kSubdivision);
+			float u1 = float(lonIndex + 1) / float(kSubdivision);
+			float v0 = 1.0f - float(latIndex) / float(kSubdivision);
+			float v1 = 1.0f - float(latIndex + 1) / float(kSubdivision);
+			//頂点座標を計算
+			vertexData[start].position = { std::cos(lat0) * std::cos(lon0), std::sin(lat0), std::cos(lat0) * std::sin(lon0), 1.0f };
+			vertexData[start].texcoord = { u0, v0 };
+			vertexData[start + 1].position = { std::cos(lat1) * std::cos(lon0), std::sin(lat1), std::cos(lat1) * std::sin(lon0), 1.0f };
+			vertexData[start + 1].texcoord = { u0, v1 };
+			vertexData[start + 2].position = { std::cos(lat0) * std::cos(lon1), std::sin(lat0), std::cos(lat0) * std::sin(lon1), 1.0f };
+			vertexData[start + 2].texcoord = { u1, v0 };
+			vertexData[start + 3].position = { std::cos(lat1) * std::cos(lon0), std::sin(lat1), std::cos(lat1) * std::sin(lon0), 1.0f };
+			vertexData[start + 3].texcoord = { u0, v1 };
+			vertexData[start + 4].position = { std::cos(lat1) * std::cos(lon1), std::sin(lat1), std::cos(lat1) * std::sin(lon1), 1.0f };
+			vertexData[start + 4].texcoord = { u1, v1 };
+			vertexData[start + 5].position = { std::cos(lat0) * std::cos(lon1), std::sin(lat0), std::cos(lat0) * std::sin(lon1), 1.0f };
+			vertexData[start + 5].texcoord = { u1, v0 };
+		}
+	}
+	return vertexData;
 }
 

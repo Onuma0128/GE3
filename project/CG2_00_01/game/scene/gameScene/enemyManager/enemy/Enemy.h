@@ -9,6 +9,7 @@
 
 #include "gameScene/enemyManager/enemy/state/BaseStateEnemy.h"
 #include "gameScene/collision/Collider.h"
+#include "gameScene/enemyManager/enemy/effect/EnemyEffect.h"
 
 class Player;
 
@@ -30,6 +31,7 @@ public:
 	void ShadowUpdate();
 
 	void Draw();
+	void DrawEffect();
 
 	void Debug_Update();
 
@@ -51,6 +53,8 @@ public:
 
 	void SetIsDamage(bool isDamage) { isDamage_ = isDamage; }
 
+	EnemyEffect* GetEnemyEffect()const { return enemyEffect_.get(); }
+
 private:
 
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
@@ -65,6 +69,8 @@ private:
 	// 敵の影
 	std::unique_ptr<Object3d> shadowModel_ = nullptr;
 	std::unique_ptr<WorldTransform> shadowTransform_ = nullptr;
+	// ダメージヒット時のエフェクト
+	std::unique_ptr<EnemyEffect> enemyEffect_ = nullptr;
 
 	Vector3 velocity_;
 	int hp_ = 5;

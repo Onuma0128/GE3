@@ -31,7 +31,5 @@ private:
 	std::unique_ptr<FadeScene> fade_ = nullptr;
 	bool isFade_ = false;
 
-	std::unique_ptr<TrailEffect> effect_ = nullptr;
-
 };
 

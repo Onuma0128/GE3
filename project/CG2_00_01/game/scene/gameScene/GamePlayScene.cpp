@@ -98,6 +98,7 @@ void GamePlayScene::Draw()
 
 	player_->DrawTrail();
 
+	enemyManager_->DrawEffect();
 
 	// 全パーティクルの描画
 	ParticleManager::GetInstance()->Draw();

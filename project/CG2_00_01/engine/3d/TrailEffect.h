@@ -29,13 +29,31 @@ public:
 		uint32_t textureIndex = 0;
 	};
 
+	/* =============== トレイルエフェクト =============== */
+
 	void Init(std::vector<Vector3> pos);
 
 	void Update();
 
 	void Draw();
 
+	/* =============== 球面 =============== */
+
+	void InitSphere(uint32_t kSubdivision);
+
+	void DrawSphere();
+
+	/* =============== アクセッサ(トレイル用) =============== */
+
 	void SetPosition(std::vector<Vector3> pos);
+
+	/* =============== アクセッサ(球体用) =============== */
+
+	const Transform& GetTransform() { return transform_; }
+	void SetTransform(Transform transform) { transform_ = transform; }
+
+	/* =============== アクセッサ(全体) =============== */
+
 	void SetTexture(const std::string& directoryPath, const std::string& filePath);
 	void SetColor(const Vector3& color) { 
 		materialData_->x = color.x;
@@ -48,13 +66,16 @@ private:
 
 	void CreateBufferResource(ComPtr<ID3D12Resource>& resource, size_t size);
 
-	void CreateVertexBufferView();
+	void CreateVertexBufferView(uint32_t kVertexSize);
 	void CreateIndexBufferView();
 
 	void CreateVertexData();
 	void CreateIndexData();
 	void CreateMaterialData();
 	void CreateWVPData();
+
+	// 球面の頂点計算
+	VertexData* CreateSphereVertexData(VertexData* vertexData, uint32_t kSubdivision);
 
 private:
 
@@ -88,4 +109,6 @@ private:
 	Transform transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
 	std::vector<Vector3> positions_;
+
+	uint32_t kSubdivision_;
 };

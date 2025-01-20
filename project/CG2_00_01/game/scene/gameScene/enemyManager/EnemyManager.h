@@ -22,6 +22,7 @@ public:
 
 	void Draw();
 	void DrawSprite();
+	void DrawEffect();
 
 	void Debug_ImGui();
 

@@ -1,9 +1,11 @@
 #include "DamageStateEnemy.h"
 
 #include "MoveStateEnemy.h"
+#include "TrailEffect.h"
 
 #include "gameScene/enemyManager/enemy/Enemy.h"
 #include "gameScene/player/Player.h"
+#include "gameScene/enemyManager/enemy/effect/EnemyEffect.h"
 
 DamageStateEnemy::DamageStateEnemy(Enemy* enemy) :BaseStateEnemy(enemy) {}
 
@@ -11,14 +13,53 @@ void DamageStateEnemy::Initialize()
 {
 	damageFrame_ = 0.0f;
 	velocityY = 1.0f;
+
+	int count = 0;
+	for (auto& effect : enemy_->GetEnemyEffect()->GetHitEffects()) {
+		Vector3 randomPosition;
+		do {
+			randomPosition = {
+				static_cast<float>(rand() % 11 - 5) * 0.1f,
+				static_cast<float>(rand() % 11 - 5) * 0.1f,
+				static_cast<float>(rand() % 11 - 5) * 0.1f,
+			};
+		} while (randomPosition.Length() == 0.0f);
+		if (effect.alpha_ == 0.0f) {
+			Transform transform = effect.effect_->GetTransform();
+			// サイズ
+			int randomScale = rand() % 2;
+			if (randomScale == 0) {
+				transform.scale = global_->GetValue<Vector3>("EnemyHitEffect", "scale");
+			}
+			else {
+				transform.scale = { 0.05f,0.05f ,0.05f };
+			}
+			// 座標
+			transform.translate = randomPosition + enemy_->GetTransform()->translation_;
+			// 回転
+			Vector3 velocity = (transform.translate - enemy_->GetTransform()->translation_).Normalize();
+			transform.rotate.y = std::atan2(velocity.x, velocity.z);
+			Matrix4x4 rotateMatrixY = Matrix4x4::RotateY(transform.rotate.y);
+			Vector3 velocityZ = velocity.Transform(rotateMatrixY);
+			transform.rotate.x = std::atan2(-velocityZ.y, velocityZ.z);
+			effect.effect_->SetTransform(transform);
+			// 速度を初期化
+			effect.velocity_ = velocity * global_->GetValue<float>("EnemyHitEffect", "velocityPow");
+			effect.alpha_ = 1.0f;
+			++count;
+			if (count == global_->GetValue<int>("EnemyHitEffect", "count")) {
+				break;
+			}
+		}
+	}
 }
 
 void DamageStateEnemy::Update()
 {
-	if (damageFrame_ == 0.0f) {
+	/*if (damageFrame_ == 0.0f) {
 		int hp = enemy_->GetHP() - 1;
 		enemy_->SetHP(hp);
-	}
+	}*/
 
 	damageFrame_ += 1.0f / global_->GetValue<float>("Enemy", "damageFrame");
 

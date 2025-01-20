@@ -3,6 +3,7 @@
 #include "CameraManager.h"
 #include "SceneManager.h"
 #include "Input.h"
+#include "imgui.h"
 
 #include "Object3dBase.h"
 #include "SpriteBase.h"

@@ -66,6 +66,9 @@ void Enemy::Init()
 
 	state_ = std::make_unique<MoveStateEnemy>(this);
 	state_->Initialize();
+
+	enemyEffect_ = std::make_unique<EnemyEffect>();
+	enemyEffect_->Init();
 }
 
 void Enemy::Update()
@@ -75,6 +78,8 @@ void Enemy::Update()
 	model_->Update();
 
 	ShadowUpdate();
+
+	enemyEffect_->Update();
 }
 
 void Enemy::ShadowUpdate()
@@ -104,6 +109,11 @@ void Enemy::Draw()
 	model_->Draw();
 
 	shadowModel_->Draw();
+}
+
+void Enemy::DrawEffect()
+{
+	enemyEffect_->Draw();
 }
 
 void Enemy::Debug_Update()

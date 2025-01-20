@@ -95,6 +95,13 @@ void EnemyManager::DrawSprite()
 	fade_->Draw();
 }
 
+void EnemyManager::DrawEffect()
+{
+	for (auto& enemy : enemys_) {
+		enemy->DrawEffect();
+	}
+}
+
 void EnemyManager::Debug_ImGui()
 {
 #ifdef _DEBUG
