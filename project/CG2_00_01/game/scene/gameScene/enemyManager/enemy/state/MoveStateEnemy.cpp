@@ -1,5 +1,6 @@
 #include "MoveStateEnemy.h"
 
+#include "gameScene/gameTimer/GameTimer.h"
 #include "gameScene/enemyManager/enemy/Enemy.h"
 #include "gameScene/player/Player.h"
 
@@ -18,7 +19,7 @@ void MoveStateEnemy::Update()
 	if (velocity.x != 0.0f || velocity.z != 0.0f) {
 		velocity.Normalize();
 	}
-	enemy_->GetTransform()->translation_ += velocity * kSpeed;
+	enemy_->GetTransform()->translation_ += velocity * kSpeed * GameTimer::GetInstance()->GetDeltaTime();
 
 	if (velocity.x != 0.0f || velocity.z != 0.0f) {
 		// 回転ベクトル
@@ -27,7 +28,7 @@ void MoveStateEnemy::Update()
 		Matrix4x4 rotationMatrix = Matrix4x4::DirectionToDirection(Vector3::ExprUnitZ, targetDirection);
 		Quaternion yRotation = Quaternion::FormRotationMatrix(rotationMatrix);
 		// 回転の処理
-		enemy_->GetTransform()->rotation_.Slerp(yRotation, global_->GetValue<float>("Enemy", "slerpSpeed"));
+		enemy_->GetTransform()->rotation_.Slerp(yRotation, global_->GetValue<float>("Enemy", "slerpSpeed") * GameTimer::GetInstance()->GetDeltaTime());
 	}
 }
 

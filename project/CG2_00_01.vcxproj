@@ -196,6 +196,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="CG2_00_01\engine\3d\TrailEffect.cpp" />
     <ClCompile Include="CG2_00_01\engine\base\object\model\TrailEffectBase.cpp" />
     <ClCompile Include="CG2_00_01\game\scene\gameScene\player\effect\PlayerEffect.cpp" />
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\gameTimer\GameTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\state\AttackStateEnemy.h" />
@@ -285,6 +286,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="CG2_00_01\engine\3d\TrailEffect.h" />
     <ClInclude Include="CG2_00_01\engine\base\object\model\TrailEffectBase.h" />
     <ClInclude Include="CG2_00_01\game\scene\gameScene\player\effect\PlayerEffect.h" />
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\gameTimer\GameTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

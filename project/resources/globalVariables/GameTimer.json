@@ -1,0 +1,10 @@
+{
+    "GameTimer": [
+        {
+            "HitStopTime": 5.0
+        },
+        {
+            "deltaLerpSpeed": 0.8999999761581421
+        }
+    ]
+}

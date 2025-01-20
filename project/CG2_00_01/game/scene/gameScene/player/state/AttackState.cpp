@@ -43,10 +43,10 @@ void AttackState::Update()
 			CreateSwordEffect(pos1, pos2);
 		}
 		// 効果音
-		if (playerAnimation_->GetCombo1Frame() >= 1.0f &&
+		/*if (playerAnimation_->GetCombo1Frame() >= 1.0f &&
 			playerAnimation_->GetCombo1Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo1", "frame2") * 2.0f)) {
 			player_->GetAudio()->SoundPlayWave("Combo1.wav", 0.25f);
-		}
+		}*/
 
 		// 条件を達成したら次のコンボに移動
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {
@@ -76,11 +76,11 @@ void AttackState::Update()
 		else {
 			CreateSwordEffect(pos1, pos2);
 		}
-		// 効果音
-		if (playerAnimation_->GetCombo2Frame() >= 1.0f &&
-			playerAnimation_->GetCombo2Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo2", "frame2") * 1.5f)) {
-			player_->GetAudio()->SoundPlayWave("Combo2.wav", 0.25f);
-		}
+		//// 効果音
+		//if (playerAnimation_->GetCombo2Frame() >= 1.0f &&
+		//	playerAnimation_->GetCombo2Frame() < 1.0f + (1.0f / global_->GetValue<float>("AttackCombo2", "frame2") * 1.5f)) {
+		//	player_->GetAudio()->SoundPlayWave("Combo2.wav", 0.25f);
+		//}
 
 		// 条件を達成したら次のコンボに移動
 		if (input_->PushGamepadButton(XINPUT_GAMEPAD_A) && playerAnimation_->GetNextCombo()) {

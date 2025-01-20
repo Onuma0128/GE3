@@ -1,5 +1,6 @@
 #include "DashAttackState.h"
 
+#include "gameScene/gameTimer/GameTimer.h"
 #include "gameScene/player/Player.h"
 #include "gameScene/animation/PlayerAnimation.h"
 
@@ -27,16 +28,16 @@ void DashAttackState::Update()
 
 	player_->SetIsAttack(true);
 
-	// 効果音
-	if (playerAnimation_->GetDashFrame() >= 1.0f &&
-		playerAnimation_->GetDashFrame() < 1.0f + (1.0f / global_->GetValue<float>("DashAttack", "frame2") * 2.0f)) {
-		player_->GetAudio()->SoundPlayWave("Dash.wav", 0.25f);
-	}
+	//// 効果音
+	//if (playerAnimation_->GetDashFrame() >= 1.0f &&
+	//	playerAnimation_->GetDashFrame() < 1.0f + (1.0f / global_->GetValue<float>("DashAttack", "frame2") * 2.0f)) {
+	//	player_->GetAudio()->SoundPlayWave("Dash.wav", 0.25f);
+	//}
 
 	if (playerAnimation_->GetDashFrame() > 1.0f && playerAnimation_->GetDashFrame() < 2.0f) {
 		player_->GetMoveEmitter()->SetIsCreate(true);
 		Vector3 translation = player_->GetTransform()->translation_;
-		translation += velocity_ * global_->GetValue<float>("Player", "dashPow") * (2.0f - playerAnimation_->GetDashFrame());
+		translation += velocity_ * global_->GetValue<float>("Player", "dashPow") * (2.0f - playerAnimation_->GetDashFrame()) * GameTimer::GetInstance()->GetDeltaTime();
 		player_->GetTransform()->translation_ = translation;
 		CreateSwordEffect(pos1, pos2);
 	}

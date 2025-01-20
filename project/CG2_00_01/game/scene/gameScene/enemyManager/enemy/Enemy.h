@@ -52,6 +52,7 @@ public:
 	const Vector3& GetVelocity() { return velocity_; }
 
 	void SetIsDamage(bool isDamage) { isDamage_ = isDamage; }
+	float GetIsDamage() const { return isDamage_; }
 
 	EnemyEffect* GetEnemyEffect()const { return effect_.get(); }
 

@@ -1,6 +1,7 @@
 #include "PlayerAnimation.h"
 
 #include "imgui.h"
+#include "gameScene/gameTimer/GameTimer.h"
 
 void PlayerAnimation::Init()
 {
@@ -211,7 +212,7 @@ void PlayerAnimation::AnimationUpdate(int comboNum, int frameNum)
 	Quaternion offsetQ = Quaternion::IdentityQuaternion();
 	Quaternion slerpQ = Quaternion::IdentityQuaternion();
 	Vector3 slerpV = Vector3::ExprZero;
-	float slerpSpeed = global_->GetValue<float>(AttackCombo, "slerpSpeed" + num);
+	float slerpSpeed = global_->GetValue<float>(AttackCombo, "slerpSpeed" + num) * GameTimer::GetInstance()->GetDeltaTime();
 
 	/* ========== 頭 ========== */
 	// 回転
@@ -289,7 +290,7 @@ void PlayerAnimation::AnimationUpdate(int frameNum)
 	Quaternion offsetQ = Quaternion::IdentityQuaternion();
 	Quaternion slerpQ = Quaternion::IdentityQuaternion();
 	Vector3 slerpV = Vector3::ExprZero;
-	float slerpSpeed = global_->GetValue<float>(Attack, "slerpSpeed" + num);
+	float slerpSpeed = global_->GetValue<float>(Attack, "slerpSpeed" + num) * GameTimer::GetInstance()->GetDeltaTime();
 
 	/* ========== 頭 ========== */
 	// 回転
@@ -359,7 +360,7 @@ void PlayerAnimation::AnimationUpdate(int frameNum)
 void PlayerAnimation::NormalAnimation()
 {
 	Quaternion offsetQ = Quaternion::IdentityQuaternion();
-	normalFrame_ += 1.0f / global_->GetValue<float>("NormalAnimation", "frame");
+	normalFrame_ += 1.0f / global_->GetValue<float>("NormalAnimation", "frame") * GameTimer::GetInstance()->GetDeltaTime();
 	float sin = std::sin(normalFrame_) * 0.1f;
 
 	// 体を浮遊させる
@@ -382,7 +383,7 @@ void PlayerAnimation::AttackCombo1()
 	int animationFrameNum = global_->GetValue<int>("AttackCombo1", "frameNum");
 	for (int i = 1; i <= animationFrameNum; ++i) {
 		if (combo1Frame_ >= static_cast<float>(i - 1) && combo1Frame_ < static_cast<float>(i)) {
-			combo1Frame_ += 1.0f / global_->GetValue<float>("AttackCombo1", "frame" + std::to_string(i));
+			combo1Frame_ += 1.0f / global_->GetValue<float>("AttackCombo1", "frame" + std::to_string(i)) * GameTimer::GetInstance()->GetDeltaTime();
 			AnimationUpdate(1, i);
 		}
 	}
@@ -406,7 +407,7 @@ void PlayerAnimation::AttackCombo2()
 	int animationFrameNum = global_->GetValue<int>("AttackCombo2", "frameNum");
 	for (int i = 1; i <= animationFrameNum; ++i) {
 		if (combo2Frame_ >= static_cast<float>(i - 1) && combo2Frame_ < static_cast<float>(i)) {
-			combo2Frame_ += 1.0f / global_->GetValue<float>("AttackCombo2", "frame" + std::to_string(i));
+			combo2Frame_ += 1.0f / global_->GetValue<float>("AttackCombo2", "frame" + std::to_string(i)) * GameTimer::GetInstance()->GetDeltaTime();
 			AnimationUpdate(2, i);
 		}
 	}
@@ -429,7 +430,7 @@ void PlayerAnimation::AttackCombo3()
 	int animationFrameNum = global_->GetValue<int>("AttackCombo3", "frameNum");
 	for (int i = 1; i <= animationFrameNum; ++i) {
 		if (combo3Frame_ >= static_cast<float>(i - 1) && combo3Frame_ < static_cast<float>(i)) {
-			combo3Frame_ += 1.0f / global_->GetValue<float>("AttackCombo3", "frame" + std::to_string(i));
+			combo3Frame_ += 1.0f / global_->GetValue<float>("AttackCombo3", "frame" + std::to_string(i)) * GameTimer::GetInstance()->GetDeltaTime();
 			AnimationUpdate(3, i);
 		}
 	}
@@ -446,7 +447,7 @@ void PlayerAnimation::DashAttack()
 	int animationFrameNum = global_->GetValue<int>("DashAttack", "frameNum");
 	for (int i = 1; i <= animationFrameNum; ++i) {
 		if (dashFrame_ >= static_cast<float>(i - 1) && dashFrame_ < static_cast<float>(i)) {
-			dashFrame_ += 1.0f / global_->GetValue<float>("DashAttack", "frame" + std::to_string(i));
+			dashFrame_ += 1.0f / global_->GetValue<float>("DashAttack", "frame" + std::to_string(i)) * GameTimer::GetInstance()->GetDeltaTime();
 			AnimationUpdate(i);
 		}
 	}

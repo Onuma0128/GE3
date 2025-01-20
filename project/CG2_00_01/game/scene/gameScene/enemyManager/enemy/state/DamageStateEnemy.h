@@ -22,6 +22,7 @@ private:
 
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 
+	bool isDamage_ = false;
 	float damageFrame_ = 0.0f;
 	float velocityY = 1.0f;
 };

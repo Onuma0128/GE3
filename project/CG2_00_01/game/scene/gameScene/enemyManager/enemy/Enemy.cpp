@@ -1,5 +1,6 @@
 #include "Enemy.h"
 
+#include "gameScene/gameTimer/GameTimer.h"
 #include "gameScene/player/Player.h"
 #include "gameScene/enemyManager/enemy/state/MoveStateEnemy.h"
 #include "gameScene/enemyManager/enemy/state/DamageStateEnemy.h"
@@ -21,8 +22,9 @@ void Enemy::OnCollision(const std::string& name, const Vector3& position)
 		velocity_.y = 0.0f;
 		velocity_.Normalize();
 		isDamage_ = true;
+		GameTimer::GetInstance()->SetHitStop(true);
 		ChengeState(std::make_unique<DamageStateEnemy>(this));
-		audio_->SoundPlayWave("EnemyDamage.wav", 0.01f);
+		audio_->SoundPlayWave("EnemyDamage.wav", 0.5f);
 	}
 
 	// 4 敵同士の当たり判定

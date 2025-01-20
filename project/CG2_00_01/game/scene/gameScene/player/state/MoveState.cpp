@@ -2,6 +2,7 @@
 
 #include "CameraManager.h"
 
+#include "gameScene/gameTimer/GameTimer.h"
 #include "gameScene/player/Player.h"
 #include "gameScene/animation/PlayerAnimation.h"
 
@@ -56,7 +57,7 @@ void MoveState::Update()
 	player_->GetMoveEmitter()->SetPosition(player_->GetTransform()->translation_);
 	Vector3 acceleration = player_->GetVelocity() * global_->GetValue<float>("Player", "dustAcceleration");
 	acceleration.y = global_->GetValue<float>("Player", "dustAccelerationY");
-	player_->GetMoveEmitter()->SetAcceleration(acceleration);
+	player_->GetMoveEmitter()->SetAcceleration(acceleration * GameTimer::GetInstance()->GetDeltaTime());
 
 	if (input_->TriggerGamepadButton(XINPUT_GAMEPAD_A) && player_->GetHP() > 0) {
 		player_->GetMoveEmitter()->SetIsCreate(false);

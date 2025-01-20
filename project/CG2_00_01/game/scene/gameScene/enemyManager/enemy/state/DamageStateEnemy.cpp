@@ -3,6 +3,7 @@
 #include "MoveStateEnemy.h"
 #include "TrailEffect.h"
 
+#include "gameScene/gameTimer/GameTimer.h"
 #include "gameScene/enemyManager/enemy/Enemy.h"
 #include "gameScene/player/Player.h"
 #include "gameScene/enemyManager/enemy/effect/EnemyEffect.h"
@@ -11,6 +12,7 @@ DamageStateEnemy::DamageStateEnemy(Enemy* enemy) :BaseStateEnemy(enemy) {}
 
 void DamageStateEnemy::Initialize()
 {
+	isDamage_ = false;
 	damageFrame_ = 0.0f;
 	velocityY = 1.0f;
 
@@ -58,12 +60,13 @@ void DamageStateEnemy::Initialize()
 
 void DamageStateEnemy::Update()
 {
-	if (damageFrame_ == 0.0f) {
+	if (damageFrame_ == 0.0f && !isDamage_) {
 		int hp = enemy_->GetHP() - 1;
 		enemy_->SetHP(hp);
+		isDamage_ = true;
 	}
 
-	damageFrame_ += 1.0f / global_->GetValue<float>("Enemy", "damageFrame");
+	damageFrame_ += 1.0f / global_->GetValue<float>("Enemy", "damageFrame") * GameTimer::GetInstance()->GetDeltaTime();
 
 	if (enemy_->GetHP() <= 0) {
 		enemy_->GetTransform()->scale_ = Vector3{ 1.0f,1.0f,1.0f } * (1.0f - damageFrame_);
@@ -75,7 +78,7 @@ void DamageStateEnemy::Update()
 		enemy_->GetTransform()->scale_.z = 1.0f + -std::cos(damageFrame_ * pi) * global_->GetValue<float>("Enemy", "damageScale");
 	}
 
-	enemy_->GetTransform()->translation_ += enemy_->GetVelocity() * (1.0f - damageFrame_);
+	enemy_->GetTransform()->translation_ += enemy_->GetVelocity() * global_->GetValue<float>("Enemy", "knockbackPow") * (1.0f - damageFrame_);
 
 	if (enemy_->GetPlayer()->GetPlayerAnima()->GetCombo3Frame() > 2.0f) {
 		velocityY -= 0.1f;

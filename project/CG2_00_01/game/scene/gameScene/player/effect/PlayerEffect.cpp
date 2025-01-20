@@ -1,5 +1,7 @@
 #include "PlayerEffect.h"
 
+#include "imgui.h"
+#include "gameScene/gameTimer/GameTimer.h"
 #include "gameScene/player/Player.h"
 
 void PlayerEffect::Init()
@@ -7,7 +9,7 @@ void PlayerEffect::Init()
 	GlobalInit();
 
 	std::vector<Vector3> pos{ Vector3{},Vector3{} ,Vector3{} ,Vector3{} };
-	for (int i = 0; i < 40; ++i) {
+	for (int i = 0; i < 70; ++i) {
 		SwordEffect trail;
 		trail.effect_ = std::make_unique<TrailEffect>();
 		trail.effect_->Init(pos);
@@ -26,7 +28,7 @@ void PlayerEffect::Update()
 {
 	for (auto& trail : trailEffects_) {
 		if (trail.alpha_ > 0.0f) {
-			trail.alpha_ -= global_->GetValue<float>("PlayerTrailEffect", "alpha");
+			trail.alpha_ -= global_->GetValue<float>("PlayerTrailEffect", "alpha") * GameTimer::GetInstance()->GetDeltaTime();
 			trail.effect_->SetColor(global_->GetValue<Vector3>("PlayerTrailEffect", "color"));
 			trail.effect_->SetAlpha(trail.alpha_);
 		}

@@ -1,5 +1,6 @@
 #include "EnemyEffect.h"
 
+#include "gameScene/gameTimer/GameTimer.h"
 #include "Transform.h"
 
 void EnemyEffect::Init()

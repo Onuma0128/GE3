@@ -12,9 +12,12 @@
 
 #include "imgui.h"
 #include "titleScene/TitleScene.h"
+#include "gameScene/gameTimer/GameTimer.h"
 
 void GamePlayScene::Initialize()
 {
+	GameTimer::GetInstance()->Init();
+
 	camera_ = std::make_unique<GameCamera>();
 	camera_->Init();
 
@@ -52,6 +55,8 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
+	GameTimer::GetInstance()->Updata();
+
 	ground_->Update();
 	skydome_->Update();
 
