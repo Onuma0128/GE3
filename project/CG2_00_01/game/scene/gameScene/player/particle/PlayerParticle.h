@@ -43,7 +43,7 @@ private:
 
 	// 移動時のパーティクル
 	std::unique_ptr<ParticleEmitter> moveParticleEmitter_ = nullptr;
-
+	
 	// 3コンボ目のパーティクル
 	std::list<Combo3Particle> combo3Particles_;
 	std::unique_ptr<Object3d> model_ = nullptr;

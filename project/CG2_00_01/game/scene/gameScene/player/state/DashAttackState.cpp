@@ -15,6 +15,8 @@ void DashAttackState::Initialize()
 	Vector3 localDirection = Vector3::ExprUnitZ;
 	Vector3 globalDirection = Quaternion::RotateVector(localDirection, player_->GetTransform()->rotation_);
 	velocity_ = globalDirection.Normalize();
+
+	isCreateEffect_ = false;
 }
 
 void DashAttackState::Update()
@@ -40,6 +42,10 @@ void DashAttackState::Update()
 		translation += velocity_ * global_->GetValue<float>("Player", "dashPow") * (2.0f - playerAnimation_->GetDashFrame()) * GameTimer::GetInstance()->GetDeltaTime();
 		player_->GetTransform()->translation_ = translation;
 		CreateSwordEffect(pos1, pos2);
+		if (!isCreateEffect_) {
+			CreateDashEffect();
+			isCreateEffect_ = true;
+		}
 	}
 	else {
 		player_->SetIsAttack(false);
@@ -62,7 +68,7 @@ void DashAttackState::Update()
 	player_->GetMoveEmitter()->SetPosition(player_->GetTransform()->translation_);
 	Vector3 acceleration = player_->GetVelocity() * global_->GetValue<float>("Player", "dustAcceleration");
 	acceleration.y = global_->GetValue<float>("Player", "dustAccelerationY");
-	player_->GetMoveEmitter()->SetAcceleration(acceleration);
+	player_->GetMoveEmitter()->SetAcceleration(acceleration * GameTimer::GetInstance()->GetDeltaTime());
 
 	playerAnimation_->Update();
 }
@@ -87,6 +93,81 @@ void DashAttackState::CreateSwordEffect(const Vector3& pos1, const Vector3& pos2
 				trail.alpha_ = 1.0f;
 				trailPositions_.erase(trailPositions_.begin());
 				trailPositions_.erase(trailPositions_.begin());
+				break;
+			}
+		}
+	}
+}
+
+void DashAttackState::CreateDashEffect()
+{
+	int num = global_->GetValue<int>("PlayerDashEffect", "count");
+	int count = 0;
+
+	for (auto& dash : player_->GetPlayerEffect()->GetDashEffects()) {
+		if (dash.alpha_ == 0.0f) {
+			Vector3 randomPosition;
+			do {
+				randomPosition = {
+					static_cast<float>(rand() % 41 - 20) * 0.1f,
+					static_cast<float>(rand() % 31 + 1) * 0.1f,
+					static_cast<float>(rand() % 21 + 1) * 0.1f,
+				};
+			} while (randomPosition.Length() == 0.0f);
+
+			Transform transform = dash.effect_->GetTransform();
+			// サイズ
+			transform.scale = global_->GetValue<Vector3>("PlayerDashEffect", "scale");
+			// 座標
+			Matrix4x4 rotateMatirx = Quaternion::MakeRotateMatrix(player_->GetTransform()->rotation_);
+			transform.translate = player_->GetTransform()->translation_ + randomPosition.Transform(rotateMatirx);
+			// 回転
+			Vector3 randomVelocity = {};
+			int randomX = rand() % static_cast<int>(global_->GetValue<float>("PlayerDashEffect", "velocitySize"));
+			int randomY = rand() % static_cast<int>(global_->GetValue<float>("PlayerDashEffect", "velocitySize"));
+			if (randomPosition.x > 0) {
+				if (randomPosition.y > 1.5f) {
+					randomVelocity = {
+						static_cast<float>(randomX) * 0.1f,
+						static_cast<float>(randomY) * 0.1f,
+						static_cast<float>(rand() % 10 + 1) * -0.1f,
+					};
+				}
+				else {
+					randomVelocity = {
+						static_cast<float>(randomX) * 0.1f,
+						static_cast<float>(randomY) * -0.1f,
+						static_cast<float>(rand() % 10 + 1) * -0.1f,
+					};
+				}
+			}
+			else {
+				if (randomPosition.y > 1.5f) {
+					randomVelocity = {
+						static_cast<float>(randomX) * -0.1f,
+						static_cast<float>(randomY) * 0.1f,
+						static_cast<float>(rand() % 10 + 1) * -0.1f,
+					};
+				}
+				else {
+					randomVelocity = {
+						static_cast<float>(randomX) * -0.1f,
+						static_cast<float>(randomY) * -0.1f,
+						static_cast<float>(rand() % 10 + 1) * -0.1f,
+					};
+				}
+			}
+
+			Vector3 velocity = randomVelocity.Transform(rotateMatirx);
+			transform.rotate.y = std::atan2(velocity.x, velocity.z);
+			Matrix4x4 rotateMatrixY = Matrix4x4::RotateY(-transform.rotate.y);
+			Vector3 velocityZ = Vector3{ velocity }.Transform(rotateMatrixY);
+			transform.rotate.x = std::atan2(-velocityZ.y, velocityZ.z);
+			dash.effect_->SetTransform(transform);
+			dash.alpha_ = 1.0f;
+			dash.velocity_ = velocity.Normalize();
+			++count;
+			if (count == num) {
 				break;
 			}
 		}

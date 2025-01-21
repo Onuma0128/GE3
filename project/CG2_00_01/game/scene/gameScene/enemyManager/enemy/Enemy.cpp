@@ -2,6 +2,7 @@
 
 #include "gameScene/gameTimer/GameTimer.h"
 #include "gameScene/player/Player.h"
+#include "gameScene/gameCamera/GameCamera.h"
 #include "gameScene/enemyManager/enemy/state/MoveStateEnemy.h"
 #include "gameScene/enemyManager/enemy/state/DamageStateEnemy.h"
 #include "gameScene/enemyManager/enemy/state/AttackStateEnemy.h"
@@ -23,6 +24,7 @@ void Enemy::OnCollision(const std::string& name, const Vector3& position)
 		velocity_.Normalize();
 		isDamage_ = true;
 		GameTimer::GetInstance()->SetHitStop(true);
+		camera_->SetIsShake(true);
 		ChengeState(std::make_unique<DamageStateEnemy>(this));
 		audio_->SoundPlayWave("EnemyDamage.wav", 0.5f);
 	}

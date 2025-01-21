@@ -17,6 +17,11 @@ public:
 		std::unique_ptr<TrailEffect> effect_;
 		float alpha_;
 	};
+	struct DashEffect {
+		std::unique_ptr<TrailEffect> effect_;
+		Vector3 velocity_;
+		float alpha_;
+	};
 
 
 	void Init();
@@ -31,6 +36,7 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 
 	std::list<SwordEffect>& GetTrailEffects() { return trailEffects_; }
+	std::list<DashEffect>& GetDashEffects() { return dashEffects_; }
 
 private:
 
@@ -40,6 +46,9 @@ private:
 
 	// 剣のエフェクト
 	std::list<SwordEffect> trailEffects_;
+
+	// ダッシュのエフェクト
+	std::list<DashEffect> dashEffects_;
 
 };
 

@@ -27,6 +27,8 @@ private:
 
 	void CreateSwordEffect(const Vector3& pos1, const Vector3& pos2);
 
+	void CreateDashEffect();
+
 private:
 
 	Input* input_ = Input::GetInstance();
@@ -36,4 +38,6 @@ private:
 
 	// トレイル描画する座標を格納
 	std::vector<Vector3> trailPositions_;
+
+	bool isCreateEffect_ = false;
 };

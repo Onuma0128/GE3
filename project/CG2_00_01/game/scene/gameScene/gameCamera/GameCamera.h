@@ -11,6 +11,13 @@ class GameCamera
 {
 public:
 
+	struct Shake {
+		float time_;
+		float duration_; 
+		float intensity_; 
+		float deltaTime_;
+	};
+
 	void Init();
 
 	void GlobalInit();
@@ -20,6 +27,8 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 
 	float LerpShortAngle(float a, float b, float t);
+
+	void SetIsShake(bool flag) { isShake_ = flag; }
 
 private:
 
@@ -31,9 +40,9 @@ private:
 
 	Player* player_ = nullptr;
 
-	float time_ = 0.0f;
-	float duration_ = 0.5f;  // 振動の継続時間 (秒)
-	float intensity_ = 0.2f; // 最大振幅
-	float deltaTime_ = 1.0f / 60.0f; // シミュレーションの時間刻み
+	bool isShake_ = false;
+	Shake hitStopShake_;
+
+	Shake playerDamageShake_;
 };
 

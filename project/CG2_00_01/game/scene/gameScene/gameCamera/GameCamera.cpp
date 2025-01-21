@@ -21,6 +21,16 @@ void GameCamera::Init()
 	CameraManager::GetInstance()->SetCamera(camera_.get());
 	CameraManager::GetInstance()->SetActiveCamera(0);
 	camera_->Update();
+
+	playerDamageShake_.time_ = 0.0f;
+	playerDamageShake_.duration_ = 0.5f; 
+	playerDamageShake_.intensity_ = 0.2f;
+	playerDamageShake_.deltaTime_ = 1.0f / 60.0f;
+
+	hitStopShake_.time_ = 0.0f;
+	hitStopShake_.duration_ = 0.5f;
+	hitStopShake_.intensity_ = 0.2f;
+	hitStopShake_.deltaTime_ = 1.0f / 10.0f;
 }
 
 void GameCamera::GlobalInit()
@@ -30,6 +40,9 @@ void GameCamera::GlobalInit()
 
 	global_->AddValue<float>("CameraShake", "duration", 0.5f);
 	global_->AddValue<float>("CameraShake", "intensity", 0.2f);
+
+	global_->AddValue<float>("CameraShake", "hitStopBuration", 0.5f);
+	global_->AddValue<float>("CameraShake", "hitStopIntensity", 0.2f);
 }
 
 void GameCamera::Update()
@@ -47,14 +60,25 @@ void GameCamera::Update()
 	offset_ = camera_->GetTranslate();
 
 	if (player_->GetIsShake()) {
-		time_ += deltaTime_;
-		duration_ = global_->GetValue<float>("CameraShake", "duration");
-		intensity_ = global_->GetValue<float>("CameraShake", "intensity");
-		Vector3 shake = Vector3{}.Shake(time_, duration_, intensity_);
+		playerDamageShake_.time_ += playerDamageShake_.deltaTime_;
+		playerDamageShake_.duration_ = global_->GetValue<float>("CameraShake", "duration");
+		playerDamageShake_.intensity_ = global_->GetValue<float>("CameraShake", "intensity");
+		Vector3 shake = Vector3{}.Shake(playerDamageShake_.time_, playerDamageShake_.duration_, playerDamageShake_.intensity_);
 		camera_->SetTranslate(offset_ + shake);
-		if (time_ > duration_) {
+		if (playerDamageShake_.time_ > playerDamageShake_.duration_) {
 			player_->SetIsShake(false);
-			time_ = 0.0f;
+			playerDamageShake_.time_ = 0.0f;
+		}
+	}
+	if (isShake_) {
+		hitStopShake_.time_ += hitStopShake_.deltaTime_;
+		hitStopShake_.duration_ = global_->GetValue<float>("CameraShake", "hitStopBuration");
+		hitStopShake_.intensity_ = global_->GetValue<float>("CameraShake", "hitStopIntensity");
+		Vector3 shake = Vector3{}.Shake(hitStopShake_.time_, hitStopShake_.duration_, hitStopShake_.intensity_);
+		camera_->SetTranslate(offset_ + shake);
+		if (hitStopShake_.time_ > hitStopShake_.duration_) {
+			isShake_ = false;
+			hitStopShake_.time_ = 0.0f;
 		}
 	}
 }

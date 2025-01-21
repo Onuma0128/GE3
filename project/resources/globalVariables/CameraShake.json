@@ -5,6 +5,12 @@
         },
         {
             "intensity": 0.5
+        },
+        {
+            "hitStopBuration": 0.30000001192092896
+        },
+        {
+            "hitStopIntensity": 0.800000011920929
         }
     ]
 }

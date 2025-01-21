@@ -14,8 +14,8 @@ void PlayerParticle::Init()
 	// 移動時パーティクルの初期化
 	moveParticleEmitter_ = std::make_unique<ParticleEmitter>("playerDust");
 	ParticleManager::GetInstance()->CreateParticleGroup("playerDust", "white1x1.png", moveParticleEmitter_.get());
-
-	for (int i = 0; i < 50; ++i) {
+	
+	for (int i = 0; i < 20; ++i) {
 		Combo3Particle particle{};
 		// Transformの初期化
 		particle.transform_ = std::make_unique<WorldTransform>();

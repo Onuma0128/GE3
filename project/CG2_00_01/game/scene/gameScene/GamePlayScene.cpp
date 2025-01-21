@@ -43,7 +43,9 @@ void GamePlayScene::Initialize()
 
 	enemyManager_ = std::make_unique<EnemyManager>();
 	enemyManager_->SetPlayer(player_.get());
+	enemyManager_->SetGameCamera(camera_.get());
 	enemyManager_->Init();
+
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 }

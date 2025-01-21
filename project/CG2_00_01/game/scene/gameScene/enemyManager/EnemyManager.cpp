@@ -6,6 +6,7 @@
 #include "imgui.h"
 
 #include "gameScene/player/Player.h"
+#include "gameScene/gameCamera/GameCamera.h"
 
 EnemyManager::~EnemyManager()
 {
@@ -19,6 +20,7 @@ void EnemyManager::Init()
 	for (int i = 0; i < global_->GetValue<int>("EnemyManager", "enemyCount"); ++i) {
 		std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 		enemy->SetPlayer(player_);
+		enemy->SetGameCamera(camera_);
 		enemy->Init();
 		std::string key = "position" + std::to_string(count);
 		enemy->GetTransform()->translation_ = (global_->GetValue<Vector3>("EnemyManager", key));
@@ -130,6 +132,7 @@ void EnemyManager::AddEnemy(int count)
 {
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 	enemy->SetPlayer(player_);
+	enemy->SetGameCamera(camera_);
 	enemy->Init();
 	std::string key = "position" + std::to_string(count);
 	global_->AddValue<Vector3>("EnemyManager", key, Vector3{ 0.0f,0.5f,0.0f });

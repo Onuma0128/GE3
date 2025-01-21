@@ -7,6 +7,7 @@
 #include "gameScene/fade/FadeScene.h"
 
 class Player;
+class GameCamera;
 
 class EnemyManager
 {
@@ -30,6 +31,7 @@ public:
 	std::vector<std::unique_ptr<Enemy>>& GetEnemys() { return enemys_; }
 
 	void SetPlayer(Player* player) { player_ = player; }
+	void SetGameCamera(GameCamera* camera) { camera_ = camera; }
 
 private:
 
@@ -40,6 +42,7 @@ private:
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 
 	Player* player_ = nullptr;
+	GameCamera* camera_ = nullptr;
 
 	std::vector<std::unique_ptr<Enemy>> enemys_;
 	std::unique_ptr<FadeScene> fade_ = nullptr;

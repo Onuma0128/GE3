@@ -12,6 +12,7 @@
 #include "gameScene/enemyManager/enemy/effect/EnemyEffect.h"
 
 class Player;
+class GameCamera;
 
 class Enemy : public Collider
 {
@@ -48,6 +49,9 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 	Player* GetPlayer()const { return player_; }
 
+	void SetGameCamera(GameCamera* camera) { camera_ = camera; }
+	GameCamera* GetGameCamera()const { return camera_; }
+
 	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
 	const Vector3& GetVelocity() { return velocity_; }
 
@@ -60,6 +64,7 @@ private:
 
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
 	Player* player_ = nullptr;
+	GameCamera* camera_ = nullptr;
 	std::unique_ptr<Audio> audio_ = nullptr;
 
 	std::unique_ptr<BaseStateEnemy> state_ = nullptr;

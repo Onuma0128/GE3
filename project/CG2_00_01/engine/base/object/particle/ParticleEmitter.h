@@ -30,7 +30,7 @@ public:
 		std::string name;
 		Transform transform;
 		AABB size;
-		float scale;
+		Vector3 scale;
 		uint32_t count;
 		float frequency;
 		float frequencyTime;
