@@ -41,6 +41,7 @@ void PlayerEffect::GlobalInit()
 	global_->AddValue<float>("PlayerDashEffect", "velocitySize", 5.0f);
 	global_->AddValue<Vector3>("PlayerDashEffect", "color", Vector3{ 1.0f,1.0f,1.0f });
 	global_->AddValue<Vector3>("PlayerDashEffect", "scale", Vector3{ 1.0f,1.0f,1.0f });
+	global_->AddValue<Vector3>("PlayerDashEffect", "randomPosition", Vector3{ 1,1,1 });
 }
 
 void PlayerEffect::Update()

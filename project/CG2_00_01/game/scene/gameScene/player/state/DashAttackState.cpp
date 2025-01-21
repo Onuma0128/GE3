@@ -108,12 +108,13 @@ void DashAttackState::CreateDashEffect()
 		if (dash.alpha_ == 0.0f) {
 			Vector3 randomPosition;
 			do {
+				Vector3 random = global_->GetValue<Vector3>("PlayerDashEffect", "randomPosition");
 				randomPosition = {
-					static_cast<float>(rand() % 41 - 20) * 0.1f,
-					static_cast<float>(rand() % 31 + 1) * 0.1f,
-					static_cast<float>(rand() % 21 + 1) * 0.1f,
+					static_cast<float>(rand() % static_cast<int>(random.x) - static_cast<int>(random.x - 1) / 2) * 0.1f,
+					static_cast<float>(rand() % static_cast<int>(random.y) + static_cast<int>(random.y - 1)) * 0.1f,
+					static_cast<float>(rand() % static_cast<int>(random.z) - static_cast<int>(random.z - 1)) * 0.1f,
 				};
-			} while (randomPosition.Length() == 0.0f);
+			} while (randomPosition.Length() > 3.5f || randomPosition.Length() < 2.5f);
 
 			Transform transform = dash.effect_->GetTransform();
 			// サイズ
@@ -123,37 +124,37 @@ void DashAttackState::CreateDashEffect()
 			transform.translate = player_->GetTransform()->translation_ + randomPosition.Transform(rotateMatirx);
 			// 回転
 			Vector3 randomVelocity = {};
-			int randomX = rand() % static_cast<int>(global_->GetValue<float>("PlayerDashEffect", "velocitySize"));
-			int randomY = rand() % static_cast<int>(global_->GetValue<float>("PlayerDashEffect", "velocitySize"));
+			int randomX = rand() % static_cast<int>(global_->GetValue<float>("PlayerDashEffect", "velocitySize") + 1);
+			int randomY = rand() % static_cast<int>(global_->GetValue<float>("PlayerDashEffect", "velocitySize") + 1);
 			if (randomPosition.x > 0) {
-				if (randomPosition.y > 1.5f) {
+				if (randomPosition.y >= 1.5f) {
 					randomVelocity = {
 						static_cast<float>(randomX) * 0.1f,
 						static_cast<float>(randomY) * 0.1f,
-						static_cast<float>(rand() % 10 + 1) * -0.1f,
+						-0.3f
 					};
 				}
 				else {
 					randomVelocity = {
 						static_cast<float>(randomX) * 0.1f,
 						static_cast<float>(randomY) * -0.1f,
-						static_cast<float>(rand() % 10 + 1) * -0.1f,
+						-0.3f
 					};
 				}
 			}
 			else {
-				if (randomPosition.y > 1.5f) {
+				if (randomPosition.y >= 1.5f) {
 					randomVelocity = {
 						static_cast<float>(randomX) * -0.1f,
 						static_cast<float>(randomY) * 0.1f,
-						static_cast<float>(rand() % 10 + 1) * -0.1f,
+						-0.3f
 					};
 				}
 				else {
 					randomVelocity = {
 						static_cast<float>(randomX) * -0.1f,
 						static_cast<float>(randomY) * -0.1f,
-						static_cast<float>(rand() % 10 + 1) * -0.1f,
+						-0.3f
 					};
 				}
 			}
