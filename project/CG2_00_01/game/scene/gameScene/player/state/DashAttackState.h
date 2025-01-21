@@ -40,4 +40,6 @@ private:
 	std::vector<Vector3> trailPositions_;
 
 	bool isCreateEffect_ = false;
+
+	bool isPlayAudio_ = false;
 };

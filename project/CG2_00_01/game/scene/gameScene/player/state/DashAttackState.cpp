@@ -17,6 +17,8 @@ void DashAttackState::Initialize()
 	velocity_ = globalDirection.Normalize();
 
 	isCreateEffect_ = false;
+
+	isPlayAudio_ = false;
 }
 
 void DashAttackState::Update()
@@ -30,11 +32,11 @@ void DashAttackState::Update()
 
 	player_->SetIsAttack(true);
 
-	//// 効果音
-	//if (playerAnimation_->GetDashFrame() >= 1.0f &&
-	//	playerAnimation_->GetDashFrame() < 1.0f + (1.0f / global_->GetValue<float>("DashAttack", "frame2") * 2.0f)) {
-	//	player_->GetAudio()->SoundPlayWave("Dash.wav", 0.25f);
-	//}
+	// 効果音
+	if (playerAnimation_->GetDashFrame() >= 1.0f &&!isPlayAudio_) {
+		player_->GetAudio()->SoundPlayWave("Dash.wav", 0.25f);
+		isPlayAudio_ = true;
+	}
 
 	if (playerAnimation_->GetDashFrame() > 1.0f && playerAnimation_->GetDashFrame() < 2.0f) {
 		player_->GetMoveEmitter()->SetIsCreate(true);

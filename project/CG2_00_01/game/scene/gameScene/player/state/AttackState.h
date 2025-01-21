@@ -46,5 +46,7 @@ private:
 	// トレイル描画する座標を格納
 	std::vector<Vector3> trailPositions_;
 
+	bool isPlayAudio_ = false;
+
 };
 

@@ -26,7 +26,7 @@ void Enemy::OnCollision(const std::string& name, const Vector3& position)
 		GameTimer::GetInstance()->SetHitStop(true);
 		camera_->SetIsShake(true);
 		ChengeState(std::make_unique<DamageStateEnemy>(this));
-		audio_->SoundPlayWave("EnemyDamage.wav", 0.5f);
+		audio_->SoundPlayWave("EnemyDamage.wav", 0.3f);
 	}
 
 	// 4 敵同士の当たり判定
