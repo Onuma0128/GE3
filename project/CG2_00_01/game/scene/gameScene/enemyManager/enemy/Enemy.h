@@ -10,6 +10,7 @@
 #include "gameScene/enemyManager/enemy/state/BaseStateEnemy.h"
 #include "gameScene/collision/Collider.h"
 #include "gameScene/enemyManager/enemy/effect/EnemyEffect.h"
+#include "gameScene/enemyManager/enemy/ui/EnemyUI.h"
 
 class Player;
 class GameCamera;
@@ -32,6 +33,7 @@ public:
 	void ShadowUpdate();
 
 	void Draw();
+	void DrawSprite();
 	void DrawEffect();
 
 	void Debug_Update();
@@ -77,6 +79,8 @@ private:
 	std::unique_ptr<WorldTransform> shadowTransform_ = nullptr;
 	// ダメージヒット時のエフェクト
 	std::unique_ptr<EnemyEffect> effect_ = nullptr;
+
+	std::unique_ptr<EnemyUI> ui_ = nullptr;
 
 	Vector3 velocity_;
 	int hp_ = 5;

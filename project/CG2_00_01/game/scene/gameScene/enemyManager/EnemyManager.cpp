@@ -46,6 +46,8 @@ void EnemyManager::GlobalInit()
 	global_->AddValue<float>("Enemy", "attackFrame", 20.0f);
 	global_->AddValue<float>("Enemy", "attackScale", 0.1f);
 	global_->AddValue<float>("Enemy", "knockbackPow", 1.0f);
+	global_->AddValue<Vector3>("Enemy", "hpSpriteOffset", Vector3{});
+	global_->AddValue<float>("Enemy", "hpSpriteSize", 20.0f);
 
 	global_->AddValue<float>("EnemyShadow", "scalePow", 25.0f);
 	global_->AddValue<float>("EnemyShadow", "alphaPow", 10.0f);
@@ -95,6 +97,10 @@ void EnemyManager::Draw()
 
 void EnemyManager::DrawSprite()
 {
+	for (auto& enemy : enemys_) {
+		enemy->DrawSprite();
+	}
+
 	fade_->Draw();
 }
 

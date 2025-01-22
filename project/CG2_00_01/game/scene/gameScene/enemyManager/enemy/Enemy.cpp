@@ -73,6 +73,10 @@ void Enemy::Init()
 
 	effect_ = std::make_unique<EnemyEffect>();
 	effect_->Init();
+
+	ui_ = std::make_unique<EnemyUI>();
+	ui_->Init();
+	ui_->SetEnemy(this);
 }
 
 void Enemy::Update()
@@ -80,6 +84,8 @@ void Enemy::Update()
 	state_->Update();
 
 	effect_->Update();
+
+	ui_->Update();
 
 	model_->Update();
 
@@ -115,6 +121,11 @@ void Enemy::Draw()
 	shadowModel_->Draw();
 }
 
+void Enemy::DrawSprite()
+{
+	ui_->Draw();
+}
+
 void Enemy::DrawEffect()
 {
 	effect_->Draw();
@@ -125,6 +136,8 @@ void Enemy::Debug_Update()
 	model_->Update();
 
 	ShadowUpdate();
+
+	ui_->Update();
 }
 
 void Enemy::CollisionEnemy(const Vector3& translation)

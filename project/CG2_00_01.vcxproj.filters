@@ -408,6 +408,9 @@
     <ClCompile Include="CG2_00_01\game\scene\gameScene\gameTimer\GameTimer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\ui\EnemyUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -672,6 +675,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="CG2_00_01\game\scene\gameScene\gameTimer\GameTimer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2_00_01\game\scene\gameScene\enemyManager\enemy\ui\EnemyUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

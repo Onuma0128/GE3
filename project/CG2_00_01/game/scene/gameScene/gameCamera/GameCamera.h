@@ -30,6 +30,8 @@ public:
 
 	void SetIsShake(bool flag) { isShake_ = flag; }
 
+	Camera* GetCamera() { return camera_.get(); }
+
 private:
 
 	GlobalVariables* global_ = GlobalVariables::GetInstance();
