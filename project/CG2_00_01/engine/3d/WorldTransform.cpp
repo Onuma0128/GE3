@@ -25,7 +25,7 @@ void WorldTransform::TransferMatrix(const Model* model)
     Matrix4x4 worldViewProjectionMatrixObject = worldViewMatrixObject * CameraManager::GetInstance()->GetActiveCamera()->GetProjectionMatrix(); // 射影行列を適用してワールドビュープロジェクション行列を計算
     constMap_->WVP = model->GetModelData().rootNode.localMatrix * worldViewProjectionMatrixObject; // ワールドビュープロジェクション行列を更新
     constMap_->World = model->GetModelData().rootNode.localMatrix * matWorld_; // ワールド座標行列を更新
-    constMap_->WorldInverseTranspose = model->GetModelData().rootNode.localMatrix * Matrix4x4::Inverse(worldViewMatrixObject);
+    constMap_->WorldInverseTranspose = model->GetModelData().rootNode.localMatrix * Matrix4x4::Inverse(matWorld_).Transpose();
 }
 
 void WorldTransform::CreateConstBuffer()

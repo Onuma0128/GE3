@@ -31,6 +31,17 @@ void Matrix4x4::ImGuiMatrix()
     }
 }
 
+Matrix4x4 Matrix4x4::Transpose()
+{
+    Matrix4x4 result;
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            result.m[i][j] = this->m[j][i];
+        }
+    }
+    return result;
+}
+
 // 単位行列の生成
 Matrix4x4 Matrix4x4::Identity() {
     Matrix4x4 result{};

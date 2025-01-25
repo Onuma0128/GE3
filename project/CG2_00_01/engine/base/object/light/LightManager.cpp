@@ -111,7 +111,7 @@ void LightManager::MakeSpotLightData()
 	spotLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData_));
 	// デフォルト値
 	spotLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
-	spotLightData_->position = { 2.0f,1.25f,0.0f };
+	spotLightData_->position = { -3.0f,0.0f,0.0f };
 	spotLightData_->distance = 7.0f;
 	spotLightData_->direction = (Vector3{ -1.0f,-1.0f,0.0f }.Normalize());
 	spotLightData_->intensity = 4.0f;

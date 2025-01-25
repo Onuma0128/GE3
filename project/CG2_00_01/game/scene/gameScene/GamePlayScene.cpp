@@ -19,18 +19,20 @@ void GamePlayScene::Initialize()
 	camera_->Initialize();
 	CameraManager::GetInstance()->SetCamera(camera_.get());
 
-	transform_ = std::make_unique<WorldTransform>();
-
+	terrainTrans_ = std::make_unique<WorldTransform>();
 	ModelManager::GetInstance()->LoadModel("resources", "terrain.obj");
-	model_ = std::make_unique<Object3d>();
-	model_->Initialize("terrain.obj", transform_.get());
+	terrain_ = std::make_unique<Object3d>();
+	terrain_->Initialize("terrain.obj", terrainTrans_.get());
 
-	teapotTrans_ = std::make_unique<WorldTransform>();
+	sphereTrans_ = std::make_unique<WorldTransform>();
+	ModelManager::GetInstance()->LoadModel("resources", "sphere.obj");
+	sphere_ = std::make_unique<Object3d>();
+	sphere_->Initialize("sphere.obj", sphereTrans_.get());
 
-	ModelManager::GetInstance()->LoadModel("resources", "teapot.obj");
-	teapot_ = std::make_unique<Object3d>();
-	teapot_->Initialize("teapot.obj", teapotTrans_.get());
-	teapotTrans_->parent_ = transform_.get();
+	planeTrans_ = std::make_unique<WorldTransform>();
+	ModelManager::GetInstance()->LoadModel("resources", "plane.gltf");
+	plane_ = std::make_unique<Object3d>();
+	plane_->Initialize("plane.gltf", planeTrans_.get());
 
 }
 
@@ -40,30 +42,39 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
-		SceneManager::GetInstance()->ChangeScene("Title");
+	ImGui::Begin("ObjectTransform");
+	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
+	if (ImGui::TreeNodeEx("model", flag)) {
+		if (ImGui::TreeNodeEx("terrain", flag)) {
+			ImGui::DragFloat3("scale", &terrainTrans_->scale_.x, 0.01f);
+			ImGui::DragFloat3("rotation", &terrainAngle_.x, 0.01f);
+			ImGui::DragFloat3("translation", &terrainTrans_->translation_.x, 0.01f);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNodeEx("sphere", flag)) {
+			ImGui::DragFloat3("scale", &sphereTrans_->scale_.x, 0.01f);
+			ImGui::DragFloat3("rotation", &sphereAngle_.x, 0.01f);
+			ImGui::DragFloat3("translation", &sphereTrans_->translation_.x, 0.01f);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNodeEx("plane", flag)) {
+			ImGui::DragFloat3("scale", &planeTrans_->scale_.x, 0.01f);
+			ImGui::DragFloat3("rotation", &planeAngle_.x, 0.01f);
+			ImGui::DragFloat3("translation", &planeTrans_->translation_.x, 0.01f);
+			ImGui::TreePop();
+		}
+		ImGui::TreePop();
 	}
-
-	float joystickX = Input::GetInstance()->GetGamepadLeftStickX();
-	float joystickY = Input::GetInstance()->GetGamepadLeftStickY();
-
-	Vector3 velocity = { joystickX, 0.0f, joystickY };
-	Vector3 targetDirection = { -joystickX, 0.0f, joystickY };
-	Vector3 currentDirection = Vector3::ExprUnitZ;
-	if (joystickX != 0.0f || joystickY != 0.0f) {
-		Matrix4x4 rotationMatrix = Matrix4x4::DirectionToDirection(currentDirection, targetDirection);
-		yRotation = Quaternion::FormRotationMatrix(rotationMatrix);
-	}
-	teapotTrans_->rotation_.Slerp(yRotation, 0.1f);
-
-	teapotTrans_->translation_ += velocity * 0.1f;
-
-	teapot_->Update();
-	model_->Update();
-
-	ImGui::Begin("joystick");
-	ImGui::Text("%.3f,%.3f", joystickX, joystickY);
 	ImGui::End();
+
+	// 回転を計算
+	AddQuaternion(terrainTrans_->rotation_, terrainAngle_);
+	AddQuaternion(sphereTrans_->rotation_, sphereAngle_);
+	AddQuaternion(planeTrans_->rotation_, planeAngle_);
+
+	terrain_->Update();
+	sphere_->Update();
+	plane_->Update();
 }
 
 void GamePlayScene::Draw()
@@ -71,8 +82,9 @@ void GamePlayScene::Draw()
 	// Modelの描画準備
 	Object3dBase::GetInstance()->DrawBase();
 	
-	model_->Draw();
-	teapot_->Draw();
+	terrain_->Draw();
+	sphere_->Draw();
+	plane_->Draw();
 
 	// Spriteの描画準備
 	SpriteBase::GetInstance()->DrawBase();
@@ -88,4 +100,12 @@ void GamePlayScene::Draw()
 
 	// Particleの描画
 
+}
+
+void GamePlayScene::AddQuaternion(Quaternion& quaternion, const Vector3& angle)
+{
+	Quaternion addQuaternionX = Quaternion::MakeRotateAxisAngleQuaternion(Vector3::ExprUnitX, angle.x);
+	Quaternion addQuaternionY = Quaternion::MakeRotateAxisAngleQuaternion(Vector3::ExprUnitY, angle.y);
+	Quaternion addQuaternionZ = Quaternion::MakeRotateAxisAngleQuaternion(Vector3::ExprUnitZ, angle.z);
+	quaternion = (addQuaternionX * addQuaternionY * addQuaternionZ);
 }
