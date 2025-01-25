@@ -28,11 +28,14 @@ void GamePlayScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("resources", "sphere.obj");
 	sphere_ = std::make_unique<Object3d>();
 	sphere_->Initialize("sphere.obj", sphereTrans_.get());
+	sphereTrans_->translation_ = { 1.5f,1.0f,0.0f };
 
 	planeTrans_ = std::make_unique<WorldTransform>();
 	ModelManager::GetInstance()->LoadModel("resources", "plane.gltf");
 	plane_ = std::make_unique<Object3d>();
 	plane_->Initialize("plane.gltf", planeTrans_.get());
+	planeTrans_->translation_ = { -1.5f,1.0f,0.0f };
+	planeAngle_.y = 3.14f;
 
 }
 
@@ -42,9 +45,9 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	ImGui::Begin("ObjectTransform");
+	ImGui::Begin("models");
 	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
-	if (ImGui::TreeNodeEx("model", flag)) {
+	if (ImGui::TreeNodeEx("objectTransform", flag)) {
 		if (ImGui::TreeNodeEx("terrain", flag)) {
 			ImGui::DragFloat3("scale", &terrainTrans_->scale_.x, 0.01f);
 			ImGui::DragFloat3("rotation", &terrainAngle_.x, 0.01f);

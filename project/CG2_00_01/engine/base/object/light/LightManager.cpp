@@ -59,6 +59,8 @@ void LightManager::Debug_ImGui()
 			ImGui::DragFloat3("SpotLightData.pos", &spotLightData_->position.x, 0.01f);
 			ImGui::DragFloat3("SpotLightData.direction", &spotLightData_->direction.x, 0.01f);
 			ImGui::DragFloat("SpotLightData.intensity", &spotLightData_->intensity, 0.01f);
+			ImGui::DragFloat("SpotLightData.distance", &spotLightData_->distance, 0.01f);
+			ImGui::DragFloat("SpotLightData.decay", &spotLightData_->decay, 0.01f);
 			ImGui::DragFloat("SpotLightData.cosAngle", &spotLightData_->cosAngle, 0.01f);
 			ImGui::DragFloat("SpotLightData.cosFalloffStart", &spotLightData_->cosFalloffStart, 0.01f);
 			ImGui::TreePop();
@@ -114,7 +116,7 @@ void LightManager::MakeSpotLightData()
 	spotLightData_->position = { -3.0f,0.0f,0.0f };
 	spotLightData_->distance = 7.0f;
 	spotLightData_->direction = (Vector3{ -1.0f,-1.0f,0.0f }.Normalize());
-	spotLightData_->intensity = 4.0f;
+	spotLightData_->intensity = 0.0f;
 	spotLightData_->decay = 2.0f;
 	spotLightData_->cosAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	spotLightData_->cosFalloffStart = std::cos(std::numbers::pi_v<float> / 5.0f);
