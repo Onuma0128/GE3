@@ -28,6 +28,7 @@ void GamePlayScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("resources", "sphere.obj");
 	sphere_ = std::make_unique<Object3d>();
 	sphere_->Initialize("sphere.obj", sphereTrans_.get());
+	sphere_->SetTexture("resources","uvChecker.png");
 	sphereTrans_->translation_ = { 1.5f,1.0f,0.0f };
 
 	planeTrans_ = std::make_unique<WorldTransform>();
