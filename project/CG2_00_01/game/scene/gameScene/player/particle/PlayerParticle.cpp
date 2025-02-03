@@ -70,8 +70,11 @@ void PlayerParticle::Update()
 		else {
 			particle.alpha_ = 0.0f;
 			particle.model_->SetColor(Vector4{ 1.0f,1.0f,1.0f,particle.alpha_ });
+			particle.model_->Update();
 		}
 	}
+
+	// ひび割れの処理
 	if (alpha_ > 0.0f) {
 		alpha_ -= global_->GetValue<float>("PlayerAttackParitcle", "alpha");
 		model_->SetColor(Vector4{ 1.0f,1.0f,1.0f,alpha_ });
@@ -112,12 +115,11 @@ void PlayerParticle::CreateParticle(const Vector3& position)
 				static_cast<float>(rand() % size - (size - 1) / 2),
 				global_->GetValue<float>("PlayerAttackParitcle", "offsetVelocityY"),
 				static_cast<float>(rand() % size - (size - 1) / 2) };
-			particle.velocity_.Normalize();
 			particle.alpha_ = 1.0f;
 
 			// カウントを加算
 			++count;
-			if (num == count) {
+			if (count == num) {
 				break;
 			}
 		}

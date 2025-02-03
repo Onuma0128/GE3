@@ -5,6 +5,7 @@
 
 #include "gameScene/gameCamera/GameCamera.h"
 #include "gameScene/enemyManager/enemy/Enemy.h"
+#include "gameScene/player/Player.h"
 
 void EnemyUI::Init()
 {
@@ -23,10 +24,12 @@ void EnemyUI::Update()
 {
 	Matrix4x4 viewProjection = enemy_->GetGameCamera()->GetCamera()->GetViewProjectionMatrix();
 	Matrix4x4 viewPort = enemy_->GetGameCamera()->GetCamera()->GetViewportMatrix();
-	Vector3 worldPosition = enemy_->GetTransform()->GetWorldPosition();
+	Vector3 enemyWorldPosition = enemy_->GetTransform()->GetWorldPosition();
+	Vector3 playerWorldPosition = enemy_->GetPlayer()->GetTransform()->GetWorldPosition();
 
 	Matrix4x4 screenMatrix = viewProjection * viewPort;
-	Vector3 screenPosition = worldPosition.Transform(screenMatrix) - Vector3{ 0,720,0 };
+	Vector3 hpScreenPosition = enemyWorldPosition.Transform(screenMatrix) - Vector3{ 0,720,0 };
+	Vector3 playerScreenPosition = playerWorldPosition.Transform(screenMatrix) - Vector3{ 0,720,0 };
 
 	float lenght = (enemy_->GetTransform()->translation_ - enemy_->GetGameCamera()->GetCamera()->GetTranslate()).Length();
 	float scale = 1.0f / (lenght * 0.05f); // 適宜調整
@@ -35,9 +38,21 @@ void EnemyUI::Update()
 	float hpSize_x = static_cast<float>(enemy_->GetHP() * baseSize * scale);
 	hpSprite_->SetSize({ hpSize_x, baseSize / 1.5f * scale });
 	Vector2 offset = { global_->GetValue<Vector3>("Enemy", "hpSpriteOffset").x,global_->GetValue<Vector3>("Enemy", "hpSpriteOffset").y };
-	hpSprite_->SetPosition(Vector2{ screenPosition.x + offset.x,(screenPosition.y * -1.0f) + offset.y });
+	hpSprite_->SetPosition(Vector2{ hpScreenPosition.x + offset.x,(hpScreenPosition.y * -1.0f) + offset.y });
 	float alpha = (50.0f - lenght) / 10.0f;
 	alpha = std::clamp(alpha, 0.0f, 1.0f);
+
+	if (alpha == 1.0f) {
+		playerScreenPosition.y *= -1.0f;
+		playerScreenPosition.y -= global_->GetValue<float>("Enemy", "playerSpriteY");
+		hpScreenPosition.y *= -1.0f;
+		Vector3 spriteLenght = playerScreenPosition - hpScreenPosition;
+		lenght = std::sqrt(spriteLenght.x * spriteLenght.x + spriteLenght.y * spriteLenght.y);
+		alpha = (lenght - 30.0f) / 100.0f;
+		if (lenght <= 30.0f) { alpha = 0.0f; }
+		alpha = std::clamp(alpha, 0.0f, 1.0f);
+	}
+
 	hpSprite_->SetColor(Vector4{ 1.0f,0.0f,0.0f,alpha });
 	hpSprite_->Update();
 }

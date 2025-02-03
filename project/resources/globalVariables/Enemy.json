@@ -30,6 +30,9 @@
         },
         {
             "hpSpriteSize": 35.0
+        },
+        {
+            "playerSpriteY": 75.0
         }
     ]
 }

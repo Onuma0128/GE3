@@ -170,7 +170,7 @@ void AttackState::CreateSwordEffect(const Vector3& pos1, const Vector3& pos2)
 		for (auto& trail : player_->GetPlayerEffect()->GetTrailEffects()) {
 			if (trail.alpha_ == 0.0f) {
 				trail.effect_->SetPosition(trailPositions_);
-				trail.effect_->SetTexture("resources", "trailTexture.png");
+				trail.effect_->SetTexture("resources", "white1x1.png");
 				trail.alpha_ = 1.0f;
 				trailPositions_.erase(trailPositions_.begin());
 				trailPositions_.erase(trailPositions_.begin());

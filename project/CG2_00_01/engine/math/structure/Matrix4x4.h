@@ -16,6 +16,8 @@ public:
     // MatrixのImGui
     void ImGuiMatrix();
 
+    Matrix4x4 Transpose();
+
     // 単位行列の生成
     static Matrix4x4 Identity();
 
