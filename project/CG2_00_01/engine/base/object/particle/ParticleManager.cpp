@@ -61,7 +61,7 @@ void ParticleManager::Update()
             billboardMatrix.m[3][0] = 0.0f;
             billboardMatrix.m[3][1] = 0.0f;
             billboardMatrix.m[3][2] = 0.0f;
-            Matrix4x4 worldMatrix = Matrix4x4::Scale(it->transform.scale) * billboardMatrix * Matrix4x4::Translate(it->transform.translate);
+            Matrix4x4 worldMatrix = Matrix4x4::Scale(it->transform.scale) * billboardMatrix * Matrix4x4::Translate(it->transform.translation);
             Matrix4x4 worldViewMatrix = worldMatrix * CameraManager::GetInstance()->GetActiveCamera()->GetViewMatrix();
             Matrix4x4 worldViewProjectionMatrix = worldViewMatrix * CameraManager::GetInstance()->GetActiveCamera()->GetProjectionMatrix();
 

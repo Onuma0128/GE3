@@ -25,8 +25,7 @@ void TitleScene::Initialize()
 
 	camera1_ = std::make_unique<Camera>();
 	camera1_->Initialize();
-	camera1_->SetRotate(Vector3{ 0.26f,1.57f,0.0f });
-	camera1_->SetTranslate(Vector3{ -15.0f,4.0f,0.0f });
+	camera1_->SetTranslation(Vector3{ -15.0f,4.0f,0.0f });
 	CameraManager::GetInstance()->SetCamera(camera1_.get());
 }
 

@@ -14,10 +14,15 @@
 
 void GamePlayScene::Initialize()
 {
-	// カメラの初期化
-	camera_ = std::make_unique<Camera>();
-	camera_->Initialize();
-	CameraManager::GetInstance()->SetCamera(camera_.get());
+	//// カメラの初期化
+	camera1_ = std::make_unique<Camera>();
+	camera1_->Initialize();
+	camera1_->SetTranslation({ -10.0f,4.0f,-15.0f });
+	camera2_ = std::make_unique<Camera>();
+	camera2_->Initialize();
+	camera2_->SetTranslation({ 10.0f,4.0f,-15.0f });
+	CameraManager::GetInstance()->SetCamera(camera1_.get());
+	CameraManager::GetInstance()->SetCamera(camera2_.get());
 
 	terrainTrans_ = std::make_unique<WorldTransform>();
 	ModelManager::GetInstance()->LoadModel("resources", "terrain.obj");
@@ -46,6 +51,18 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
+	Input* input = Input::GetInstance();
+	CameraManager* cameraManager = CameraManager::GetInstance();
+	if (input->TriggerKey(DIK_0)) {
+		cameraManager->SetActiveCamera(0);
+	}
+	if (input->TriggerKey(DIK_1)) {
+		cameraManager->SetActiveCamera(1);
+	}
+	if (input->TriggerKey(DIK_2)) {
+		cameraManager->SetActiveCamera(2);
+	}
+
 	ImGui::Begin("models");
 	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
 	if (ImGui::TreeNodeEx("objectTransform", flag)) {

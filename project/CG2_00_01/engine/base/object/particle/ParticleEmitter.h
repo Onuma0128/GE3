@@ -58,7 +58,7 @@ public:
 
 	/*==================== アクセッサー ====================*/
 
-	void SetPosition(const Vector3& position) { emitter_.transform.translate = position; }
+	void SetTranslation(const Vector3& position) { emitter_.transform.translation = position; }
 
 	void SetAcceleration(const Vector3& acceleration) { accelerationField_.acceleration = acceleration; }
 

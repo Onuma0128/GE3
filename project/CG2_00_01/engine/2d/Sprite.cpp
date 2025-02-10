@@ -103,9 +103,9 @@ void Sprite::TransformationMatrixDataInitialize()
 void Sprite::AccessorUpdate()
 {
 	// トランスフォームを設定
-	transform_.scale = { size_.x,size_.y,1.0f };
-	transform_.rotate = { 0.0f,0.0f,rotation_ };
-	transform_.translate = { position_.x,position_.y,0.0f };
+	transform_.size = size_;
+	transform_.rotate = rotation_;
+	transform_.position = position_;
 
 	// アンカーポイントを設定
 	float left = 0.0f - anchorPoint_.x;
@@ -146,7 +146,11 @@ void Sprite::AccessorUpdate()
 
 void Sprite::UpdateMatrix()
 {
-	Matrix4x4 worldMatrix = Matrix4x4::Affine(transform_.scale, transform_.rotate, transform_.translate);
+	Matrix4x4 worldMatrix = Matrix4x4::Affine(
+		Vector3{ transform_.size.x,transform_.size.y,1.0f },
+		Vector3{ 0.0f,0.0f,transform_.rotate },
+		Vector3{ transform_.position.x,transform_.position.y,0.0f }
+	);
 	Matrix4x4 viewMatrix = Matrix4x4::Identity();
 	Matrix4x4 projectionMatrix = Matrix4x4::Orthographic(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
 	Matrix4x4 worldViewProjectionMatrix = worldMatrix * (viewMatrix * projectionMatrix);

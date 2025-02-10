@@ -127,7 +127,7 @@ private:
 	TransformationMatrix* transformationMatrixData_ = nullptr;
 
 	// トランスフォーム
-	Transform transform_ { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	Transform2D transform_{ {1.0f,1.0f},0.0f,{0.0f,0.0f} };
 
 	/*==================== アクセッサー用のメンバ変数 ====================*/
 

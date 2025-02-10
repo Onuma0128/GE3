@@ -171,6 +171,13 @@ Quaternion Quaternion::FormRotationMatrix(const Matrix4x4& matrix)
 	return Normalize(result);
 }
 
+Quaternion Quaternion::ExtractYawQuaternion(const Quaternion& quaternion)
+{
+	Vector3 forward = Quaternion::RotateVector(Vector3::ExprUnitZ, quaternion);
+	float yaw = atan2(forward.x, forward.z); // Y 軸の回転成分を取得
+	return Quaternion::MakeRotateAxisAngleQuaternion(Vector3::ExprUnitY, yaw);
+}
+
 void Quaternion::Slerp(const Quaternion& q1, float t)
 {
 	float dot = Dot(*this, q1);

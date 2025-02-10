@@ -7,7 +7,6 @@
 #include "WinApp.h"
 #include "Input.h"
 
-#include "Vector3.h"
 #include "Transform.h"
 #include "Matrix4x4.h"
 
@@ -34,8 +33,8 @@ private:
 public:
 	// setter
 	// RT部分
-	void SetRotate(const Vector3& rotate) { transform_.rotate = rotate; }
-	void SetTranslate(const Vector3& translate) { transform_.translate = translate; }
+	void GetRotation(const Vector3& rotate) { transform_.rotation = rotate; }
+	void SetTranslation(const Vector3& translate) { transform_.translation = translate; }
 
 	// カメラの設定
 	void SetFovY(const float fovY) { fovY_ = fovY; }
@@ -57,8 +56,8 @@ public:
 		return viewportMatrix_;
 	}
 
-	const Vector3& GetRotate()const { return transform_.rotate; }
-	const Vector3& GetTranslate()const { return transform_.translate; }
+	const Vector3& GetRotation()const { return transform_.rotation; }
+	const Vector3& GetTranslation()const { return transform_.translation; }
 	const bool GetIsDebug()const { return isDebug_; }
 
 private:
@@ -68,8 +67,6 @@ private:
 	/*==================== カメラの変数 ====================*/
 
 	Transform transform_;
-	Vector3 rotate_;
-	Vector3 translate_;
 	Transform debugTransform_;
 
 	Matrix4x4 worldMatrix_;

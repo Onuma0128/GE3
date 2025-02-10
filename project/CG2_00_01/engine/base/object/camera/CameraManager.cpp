@@ -18,6 +18,11 @@ CameraManager* CameraManager::GetInstance()
 void CameraManager::Initialize(DirectXEngine* dxEngine)
 {
 	dxEngine_ = dxEngine;
+
+	// カメラリソースの作成
+	SetCamera(new Camera());
+	cameras_[activeCameraIndex_]->Initialize();
+	MakeCameraData();
 }
 
 void CameraManager::Debug_ImGui()

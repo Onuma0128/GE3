@@ -43,14 +43,11 @@ public:
 
 	void Clear();
 
-	void SetCamera(Camera* camera) { 
-		cameras_.push_back(camera); 
-		activeCameraIndex_ = static_cast<uint32_t>(cameras_.size()) - 1;
-		MakeCameraData();
+	void SetCamera(Camera* camera) {
+		cameras_.push_back(std::move(camera)); 
 	}
 	void SetActiveCamera(uint32_t index) {
 		activeCameraIndex_ = index;
-		MakeCameraData();
 	}
 
 	Camera* GetActiveCamera()const { return cameras_[activeCameraIndex_]; }

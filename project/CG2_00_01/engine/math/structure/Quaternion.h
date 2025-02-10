@@ -49,6 +49,9 @@ public:
     // 回転行列からQuaternionを求める
     static Quaternion FormRotationMatrix(const Matrix4x4& matrix);
 
+    // QuaternionのY回転だけを取得
+    static Quaternion ExtractYawQuaternion(const Quaternion& quaternion);
+
     // 球面線形補間
     void Slerp(const Quaternion& q1, float t);
 

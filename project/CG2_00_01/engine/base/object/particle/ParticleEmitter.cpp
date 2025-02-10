@@ -9,7 +9,7 @@ ParticleEmitter::ParticleEmitter(const std::string name)
     GlobalInitialize(name);
 
     emitter_.name = name;
-    emitter_.transform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+    emitter_.transform = { {1.0f,1.0f,1.0f},Vector3::ExprZero,Vector3::ExprZero };
     emitter_.frequency = 0.1f;
     emitter_.frequencyTime = 0.0f;
     accelerationField_.acceleration = { 0.0f,10.0f,0.0f };
@@ -77,11 +77,11 @@ void ParticleEmitter::Update()
     emitter_.count = global_->GetValue<int>(globalName, "count");
 
     accelerationField_.area = {
-        .min = emitter_.size.min + emitter_.transform.translate - Vector3{0.5f,0.5f,0.5f},
-        .max = emitter_.size.max + emitter_.transform.translate + Vector3{0.5f,0.5f,0.5f}
+        .min = emitter_.size.min + emitter_.transform.translation - Vector3{0.5f,0.5f,0.5f},
+        .max = emitter_.size.max + emitter_.transform.translation + Vector3{0.5f,0.5f,0.5f}
     };
     if (!global_->GetValue<bool>(globalName, "isLock")) {
-        emitter_.transform.translate = global_->GetValue<Vector3>(globalName, "position");
+        emitter_.transform.translation = global_->GetValue<Vector3>(globalName, "position");
         accelerationField_.acceleration = global_->GetValue<Vector3>(globalName, "acceleration");
     }
 
@@ -92,7 +92,7 @@ void ParticleEmitter::Update()
     int i = 0;
     linePosition_ = CreateLineBox(emitter_.size);
     for (auto& line : lines_) {
-        Vector3 translate = emitter_.transform.translate;
+        Vector3 translate = emitter_.transform.translation;
         line->SetPosition(linePosition_[i] + translate, linePosition_[i + 1] + translate);
         line->Update();
         i += 2;
@@ -128,10 +128,10 @@ void ParticleEmitter::CreateParticles(ParticleManager::ParticleGroup& group)
 void ParticleEmitter::UpdateParticle(std::list<ParticleManager::Particle>::iterator& particle)
 {
     if (moveStart_) {
-        if (IsCollision(accelerationField_.area, particle->transform.translate) && isFieldStart_) {
+        if (IsCollision(accelerationField_.area, particle->transform.translation) && isFieldStart_) {
             particle->velocity += accelerationField_.acceleration * kDeltaTime;
         }
-        particle->transform.translate += particle->velocity * kDeltaTime;
+        particle->transform.translation += particle->velocity * kDeltaTime;
         particle->currentTime += kDeltaTime;
 
         std::string globalName = emitter_.name + "Emitter";
@@ -161,9 +161,9 @@ ParticleManager::Particle ParticleEmitter::MakeNewParticle(std::mt19937& randomE
     std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
     ParticleManager::Particle particle{};
     particle.transform.scale = { 1.0f,1.0f,1.0f };
-    particle.transform.rotate = { 0.0f,0.0f,0.0f };
+    particle.transform.rotation = Vector3::ExprZero;
     Vector3 randomTranslate = { distPosX(randomEngine),distPosY(randomEngine) ,distPosZ(randomEngine) };
-    particle.transform.translate = emitter.transform.translate + randomTranslate;
+    particle.transform.translation += randomTranslate;
     particle.velocity = { distVelocity(randomEngine),distVelocity(randomEngine) ,distVelocity(randomEngine) };
     particle.color = { 1.0f,1.0f,1.0f,1.0f };
     particle.lifeTime = distTime(randomEngine);

@@ -23,7 +23,8 @@ public:
 
 private:
 
-	std::unique_ptr<Camera> camera_ = nullptr;
+	std::unique_ptr<Camera> camera1_ = nullptr;
+	std::unique_ptr<Camera> camera2_ = nullptr;
 
 	std::unique_ptr<Object3d> terrain_ = nullptr;
 	std::unique_ptr<WorldTransform> terrainTrans_ = nullptr;
@@ -37,6 +38,5 @@ private:
 	std::unique_ptr<WorldTransform> planeTrans_ = nullptr;
 	Vector3 planeAngle_;
 
-	Quaternion yRotation = Quaternion::IdentityQuaternion();
 };
 
