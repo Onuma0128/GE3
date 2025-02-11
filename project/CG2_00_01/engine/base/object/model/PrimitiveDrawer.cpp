@@ -15,8 +15,8 @@ void PrimitiveDrawer::Initialize(DirectXEngine* dxEngine)
 {
 	dxEngine_ = dxEngine;
 
-	rootSignature_ = pipeline_->CreateLine3dRootSignature();
-	pipelineState_ = pipeline_->CreateLine3dPipelineState();
+	rootSignature_ = dxEngine_->GetPipelineState()->CreateLine3dRootSignature();
+	pipelineState_ = dxEngine_->GetPipelineState()->CreateLine3dPipelineState();
 }
 
 void PrimitiveDrawer::DrawBase()

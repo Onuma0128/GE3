@@ -18,6 +18,7 @@
 #include "PrimitiveDrawer.h"
 #include "ParticleManager.h"
 #include "AudioManager.h"
+#include "TrailEffectBase.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -33,6 +34,7 @@ DirectXEngine::~DirectXEngine()
 	PrimitiveDrawer::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
 	AudioManager::GetInstance()->Finalize();
+	TrailEffectBase::GetInstance()->Finalize();
 
 	delete stringUtility_;
 	delete pipelineState_;
@@ -103,13 +105,15 @@ void DirectXEngine::Initialize(WinApp* winApp)
 
 	/*==================== 3Dライン ====================*/
 
-	PrimitiveDrawer::GetInstance()->SetPipelineState(pipelineState_);
 	PrimitiveDrawer::GetInstance()->Initialize(this);
 
 	/*==================== パーティクル ====================*/
 
 	ParticleManager::GetInstance()->Initialize(this);
 
+	/*==================== トレイルエフェクト ====================*/
+
+	TrailEffectBase::GetInstance()->Initialize(this);
 }
 
 void DirectXEngine::DeviceInitialize()
@@ -353,23 +357,23 @@ void DirectXEngine::UpdateFixFPS()
 	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
 	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
 	// 現在時間を取得する
-	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now(); 
+	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
 
-		// 前回記録からの経過時間を取得する
-		std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_); 
+	// 前回記録からの経過時間を取得する
+	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
 
-		// 1/60秒 (よりわずかに短い時間) 経っていない場合
-		if (elapsed < kMinCheckTime) {
-			
-				// 1/60秒経過するまで微小なスリープを繰り返す
-				while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
-					// 1マイクロ秒スリープ
-					std::this_thread::sleep_for(std::chrono::microseconds(1));
-				}
+	// 1/60秒 (よりわずかに短い時間) 経っていない場合
+	if (elapsed < kMinCheckTime) {
+
+		// 1/60秒経過するまで微小なスリープを繰り返す
+		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
+			// 1マイクロ秒スリープ
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
+	}
 
 	// 現在の時間を記録する
-	reference_ = std::chrono::steady_clock::now(); 
+	reference_ = std::chrono::steady_clock::now();
 }
 
 void DirectXEngine::PreDraw()

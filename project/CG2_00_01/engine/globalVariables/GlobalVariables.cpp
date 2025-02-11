@@ -8,6 +8,29 @@
 
 GlobalVariables* GlobalVariables::instance_ = nullptr;
 
+void GlobalVariables::RemoveKey(const std::string& groupName, const std::string& key)
+{
+    // グループを検索
+    auto groupIt = std::find_if(datas_.begin(), datas_.end(), [&groupName](const auto& pair) {
+        return pair.first == groupName;
+        });
+
+    // グループが見つからない場合、何もしない
+    if (groupIt == datas_.end()) {
+        return;
+    }
+
+    // グループ内のキーを検索して削除
+    Group& group = groupIt->second;
+    auto itemIt = std::find_if(group.begin(), group.end(), [&key](const auto& pair) {
+        return pair.first == key;
+        });
+
+    if (itemIt != group.end()) {
+        group.erase(itemIt); // キーを削除
+    }
+}
+
 void GlobalVariables::SaveFile(const std::string& groupName)
 {
     // グループを検索
@@ -32,15 +55,12 @@ void GlobalVariables::SaveFile(const std::string& groupName)
 
         if (std::holds_alternative<int32_t>(item)) {
             itemJson[itemName] = std::get<int32_t>(item);
-        }
-        else if (std::holds_alternative<float>(item)) {
+        } else if (std::holds_alternative<float>(item)) {
             itemJson[itemName] = std::get<float>(item);
-        }
-        else if (std::holds_alternative<Vector3>(item)) {
+        } else if (std::holds_alternative<Vector3>(item)) {
             Vector3 value = std::get<Vector3>(item);
             itemJson[itemName] = { value.x, value.y, value.z };
-        }
-        else if (std::holds_alternative<bool>(item)) {
+        } else if (std::holds_alternative<bool>(item)) {
             itemJson[itemName] = std::get<bool>(item);
         }
 
@@ -152,18 +172,14 @@ void GlobalVariables::LoadFile(const std::string& groupName)
 
             if (it.value().is_number_integer()) {
                 AddValue(groupName, key, it.value().get<int32_t>());
-            }
-            else if (it.value().is_number_float()) {
+            } else if (it.value().is_number_float()) {
                 AddValue(groupName, key, static_cast<float>(it.value().get<double>()));
-            }
-            else if (it.value().is_array() && it.value().size() == 3) {
+            } else if (it.value().is_array() && it.value().size() == 3) {
                 Vector3 value{ it.value()[0], it.value()[1], it.value()[2] };
                 AddValue(groupName, key, value);
-            }
-            else if (it.value().is_boolean()) {
+            } else if (it.value().is_boolean()) {
                 AddValue(groupName, key, it.value().get<bool>());
-            }
-            else {
+            } else {
                 throw std::runtime_error("Unsupported value type for key: " + key);
             }
         }

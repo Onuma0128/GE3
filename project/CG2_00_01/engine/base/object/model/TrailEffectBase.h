@@ -3,28 +3,29 @@
 #pragma comment(lib,"d3d12.lib")
 #include "wrl.h"
 
-#include "DirectXEngine.h"
-#include "PipelineState.h"
-
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4.h"
 
 using Microsoft::WRL::ComPtr;
 
-class PrimitiveDrawer
+class DirectXEngine;
+class PipelineState;
+
+class TrailEffectBase
 {
 private:
-	static PrimitiveDrawer* instance_;
 
-	PrimitiveDrawer() = default;
-	~PrimitiveDrawer() = default;
-	PrimitiveDrawer(PrimitiveDrawer&) = delete;
-	PrimitiveDrawer& operator=(PrimitiveDrawer&) = delete;
+	static TrailEffectBase* instance_;
+
+	TrailEffectBase() = default;
+	~TrailEffectBase() = default;
+	TrailEffectBase(TrailEffectBase&) = delete;
+	TrailEffectBase& operator=(TrailEffectBase&) = delete;
 
 public:
-	// シングルトンインスタンスの取得
-	static PrimitiveDrawer* GetInstance();
+
+	static TrailEffectBase* GetInstance();
 
 	void Initialize(DirectXEngine* dxEngine);
 
@@ -42,4 +43,5 @@ private:
 
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;
+
 };

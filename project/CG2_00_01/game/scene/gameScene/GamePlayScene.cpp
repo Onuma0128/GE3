@@ -8,6 +8,8 @@
 #include "Object3dBase.h"
 #include "SpriteBase.h"
 #include "PrimitiveDrawer.h"
+#include "ParticleManager.h"
+#include "TrailEffectBase.h"
 
 #include "imgui.h"
 #include "titleScene/TitleScene.h"
@@ -43,6 +45,13 @@ void GamePlayScene::Initialize()
 	planeTrans_->translation_ = { -1.5f,1.0f,0.0f };
 	planeAngle_.y = 3.14f;
 
+	emitter_ = std::make_unique<ParticleEmitter>("test");
+	ParticleManager::GetInstance()->CreateParticleGroup("test", "uvChecker.png", emitter_.get());
+
+	sphereEffect_ = std::make_unique<TrailEffect>();
+	sphereEffect_->InitSphere(16);
+	sphereEffect_->SetTexcoordX_Alpha(false);
+	sphereEffect_->SetTexcoordY_Alpha(true);
 }
 
 void GamePlayScene::Finalize()
@@ -63,6 +72,8 @@ void GamePlayScene::Update()
 		cameraManager->SetActiveCamera(2);
 	}
 
+	Transform transform = sphereEffect_->GetTransform();
+	Vector4 color = sphereEffect_->GetColor();
 	ImGui::Begin("models");
 	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
 	if (ImGui::TreeNodeEx("objectTransform", flag)) {
@@ -84,6 +95,13 @@ void GamePlayScene::Update()
 			ImGui::DragFloat3("translation", &planeTrans_->translation_.x, 0.01f);
 			ImGui::TreePop();
 		}
+		if (ImGui::TreeNodeEx("sphereEffect", flag)) {
+			ImGui::DragFloat3("scale", &transform.scale.x, 0.01f);
+			ImGui::DragFloat3("rotation", &transform.rotation.x, 0.01f);
+			ImGui::DragFloat3("translation", &transform.translation.x, 0.01f);
+			ImGui::ColorEdit4("color", &color.x);
+			ImGui::TreePop();
+		}
 		ImGui::TreePop();
 	}
 	ImGui::End();
@@ -92,10 +110,17 @@ void GamePlayScene::Update()
 	AddQuaternion(terrainTrans_->rotation_, terrainAngle_);
 	AddQuaternion(sphereTrans_->rotation_, sphereAngle_);
 	AddQuaternion(planeTrans_->rotation_, planeAngle_);
+	sphereEffect_->SetTransform(transform);
+	sphereEffect_->SetColor({ color.x,color.y,color.z });
+	sphereEffect_->SetAlpha(color.w);
 
 	terrain_->Update();
 	sphere_->Update();
 	plane_->Update();
+
+	sphereEffect_->Update();
+
+	ParticleManager::GetInstance()->Update();
 }
 
 void GamePlayScene::Draw()
@@ -119,8 +144,14 @@ void GamePlayScene::Draw()
 
 
 
-	// Particleの描画
+	// TrailEffectの描画準備
+	TrailEffectBase::GetInstance()->DrawBase();
 
+	sphereEffect_->DrawSphere();
+
+
+	// Particleの描画
+	ParticleManager::GetInstance()->Draw();
 }
 
 void GamePlayScene::AddQuaternion(Quaternion& quaternion, const Vector3& angle)

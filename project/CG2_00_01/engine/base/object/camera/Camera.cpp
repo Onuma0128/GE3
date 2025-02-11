@@ -16,11 +16,7 @@ void Camera::Initialize()
 	nearClip_ = 0.1f;
 	farClip_ = 100.0f;
 
-	worldMatrix_ = Matrix4x4::Affine(transform_.scale, transform_.rotation, transform_.translation);
-	viewMatrix_ = Matrix4x4::Inverse(worldMatrix_);
-	projectionMatrix_ = Matrix4x4::PerspectiveFov(fovY_, aspectRatio_, nearClip_, farClip_);
-	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
-
+	UpdateMatrix(transform_);
 	isDebug_ = false;
 }
 

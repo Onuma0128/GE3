@@ -39,6 +39,8 @@ public:
 	// 項目の追加
 	template <typename T>
 	void AddValue(const std::string& groupName, const std::string& key, T value);
+	// 保存されていないキーの削除
+	void RemoveKey(const std::string& groupName, const std::string& key);
 	// グループの保存
 	void SaveFile(const std::string& groupName);
 	// ディレクトリの全ファイルの読み込み
@@ -79,8 +81,7 @@ inline void GlobalVariables::SetValue(const std::string& groupName, const std::s
 	if (itemIt == group.end()) {
 		// アイテムが見つからない場合、新しいアイテムを追加
 		group.emplace_back(key, value);
-	}
-	else {
+	} else {
 		// 既存アイテムの値を更新
 		itemIt->second = value;
 	}
@@ -110,8 +111,7 @@ inline T GlobalVariables::GetValue(const std::string& groupName, const std::stri
 	const Item& item = itemIt->second;
 	if (std::holds_alternative<T>(item)) {
 		return std::get<T>(item);
-	}
-	else {
+	} else {
 		throw std::runtime_error("Type mismatch when getting item '" + key + "' in group '" + groupName + "'");
 	}
 }

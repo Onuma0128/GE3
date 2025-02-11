@@ -6,6 +6,8 @@
 #include "Object3d.h"
 #include "WorldTransform.h"
 #include "Camera.h"
+#include "ParticleEmitter.h"
+#include "TrailEffect.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -37,6 +39,10 @@ private:
 	std::unique_ptr<Object3d> plane_ = nullptr;
 	std::unique_ptr<WorldTransform> planeTrans_ = nullptr;
 	Vector3 planeAngle_;
+
+	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
+
+	std::unique_ptr<TrailEffect> sphereEffect_ = nullptr;
 
 };
 
